@@ -125,3 +125,27 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden!important}
 .command-drawer{z-index:45}
 .command-overlay,.newspaper-overlay{z-index:70!important}
 .aaa-alert{z-index:60}
+
+/* COMMANDER PROFILES / COUNTRY INTEL / NAVIGATION */
+.flag-image,.command-flag{display:block;width:42px;height:28px;object-fit:cover;border:1px solid #4a5b52;background:#101819}
+.flag-fallback{display:grid;place-items:center;width:42px;height:28px;font-size:21px}
+.portrait-art{width:48px;height:58px;display:grid;place-items:center;overflow:hidden;border:1px solid #486153;background:#101719;color:#8bd99b;font-weight:800}
+.portrait-art img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05)}
+.profile-choice{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 14px}
+.profile-option{display:flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:8px 10px;border:1px solid #34433f;background:#11191b;color:#9aa8a2;font-size:9px;letter-spacing:.08em;cursor:pointer}
+.profile-option.active{border-color:#b7a05e;background:#17201c;color:#e7e9df;box-shadow:inset 0 0 0 1px rgba(183,160,94,.18)}
+.profile-option img{width:26px;height:32px;object-fit:cover;filter:grayscale(1)}
+.nation-code{display:flex;align-items:center;justify-content:center;gap:5px;min-width:32px}
+.nation-code img{width:26px;height:18px;object-fit:cover;border:1px solid #34433f}
+.nation-code>span{font-size:18px}
+.country-selection-head{display:flex;align-items:center;gap:12px;margin:10px 0 16px}
+.country-selection-head h1{margin:0;font-size:25px;letter-spacing:.05em}.country-selection-head span{font-size:9px;color:#72827b;letter-spacing:.14em}
+.country-panel-flag{width:58px;height:38px}
+.country-stats{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.country-stats div{border:1px solid #283737;background:#111a1d;padding:9px;display:grid;gap:4px}
+.country-stats small{font-size:7px;color:#72817b;letter-spacing:.1em}.country-stats b{font-size:12px;color:#e1e6df}
+.country-build-actions{display:grid;gap:7px;margin-top:12px}.country-build-actions button{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;background:#16261b;border:1px solid #3d754d;color:#9fdfac;font-size:8px;letter-spacing:.08em;cursor:pointer}.country-build-actions svg{width:14px}
+.command-card .tech-node{width:100%;text-align:left;color:inherit;cursor:pointer;border:0;background:transparent}
+.command-card .tech-node:hover{background:#182324}.message-row{display:grid;grid-template-columns:170px 1fr;gap:15px;padding:13px 0;border-bottom:1px solid #263536}.message-row b{font-size:10px;color:#c8d4cd}.message-row span{font-size:11px;color:#81918a}
+.aaa-bottom button{cursor:pointer}.aaa-bottom button svg{pointer-events:none}
+@media(max-width:760px){.profile-choice{grid-template-columns:1fr}.country-stats{grid-template-columns:1fr}}
