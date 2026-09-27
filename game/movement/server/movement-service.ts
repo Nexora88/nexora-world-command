@@ -2,7 +2,7 @@ import {getProvince,setProvinceOwner} from "@/game/world/server/world-store";
 import {climateMovementCost} from "@/game/world/server/climate-service";
 import {getTerrainModifiers} from "@/game/world/terrain";
 import type {MovementAction,Army} from "./types";
-const DEMO_COUNTRY_ID="aurora"; const armies=new Map<string,Army>(); const aiArmies=new Map<string,Army>();
+const DEMO_COUNTRY_ID="TR"; const armies=new Map<string,Army>(); const aiArmies=new Map<string,Army>();
 const stockpile=new Map<string,{infantry:number;tanks:number}>();
 function province(id:string){return getProvince(id)}
 function assertOwned(id:string){const p=province(id);if(!p||p.ownerId!==DEMO_COUNTRY_ID)throw new Error("Province is not controlled by the player.");return p}

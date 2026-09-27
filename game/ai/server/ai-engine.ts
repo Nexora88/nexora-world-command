@@ -5,7 +5,7 @@ import {declareWar,getWars,attackProvince} from "@/game/war/server/war-service";
 import {pushWorldEvent} from "@/game/events/server/event-store";
 export interface AIState{countryId:string;treasury:number;manpower:number;steel:number;priority:string;lastDecision:number}
 const states=new Map<string,AIState>();let lastTick=0;
-function init(){for(const n of nations.filter(n=>n.id!=="aurora"))if(!states.has(n.id))states.set(n.id,{countryId:n.id,treasury:n.treasury,manpower:5000,steel:3000,priority:"defend capital",lastDecision:0})}init();
+function init(){for(const n of nations.filter(n=>n.id!=="TR"))if(!states.has(n.id))states.set(n.id,{countryId:n.id,treasury:n.treasury,manpower:5000,steel:3000,priority:"defend capital",lastDecision:0})}init();
 const owned=(id:string)=>getWorld().filter(p=>p.ownerId===id);
 const score=(id:string)=>{const p=getProvince(id);if(!p)return 0;return p.industryLevel*18+p.infrastructureLevel*12+p.population/500000+p.fortificationLevel*8+(p.id===nations.find(n=>n.id===p.ownerId)?.capitalProvinceId?60:0)};
 function produce(s:AIState){const p=owned(s.countryId).sort((a,b)=>b.barracksLevel-a.barracksLevel)[0];if(!p||s.manpower<1200||s.steel<500||s.treasury<6000)return false;createAIArmy(s.countryId,p.id,1200,0,`${s.countryId.toUpperCase()} Guard`);s.manpower-=1200;s.steel-=500;s.treasury-=6000;pushWorldEvent({type:"ai",title:"AI MOBILIZATION",message:`${nations.find(n=>n.id===s.countryId)?.name} mobilization started`,countryId:s.countryId});return true}

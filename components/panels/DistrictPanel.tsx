@@ -1,2 +1,2 @@
-"use client"; import type {District} from "@/data/world/districts";
+"use client"; import type {District} from "@/data/world/real-world-support";
 export function DistrictPanel({districts}:{districts:District[]}){return <section className="district-panel"><div className="section-title">DISTRICTS / LOCAL CONTROL</div>{districts.length===0?<p>No districts loaded.</p>:districts.map(d=><div className="district-row" key={d.districtId}><div><b>{d.name}</b><small>{d.population.toLocaleString()} population</small></div><span>IMPORTANCE {d.importance}</span><span>IRON {d.resources.iron} · AGRI {d.resources.agriculture}</span></div>)}</section>}

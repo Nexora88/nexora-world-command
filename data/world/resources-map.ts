@@ -1,3 +1,0 @@
-export interface ResourceMapEntry { provinceId:string; oilReserve:number; iron:number; agriculture:number; energy:number; }
-export const resourcesMap:ResourceMapEntry[]=[
-{provinceId:"nwc-01",oilReserve:13,iron:20,agriculture:48,energy:42},{provinceId:"nwc-02",oilReserve:5,iron:78,agriculture:30,energy:65},{provinceId:"nwc-03",oilReserve:4,iron:26,agriculture:84,energy:39},{provinceId:"nwc-04",oilReserve:16,iron:38,agriculture:36,energy:52},{provinceId:"nwc-05",oilReserve:9,iron:31,agriculture:69,energy:44},{provinceId:"nwc-06",oilReserve:6,iron:34,agriculture:90,energy:43},{provinceId:"nwc-07",oilReserve:15,iron:94,agriculture:24,energy:60},{provinceId:"nwc-08",oilReserve:11,iron:23,agriculture:93,energy:38}];

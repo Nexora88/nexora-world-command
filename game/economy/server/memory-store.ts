@@ -4,7 +4,7 @@ import type { ProvinceBuildingLevels } from "@/lib/game-store";
 import type { EconomyState } from "./types";
 
 export const DEMO_PLAYER_ID = "demo-player";
-export const DEMO_COUNTRY_ID = "aurora";
+export const DEMO_COUNTRY_ID = "TR";
 
 const initialBuildingLevels = Object.fromEntries(
   provinces.map((province) => [province.id, { ...province.buildings }]),

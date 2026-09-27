@@ -8,13 +8,13 @@ import {
 
 const construction = {
   type: "startConstruction" as const,
-  provinceId: "nwc-03",
+  provinceId: "TR_BURSA",
   buildingType: "fortification" as const,
 };
 
 const production = {
   type: "startProduction" as const,
-  provinceId: "nwc-03",
+  provinceId: "TR_BURSA",
   unitType: "infantry" as const,
 };
 
@@ -39,11 +39,11 @@ describe("server-authoritative economy", () => {
   });
 
   it("rejects invalid province ownership", () => {
-    expectRejected({ ...construction, provinceId: "nwc-04" }, 1_000);
+    expectRejected({ ...construction, provinceId: "DE_BERLIN" }, 1_000);
   });
 
   it("rejects invalid building level", () => {
-    getEconomyState().provinceBuildings["nwc-03"].fortification = 99;
+    getEconomyState().provinceBuildings["TR_BURSA"].fortification = 99;
     expectRejected(construction, 1_000);
   });
 
@@ -79,7 +79,7 @@ describe("server-authoritative economy", () => {
     expect(before.constructionQueue).toHaveLength(1);
     const after = performEconomyAction({ type: "resolveCompleted" }, finishesAt);
     expect(after.constructionQueue).toHaveLength(0);
-    expect(after.provinceBuildings["nwc-03"].fortification).toBe(2);
+    expect(after.provinceBuildings["TR_BURSA"].fortification).toBe(2);
   });
 
   it("completes production from server time", () => {
