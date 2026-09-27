@@ -1,0 +1,1 @@
+import {NextResponse} from "next/server"; import {getCountries} from "@/game/nation/server/nation-store"; import {getWorld} from "@/game/world/server/world-store"; export async function GET(){const world=getWorld();return NextResponse.json(getCountries().map(n=>({...n,provinceCount:world.filter(p=>p.ownerId===n.id).length})))}

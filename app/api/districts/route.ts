@@ -1,0 +1,1 @@
+import {NextResponse} from "next/server"; import {getDistricts,getCities} from "@/game/world/server/world-store"; export async function GET(req:Request){const id=new URL(req.url).searchParams.get("provinceId")??undefined;return NextResponse.json({districts:getDistricts(id),cities:getCities()})}

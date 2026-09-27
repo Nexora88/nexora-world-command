@@ -1,0 +1,1 @@
+import {NextResponse} from "next/server"; import {getPopulation} from "@/game/world/server/world-store"; export async function GET(req:Request){return NextResponse.json(getPopulation(new URL(req.url).searchParams.get("provinceId")??undefined))}

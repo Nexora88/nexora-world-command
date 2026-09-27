@@ -1,0 +1,12 @@
+import {describe,it,expect,beforeEach} from "vitest"; import {getNation,getProvince,getDistricts,getPopulation,getCapitalState,setProvinceOwner,resetWorld} from "@/game/world/server/world-store";
+describe("phase 6 world simulation",()=>{beforeEach(()=>resetWorld());
+it("country has capital",()=>{for(const id of ["aurora","solaris","verdant"]){const n=getNation(id)!;expect(n.capitalProvinceId).toBeTruthy();expect(getProvince(n.capitalProvinceId)?.ownerId).toBe(id)}});
+it("province belongs to country",()=>{expect(getProvince("nwc-01")?.countryId).toBe("aurora")});
+it("district belongs to province",()=>{expect(getDistricts("nwc-01").every(d=>d.provinceId==="nwc-01")).toBe(true)});
+it("population cannot be negative",()=>{expect(getPopulation().every(p=>p.population>=0&&p.workers>=0&&p.soldiers>=0)).toBe(true)});
+it("ownership transfer keeps province data",()=>{const p=getProvince("nwc-01")!;const before=p.population;setProvinceOwner("nwc-01","solaris");expect(getProvince("nwc-01")?.population).toBe(before)});
+it("captured province keeps districts",()=>{setProvinceOwner("nwc-01","solaris");expect(getDistricts("nwc-01").length).toBeGreaterThan(0)});
+it("economy ownership remains queryable",()=>{setProvinceOwner("nwc-01","solaris");expect(getProvince("nwc-01")?.ownerId).toBe("solaris")});
+it("capital loss changes state",()=>{setProvinceOwner("nwc-01","solaris");expect(getCapitalState("aurora")?.lost).toBe(true)});
+it("world map data loads",()=>{const d=getDistricts();expect(getProvince("nwc-01")).toBeTruthy();expect(d.length).toBeGreaterThan(0)});
+});
