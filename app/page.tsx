@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { CommanderEntry } from "@/components/player/CommanderEntry";
 
 export default function Home() {
-  redirect("/game");
+  return <CommanderEntry />;
 }
