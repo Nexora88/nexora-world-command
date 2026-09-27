@@ -17,9 +17,10 @@ export const getCities=(districtId?:string)=>cities.filter(c=>!districtId||c.dis
 export const getPopulation=(provinceId?:string)=>populationStates.filter(p=>!provinceId||p.provinceId===provinceId).map(p=>({...p,groups:{...p.groups}}));
 export const getDevelopment=(provinceId?:string)=>provinceDevelopment.filter(p=>!provinceId||p.provinceId===provinceId);
 export const getResourcesMap=(provinceId?:string)=>resourcesMap.filter(p=>!provinceId||p.provinceId===provinceId);
+export function setProvinceWeather(provinceId:string,weather:Province["weather"]){const p=getProvince(provinceId);if(!p)throw new Error("Province does not exist.");p.weather=weather;return {...p,neighbors:[...p.neighbors],buildings:{...p.buildings}};}
 export function setProvinceOwner(provinceId:string,ownerId:string){
  const province=getProvince(provinceId); if(!province)throw new Error("Province does not exist.");
- if(!nations.some(c=>c.id===ownerId))throw new Error("Country does not exist.");
+ if(ownerId!=="neutral"&&!nations.some(c=>c.id===ownerId))throw new Error("Country does not exist.");
  province.ownerId=ownerId; province.countryId=ownerId;
  if(nations.some(n=>n.capitalProvinceId===provinceId&&n.id!==ownerId)){const lost=nations.find(n=>n.capitalProvinceId===provinceId)!.id;capitalLoss.add(lost);applyCapitalLoss(lost);}
  return {...province,neighbors:[...province.neighbors],buildings:{...province.buildings}};

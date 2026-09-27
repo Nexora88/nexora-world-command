@@ -3,6 +3,9 @@ import { getProvince, setProvinceOwner } from "@/game/world/server/world-store";
 import { getArmy, getArmies } from "@/game/movement/server/movement-service";
 import { WAR_CONFIG, FORTIFICATION_CONFIG } from "@/data/war/config";
 import type { BattleResult, War } from "./types";
+import {weatherCombatModifier} from "@/game/world/server/weather-service";
+import {pushWorldEvent} from "@/game/events/server/event-store";
+import {pushAlert} from "@/game/alerts/server/alert-store";
 
 const wars = new Map<string, War>();
 const battles: BattleResult[] = [];
@@ -45,7 +48,7 @@ export function declareWar(attacker:string,defender:string,warGoal:"conquest"="c
   if(active(attacker,defender)) throw new WarValidationError("War already active.");
   const w:War={warId:crypto.randomUUID(),attacker,defender,startedAt:now(),status:"active",
     warGoal,occupiedProvinces:[],attackerScore:0,defenderScore:0};
-  wars.set(w.warId,w); return {...w};
+  wars.set(w.warId,w);pushWorldEvent({type:"war",title:"WAR DECLARED",message:`${attacker} declared war on ${defender}`,countryId:attacker});return {...w};
 }
 export function attackProvince(warId:string,armyId:string,provinceId:string,randomSeed?:number){
   const w=wars.get(warId);
@@ -57,10 +60,10 @@ export function attackProvince(warId:string,armyId:string,provinceId:string,rand
   if(!origin||!origin.neighbors.includes(target.id)) throw new WarValidationError("Target is not adjacent.");
   const defender=getArmies().filter(a=>a.countryId===w.defender&&a.provinceId===target.id&&a.status!=="destroyed")
     .sort((a,b)=>b.strength-a.strength)[0];
-  const ap=power(army.id);
+  const ap=power(army.id)*weatherCombatModifier(origin.weather);
   const dp=defender?power(defender.id):WAR_CONFIG.baseAttackStrength;
   const fort=Math.max(0,Math.min(3,target.fortificationLevel)) as 0|1|2|3;
-  const defense=dp*(1+FORTIFICATION_CONFIG[fort]);
+  const defense=dp*(1+FORTIFICATION_CONFIG[fort])*weatherCombatModifier(target.weather);
   const rf=factor(randomSeed);
   const winner=ap*rf>=defense?"attacker":"defender";
   const ac=Math.max(0,Math.round((winner==="attacker"?defense/Math.max(1,ap):1.15)
@@ -75,6 +78,8 @@ export function attackProvince(warId:string,armyId:string,provinceId:string,rand
     if(!w.occupiedProvinces.includes(target.id)) w.occupiedProvinces.push(target.id);
     w.attackerScore+=WAR_CONFIG.captureWarScore;
     army.provinceId=target.id; army.status="ready";
+    pushWorldEvent({type:"capture",title:"PROVINCE CAPTURED",message:`${target.name} captured by ${w.attacker}`,provinceId:target.id,countryId:w.attacker});
+    if(countries.some(c=>c.id===w.defender&&c.capitalProvinceId===target.id))pushAlert({key:`capital-${target.id}`,level:"critical",title:"CAPITAL UNDER ATTACK",message:`${target.name} has changed hands`,provinceId:target.id},60000);
   } else {
     w.defenderScore+=WAR_CONFIG.battleWarScore;
     if(aa.organization<=WAR_CONFIG.retreatOrganizationThreshold||aa.morale<=WAR_CONFIG.retreatOrganizationThreshold)
