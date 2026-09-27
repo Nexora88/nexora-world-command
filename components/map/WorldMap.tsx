@@ -9,15 +9,7 @@ import {safeCountryCode,safeCountryName} from "@/lib/safe-country";
 import {ProvinceLayer} from "@/components/map/ProvinceLayer";
 
 export type MapMode="political"|"population"|"economy"|"resources"|"military"|"weather"|"terrain"|"frontline";
-const modeLabel:Record<MapMode,string>={political:"POLITICAL",population:"POPULATION",economy:"ECONOMY",resources:"RESOURCES",military:"MILITARY",weather:"WEATHER",terrain:"TERRAIN",frontline:"FRONTLINE"};
-
-function hull(points:{x:number;y:number}[]){
-  const pts=[...points].sort((a,b)=>a.x-b.x||a.y-b.y); if(pts.length<3)return pts;
-  const cross=(o:any,a:any,b:any)=>(a.x-o.x)*(b.y-o.y)-(a.y-o.y)*(b.x-o.x);
-  const lower:any[]=[]; for(const p of pts){while(lower.length>=2&&cross(lower[lower.length-2],lower[lower.length-1],p)<=0)lower.pop();lower.push(p);}
-  const upper:any[]=[]; for(let i=pts.length-1;i>=0;i--){const p=pts[i];while(upper.length>=2&&cross(upper[upper.length-2],upper[upper.length-1],p)<=0)upper.pop();upper.push(p);}
-  return lower.slice(0,-1).concat(upper.slice(0,-1));
-}
+const modeLabel:Record<MapMode,string>={political:"SİYASİ",population:"NÜFUS",economy:"EKONOMİ",resources:"KAYNAKLAR",military:"ASKERİ",weather:"HAVA",terrain:"ARAZİ",frontline:"CEPHE"};
 
 function UnitGlyph({army,large=false}:{army:Army;large?:boolean}){
   const armored=army.tanks>0;
@@ -29,11 +21,9 @@ type Props={provinces:Province[];armies:Army[];selectedId:string|null;selectedAr
 export function WorldMap({provinces,armies,selectedId,selectedArmyId,onSelect,onSelectArmy,mapMode,onMapModeChange,playerCountryId}:Props){
   const [zoom,setZoom]=useState(1);
   const [hovered,setHovered]=useState<string|null>(null);
-  const active=useMemo(()=>provinces.map(p=>REAL_WORLD_PROVINCES[p.id]).filter(Boolean),[provinces]);
   const maxPop=Math.max(...provinces.map(p=>p.population),1);
   const maxInd=Math.max(...provinces.map(p=>p.industryLevel),1);
-  const countryShapes=useMemo(()=>REAL_WORLD_COUNTRIES.map(c=>({country:c,points:hull(active.filter(p=>safeCountryCode(p.countryCode)===safeCountryCode(c.id)).map(p=>({x:p.coordinates.x,y:p.coordinates.y})))})).filter(x=>x.points.length>=3),[active]);
-  const fillFor=useMemo(()=> (p:Province)=>{
+    const fillFor=useMemo(()=> (p:Province)=>{
     if(mapMode==="population")return `hsl(34 55% ${25+(p.population/maxPop)*30}%)`;
     if(mapMode==="economy")return `hsl(143 38% ${20+(p.industryLevel/maxInd)*30}%)`;
     if(mapMode==="resources")return `hsl(47 45% ${22+Math.min(28,(p.industryLevel+p.infrastructureLevel)*2)}%)`;
@@ -50,13 +40,11 @@ export function WorldMap({provinces,armies,selectedId,selectedArmyId,onSelect,on
   return <div className="world-map real-world-map">
     <div className="map-vignette"/>
     <div className={`weather-layer weather-${selected?.weather??"clear"}`}/>
-    <div className="map-header"><b>EUROPEAN THEATRE</b><span>{modeLabel[mapMode]} {"//"} {zoom.toFixed(1)}×</span><span>{REAL_WORLD_COUNTRIES.length} NATIONS · {active.length} PROVINCES</span></div>
+    <div className="map-header"><b>AVRUPA CEPHESİ</b><span>{modeLabel[mapMode]} {"//"} {zoom.toFixed(1)}×</span><span>{REAL_WORLD_COUNTRIES.length} ÜLKE · {provinces.length} BÖLGE</span></div>
     <div className="map-compass">N<br/><i>＋</i></div>
     <svg viewBox="0 0 100 100" className="province-map real-world-svg" style={{transform:`scale(${zoom})`}}>
       <defs><filter id="provinceGlow"><feGaussianBlur stdDeviation=".8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-      <g className="country-territory-underlay">{countryShapes.map(({country,points})=><polygon key={country.id} points={points.map(p=>`${p.x},${p.y}`).join(" ")} fill={country.color} className="country-territory-fill"/>)}</g>
       <ProvinceLayer provinces={provinces} selectedId={selectedId} hoveredId={hovered} playerCountryId={playerCountryId} mapMode={mapMode} maxPopulation={maxPop} maxIndustry={maxInd} onSelect={id=>{audioManager.provinceSelected();onSelect(id)}} onHover={setHovered} fillFor={fillFor}/>
-      <g className="country-borders">{countryShapes.map(({country,points})=><polygon key={`border-${country.id}`} points={points.map(p=>`${p.x},${p.y}`).join(" ")} fill="none" stroke={country.color} className="country-border"/>)}</g>
 
       <g className="city-markers">
         {provinces.map(p=>{
@@ -79,10 +67,10 @@ export function WorldMap({provinces,armies,selectedId,selectedArmyId,onSelect,on
         })}
       </g>
     </svg>
-    {hoveredProvince&&hoveredWorld&&<div className="province-tooltip"><strong>{safeCountryName(hoveredWorld.name)}</strong><span>{safeCountryName(hoveredWorld.country)}</span><i>POPULATION <b>{hoveredProvince.population.toLocaleString()}</b></i><i>TERRAIN <b>{safeCountryName(hoveredProvince.terrain)}</b></i><i>OWNER <b>{safeCountryCode(hoveredProvince.ownerId)||"UNKNOWN"}</b></i></div>}
+    {hoveredProvince&&hoveredWorld&&<div className="province-tooltip"><strong>{safeCountryName(hoveredWorld.name)}</strong><span>{safeCountryName(hoveredWorld.country)}</span><i>NÜFUS <b>{hoveredProvince.population.toLocaleString()}</b></i><i>ARAZİ <b>{safeCountryName(hoveredProvince.terrain)}</b></i><i>SAHİP <b>{safeCountryCode(hoveredProvince.ownerId)||"BİLİNMİYOR"}</b></i></div>}
     <div className="map-modebar">{(Object.keys(modeLabel) as MapMode[]).map(m=><button key={m} className={mapMode===m?"active":""} onClick={()=>onMapModeChange(m)}>{modeLabel[m]}</button>)}</div>
     <div className="map-controls"><button onClick={()=>setZoom(z=>Math.min(1.7,z+.15))}>＋</button><button onClick={()=>setZoom(z=>Math.max(1,z-.15))}>−</button><button onClick={()=>setZoom(1)}>⌖</button></div>
-    <div className="map-legend"><span><i className="legend-infantry"/>INF</span><span><i className="legend-armored"/>ARM</span><span><i className="legend-capital">★</i>CAPITAL</span><span>154 PROVINCE TERRITORIES</span></div>
-    <div className="map-weather">WEATHER // {safeCountryName(selected?.weather??"clear")}</div>
+    <div className="map-legend"><span><i className="legend-infantry"/>PİY</span><span><i className="legend-armored"/>ZIRH</span><span><i className="legend-capital">★</i>BAŞKENT</span><span>{provinces.length} BÖLGE</span></div>
+    <div className="map-weather">HAVA // {safeCountryName(selected?.weather??"clear")}</div>
   </div>;
 }

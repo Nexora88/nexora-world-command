@@ -39,6 +39,8 @@
 .real-world-map .province-tooltip{z-index:20}
 .real-world-map .map-modebar,
 .real-world-map .map-controls{pointer-events:auto}
+.real-world-map .map-modebar{left:18px;top:42px;transform:none;max-width:calc(100% - 90px);overflow-x:auto;justify-content:flex-start;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+.real-world-map .map-modebar button{flex:0 0 auto;min-width:58px}
 .real-world-map .army-markers{pointer-events:auto}
 .real-world-map .army-marker{pointer-events:auto;cursor:pointer}
 .real-world-map .province-territory{pointer-events:auto;cursor:pointer}
