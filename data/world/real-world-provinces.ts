@@ -1,8 +1,13 @@
 import type { Province, TerrainType } from "@/lib/types";
 
+export interface ProvinceGeometry {
+  type: "polygon";
+  points: Array<{x:number;y:number}>;
+}
+
 export interface RealWorldProvince {
   id:string; name:string; country:string; countryCode:string; neighbors:string[];
-  coordinates:{x:number;y:number}; population?:number; terrain?:TerrainType;
+  coordinates:{x:number;y:number}; geometry?:ProvinceGeometry; population?:number; terrain?:TerrainType;
 }
 type CitySeed={name:string;lat:number;lon:number;population:number;terrain:TerrainType};
 type CountrySeed={id:string;name:string;displayName:string;capital:string;color:string;cities:CitySeed[]};
@@ -70,6 +75,28 @@ for(const country of countrySeeds){
 }
 const byId=new Map(seeds.map(p=>[p.id,p]));
 const seedByCode=new Map(countrySeeds.map(c=>[c.id,c]));
+
+function clipCell(subject:{x:number;y:number}[], site:{x:number;y:number}, other:{x:number;y:number}[]){
+  if(subject.length<3)return subject;
+  const out:{x:number;y:number}[]=[];
+  const value=(p:{x:number;y:number})=>(p.x-site.x)*(p.x-site.x)+(p.y-site.y)*(p.y-site.y)-((p.x-other[0].x)*(p.x-other[0].x)+(p.y-other[0].y)*(p.y-other[0].y));
+  for(let i=0;i<subject.length;i++){
+    const a=subject[i],b=subject[(i+1)%subject.length],va=value(a),vb=value(b),ain=va<=0,bin=vb<=0;
+    if(ain)out.push(a);
+    if(ain!==bin){const t=va/(va-vb);out.push({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});}
+  }
+  return out;
+}
+function buildVoronoiGeometry(){
+  const sites=seeds.map(p=>({id:p.id,x:p.coordinates.x,y:p.coordinates.y}));
+  const bounds=[{x:0,y:0},{x:100,y:0},{x:100,y:100},{x:0,y:100}];
+  for(const site of sites){
+    let cell=bounds.map(p=>({...p}));
+    for(const other of sites){if(other.id===site.id||cell.length<3)continue;cell=clipCell(cell,{x:site.x,y:site.y},[{x:other.x,y:other.y}]);}
+    const province=byId.get(site.id);if(province&&cell.length>=3)province.geometry={type:"polygon",points:cell};
+  }
+}
+buildVoronoiGeometry();
 const addEdge=(a:string,b:string)=>{
   const pa=byId.get(a),pb=byId.get(b);if(!pa||!pb)return;
   if(!pa.neighbors.includes(pb.id))pa.neighbors.push(pb.id);

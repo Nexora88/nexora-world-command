@@ -1,0 +1,65 @@
+"use client";
+
+import {useMemo} from "react";
+import type {Province} from "@/lib/types";
+import {REAL_WORLD_COUNTRIES,REAL_WORLD_PROVINCES} from "@/data/world/real-world-provinces";
+import {safeCountryCode} from "@/lib/safe-country";
+
+type Point={x:number;y:number};
+type Props={
+  provinces:Province[];
+  selectedId:string|null;
+  hoveredId:string|null;
+  playerCountryId?:string;
+  mapMode:string;
+  maxPopulation:number;
+  maxIndustry:number;
+  onSelect:(id:string)=>void;
+  onHover:(id:string|null)=>void;
+  fillFor:(province:Province)=>string;
+};
+
+const terrainFill:Record<string,string>={plains:"#536b59",forest:"#385947",mountain:"#706d61",hills:"#62655c",urban:"#56656a",coast:"#426d68",desert:"#7c6b48",tundra:"#64757c"};
+
+function fallbackGeometry(x:number,y:number,scale=6):Point[]{
+  const s=Math.max(2.8,Math.min(7.5,scale));
+  return [{x:x-s,y:y-s*.65},{x:x+s*.55,y:y-s},{x:x+s,y:y-s*.05},{x:x+s*.7,y:y+s},{x:x-s*.35,y:y+s*.9},{x:x-s,y:y+s*.2}];
+}
+
+function polygonPoints(id:string){
+  const p=REAL_WORLD_PROVINCES[id];
+  if(!p)return "";
+  const geometry=p.geometry?.points;
+  const points=geometry&&geometry.length>=3?geometry:fallbackGeometry(p.coordinates.x,p.coordinates.y);
+  return points.map(point=>`${point.x},${point.y}`).join(" ");
+}
+
+export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,mapMode,onSelect,onHover,fillFor}:Props){
+  const shapes=useMemo(()=>provinces.map(p=>({p,world:REAL_WORLD_PROVINCES[p.id]})).filter(x=>x.world),[provinces]);
+  return <g className="province-territories">
+    {shapes.map(({p,world})=>{
+      const code=safeCountryCode(world?.countryCode??p.countryId);
+      const country=REAL_WORLD_COUNTRIES.find(c=>safeCountryCode(c.id)===code);
+      const selected=p.id===selectedId;
+      const hovered=p.id===hoveredId;
+      const owned=!!playerCountryId&&code===safeCountryCode(playerCountryId);
+      const terrain=world?.terrain??p.terrain;
+      const fill=mapMode==="terrain"?(terrainFill[terrain]??"#536b59"):fillFor(p);
+      return <polygon
+        key={p.id}
+        points={polygonPoints(p.id)}
+        className={`province-territory ${selected?"selected":""} ${hovered?"hovered":""} ${owned?"owned":""}`}
+        fill={fill}
+        fillOpacity={selected?.42:hovered?.31:.22}
+        stroke={country?.color??"#52615d"}
+        onMouseEnter={()=>onHover(p.id)}
+        onMouseLeave={()=>onHover(null)}
+        onClick={()=>onSelect(p.id)}
+        aria-label={`${p.name}, ${world?.country??"Unknown"}`}
+      />;
+    })}
+  </g>;
+}
+export function ProvinceFallbackLegend(){
+  return <div className="province-layer-note">PROVINCE TERRITORIES // {Object.keys(REAL_WORLD_PROVINCES).length}</div>;
+}

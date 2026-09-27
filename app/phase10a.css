@@ -1,0 +1,46 @@
+/* Phase 10A — territory map */
+.real-world-map{background:radial-gradient(circle at 50% 45%,rgba(36,69,53,.16),transparent 58%),#08100f}
+.real-world-svg{padding:5%;transition:transform .18s ease;transform-origin:50% 50%}
+.country-territory-fill{opacity:.035;stroke:none;pointer-events:none}
+.province-territories{isolation:isolate}
+.province-territory{cursor:pointer;vector-effect:non-scaling-stroke;stroke-width:.16;transition:fill-opacity .12s ease,stroke-width .12s ease,filter .12s ease}
+.province-territory:hover,.province-territory.hovered{stroke:#b7e7c2;stroke-width:.42;filter:url(#provinceGlow)}
+.province-territory.selected{stroke:#8df0a4;stroke-width:.72;filter:url(#provinceGlow)}
+.province-territory.owned{stroke-opacity:.5}
+.country-borders{pointer-events:none}
+.country-border{vector-effect:non-scaling-stroke;stroke-width:.48;stroke-opacity:.48;fill:none}
+.world-grid-lines{opacity:.055;pointer-events:none}
+.world-grid-lines line{stroke:#8ba49a;stroke-width:.08;vector-effect:non-scaling-stroke}
+.continent-silhouette{opacity:.18;fill:#08100f;pointer-events:none}
+.city-markers{pointer-events:none}
+.city-dot{fill:#d2ddd5;opacity:.7}
+.capital-dot{fill:#dfffe7;stroke:#78d891;stroke-width:.28}
+.capital-ring{fill:none;stroke:#78d891;stroke-width:.28;opacity:.8}
+.city-marker.selected .city-dot,.city-marker.hovered .city-dot{fill:#eaffee}
+.city-label{font:1.45px monospace;font-weight:700;letter-spacing:.15px;fill:#d9e7de;text-shadow:0 1px 2px #000}
+.army-markers{cursor:pointer}
+.army-marker{filter:drop-shadow(0 0 2px rgba(96,221,126,.25))}
+.army-marker.selected{filter:url(#provinceGlow)}
+.real-unit circle{stroke:#07100b;stroke-width:.35}
+.unit-infantry{fill:#83cf92}
+.unit-armored{fill:#c0a66b}
+.real-unit text{font:1.6px monospace;fill:#06100a;font-weight:900;pointer-events:none}
+.real-unit .unit-count{font-size:1.25px;fill:#dce9df;text-shadow:0 1px 2px #000}
+.map-header{position:absolute;z-index:5;left:18px;right:18px;top:13px;display:flex;justify-content:space-between;gap:14px;font:8px monospace;letter-spacing:1.1px;color:#71827b;pointer-events:none}
+.map-header b{color:#a9cbb1}
+.map-compass{position:absolute;z-index:5;right:17px;top:58px;text-align:center;font:9px monospace;color:#71827b;line-height:15px;pointer-events:none}
+.map-compass i{font-style:normal;color:#87d399}
+.province-tooltip{position:absolute;z-index:10;left:18px;bottom:56px;min-width:170px;padding:10px 12px;background:rgba(7,13,13,.93);border:1px solid #365542;box-shadow:0 8px 30px #0008;display:grid;gap:4px;pointer-events:none}
+.province-tooltip strong{font:11px monospace;color:#dce9df;letter-spacing:1px}
+.province-tooltip span{font:8px monospace;color:#70bd82}
+.province-tooltip i{display:flex;justify-content:space-between;font:7px monospace;color:#61716a;font-style:normal}
+.province-tooltip b{color:#b9cbc0}
+.map-legend{position:absolute;left:18px;bottom:18px;display:flex;gap:11px;background:#08100ee8;border:1px solid #273c32;padding:7px 9px;font:7px monospace;color:#71827b;letter-spacing:.5px}
+.map-legend i{display:inline-block;margin-right:4px}
+.legend-infantry,.legend-armored{width:7px;height:7px;border-radius:50%}
+.legend-infantry{background:#83cf92}.legend-armored{background:#c0a66b}.legend-capital{color:#78d891}
+.map-weather{position:absolute;right:18px;bottom:18px;font:7px monospace;color:#65756e;letter-spacing:1px}
+.map-modebar{position:absolute;z-index:6;left:50%;top:13px;transform:translateX(-50%);display:flex;background:#08100ee8;border:1px solid #2b4036}
+.map-modebar button{border:0;border-right:1px solid #203029;background:transparent;color:#65746e;padding:7px 8px;font:7px monospace;letter-spacing:.7px}
+.map-modebar button.active{background:#173122;color:#a7dfb3}
+.map-controls{z-index:7}
