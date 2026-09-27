@@ -1,4 +1,4 @@
-import { provinces } from "@/data/provinces";
+import { getWorld, getProvince } from "@/game/world/server/world-store";
 import { BUILDING_MAX_LEVEL, BUILDINGS, type BuildingType } from "@/data/economy/buildings";
 import { calculateConstructionCost } from "../construction";
 import { calculateProductionCost, calculateProductionTime } from "../production";
@@ -7,6 +7,7 @@ import { applyResourceDelta } from "../resource-engine";
 import type { ProvinceBuildingLevels, QueueItem } from "@/lib/game-store";
 import type { EconomyAction, EconomySnapshot, EconomyState, ResourceTransaction } from "./types";
 import { DEMO_COUNTRY_ID, DEMO_PLAYER_ID, getEconomyState } from "./memory-store";
+import { addProducedUnits } from "@/game/movement/server/movement-service";
 
 export class EconomyValidationError extends Error {
   constructor(message: string) {
@@ -15,8 +16,8 @@ export class EconomyValidationError extends Error {
   }
 }
 
-const ownedProvinces = () => provinces.filter((province) => province.ownerId === DEMO_COUNTRY_ID);
-const provinceById = (provinceId: string) => provinces.find((province) => province.id === provinceId);
+const ownedProvinces = () => getWorld().filter((province) => province.ownerId === DEMO_COUNTRY_ID);
+const provinceById = (provinceId: string) => getProvince(provinceId);
 
 function transaction(
   state: EconomyState,
@@ -58,6 +59,11 @@ function tick(state: EconomyState, now: number): void {
 function resolveCompleted(state: EconomyState, now: number): void {
   const completedConstruction = state.constructionQueue.filter((item) => item.finishesAt <= now);
   const completedProduction = state.productionQueue.filter((item) => item.finishesAt <= now);
+
+  for (const item of completedProduction) {
+    if (item.kind === "production" && item.type === "infantry") addProducedUnits(item.provinceId, 1000, 0);
+    if (item.kind === "production" && item.type === "tank") addProducedUnits(item.provinceId, 0, 1);
+  }
 
   for (const item of completedConstruction) {
     if (item.kind !== "construction" || item.level === undefined) continue;

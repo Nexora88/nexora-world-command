@@ -1,0 +1,11 @@
+import { describe,it,expect,beforeEach } from "vitest";
+import { resetWorld } from "@/game/world/server/world-store";
+import { resetMovement,addProducedUnits,performMovementAction } from "@/game/movement/server/movement-service";
+import { resetWars,declareWar,attackProvince,getWars,getBattleHistory } from "@/game/war/server/war-service";
+describe("phase 5 war combat",()=>{beforeEach(()=>{resetWorld();resetMovement();resetWars()});
+it("declares a war",()=>{const w=declareWar("aurora","solaris");expect(w.status).toBe("active");expect(w.attacker).toBe("aurora")});
+it("requires an active war",()=>{addProducedUnits("nwc-01",1000);const a=performMovementAction({type:"createArmy",provinceId:"nwc-01"});expect(()=>attackProvince("bad",a.id,"nwc-04",1)).toThrow()});
+it("requires adjacency",()=>{const w=declareWar("aurora","solaris");addProducedUnits("nwc-01",1000);const a=performMovementAction({type:"createArmy",provinceId:"nwc-01"});expect(()=>attackProvince(w.warId,a.id,"nwc-07",1)).toThrow()});
+it("resolves a deterministic battle",()=>{const w=declareWar("aurora","solaris");addProducedUnits("nwc-03",5000);const a=performMovementAction({type:"createArmy",provinceId:"nwc-03"});const b=attackProvince(w.warId,a.id,"nwc-04",123);expect(b.randomFactor).toBeGreaterThanOrEqual(.9);expect(b.randomFactor).toBeLessThanOrEqual(1.1);expect(b.attackerCasualties).toBeGreaterThanOrEqual(0);expect(b.defenderCasualties).toBeGreaterThanOrEqual(0);expect(getBattleHistory(w.warId)).toHaveLength(1)});
+it("captures a province when attacker wins",()=>{const w=declareWar("aurora","solaris");addProducedUnits("nwc-03",20000);const a=performMovementAction({type:"createArmy",provinceId:"nwc-03"});const b=attackProvince(w.warId,a.id,"nwc-04",2);if(b.winner==="attacker")expect(w.occupiedProvinces).toContain("nwc-04");expect(getWars()[0].attackerScore+getWars()[0].defenderScore).toBeGreaterThanOrEqual(0)});
+});
