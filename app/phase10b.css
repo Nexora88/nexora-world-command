@@ -66,3 +66,24 @@
 .real-world-map .map-controls button,
 .real-world-map .map-modebar button{pointer-events:auto}
 .aaa-top,.aaa-bottom,.command-left,.command-right,.aaa-alert,.command-overlay,.newspaper-overlay{position:relative;z-index:45}
+
+/* World strategic layer — clean country-only overview */
+.world-map-clean{background:#0a171c!important;display:block}
+.world-map-clean .world-map-svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.world-map-clean .world-ocean{fill:#0a171c}
+.world-map-clean .country-world-layer{display:block}
+.world-map-clean .world-country-shape{stroke:#182b31;stroke-width:.16;vector-effect:non-scaling-stroke;fill-opacity:.88;transition:fill-opacity .15s ease,filter .15s ease;cursor:pointer}
+.world-map-clean .world-country-shape:hover{fill-opacity:1;filter:brightness(1.12)}
+.world-map-clean .world-country.player .world-country-shape{stroke:#f0d78a;stroke-width:.32;fill-opacity:1}
+.world-map-clean .world-country-label{fill:#f3f4ed;font-family:Arial,sans-serif;font-weight:700;letter-spacing:.06em;text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:#081116;stroke-width:.42px;pointer-events:none;opacity:.94}
+.world-map-clean .country-world-loading{fill:#0a171c}
+.real-world-map .map-header,.real-world-map .map-compass,.real-world-map .map-modebar,.real-world-map .map-controls,.real-world-map .map-legend,.real-world-map .map-weather,.real-world-map .province-tooltip,.real-world-map .city-markers,.real-world-map .army-markers,.real-world-map .army-orders,.real-world-map .weather-layer,.real-world-map .map-vignette{display:none!important}
+
+.world-map-clean .world-country-shape.no-borders{stroke:none}
+.gazette-panel,.settings-panel{height:100%;min-height:0;overflow:auto;background:linear-gradient(180deg,#101a1d,#0b1215);color:#e8eee9;padding:24px}
+.gazette-head,.settings-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid #2b3c3b;padding-bottom:16px}
+.gazette-head h1,.settings-head h1{margin:5px 0 0;font-size:28px;letter-spacing:.08em}.gazette-head h1 svg{width:25px;vertical-align:middle;margin-right:8px}
+.gazette-head small,.settings-head small,.gazette-lead small{color:#8fa49a;letter-spacing:.14em}.gazette-head span,.settings-head span{font-size:11px;color:#74877f}
+.gazette-rule{height:3px;background:#c2a55d;margin:7px 0 22px}.gazette-lead{max-width:760px;padding:18px 0}.gazette-lead h2{font-size:36px;margin:6px 0;letter-spacing:.04em}.gazette-lead p{color:#9daaa4;line-height:1.6}.gazette-stories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.gazette-stories article{border:1px solid #273737;background:#121d20;padding:18px;min-height:170px}.gazette-stories svg{width:20px;height:20px;color:#c2a55d}.gazette-stories small{display:block;color:#788c83;letter-spacing:.12em;margin-top:18px}.gazette-stories h3{margin:6px 0;font-size:17px}.gazette-stories p{color:#98a59f;line-height:1.45;font-size:13px}.gazette-footer{display:flex;gap:28px;border-top:1px solid #263536;margin-top:20px;padding-top:12px;color:#6e8179;font-size:10px;letter-spacing:.08em}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}.settings-grid article{display:flex;align-items:center;gap:14px;border:1px solid #273737;background:#121d20;padding:16px}.settings-icon{width:34px;height:34px;display:grid;place-items:center;border:1px solid #354b46;color:#9fb3aa}.settings-icon svg{width:17px}.settings-copy{flex:1;display:flex;flex-direction:column;gap:5px}.settings-copy b{font-size:12px;letter-spacing:.08em}.settings-copy span{font-size:11px;color:#82918b;line-height:1.4}.settings-toggle{width:42px;height:22px;border:1px solid #43534f;background:#182326;border-radius:20px;padding:2px;cursor:pointer}.settings-toggle i{display:block;width:16px;height:16px;border-radius:50%;background:#66746f;transition:transform .15s}.settings-toggle.on{border-color:#8d9e72}.settings-toggle.on i{background:#d1b66b;transform:translateX(18px)}.settings-footer{display:flex;align-items:center;gap:18px;margin-top:18px;padding-top:15px;border-top:1px solid #263536;color:#71817b;font-size:11px}.settings-footer button{display:flex;align-items:center;gap:7px;border:1px solid #3a4b48;background:#152023;color:#d8e0db;padding:9px 12px}.settings-footer svg{width:14px}
+@media(max-width:900px){.gazette-stories,.settings-grid{grid-template-columns:1fr}.gazette-lead h2{font-size:27px}}
