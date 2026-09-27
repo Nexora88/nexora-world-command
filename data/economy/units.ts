@@ -1,0 +1,3 @@
+export type UnitType="infantry"|"tank";
+export interface UnitConfig{name:string;manpowerCost:number;steelCost:number;baseProductionMinutes:number;unlockLevel:number;}
+export const UNITS:Record<UnitType,UnitConfig>={infantry:{name:"Infantry",manpowerCost:1000,steelCost:250,baseProductionMinutes:60,unlockLevel:1},tank:{name:"Tank",manpowerCost:2500,steelCost:1500,baseProductionMinutes:120,unlockLevel:3}};

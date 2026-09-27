@@ -13,6 +13,11 @@ export interface Province {
   barracksLevel: number;
   fortificationLevel: number;
   infrastructureLevel: number;
+  buildings: {
+    industrialComplex: number;
+    barracks: number;
+    fortification: number;
+  };
   coordinates: [number, number];
   weather: WeatherType;
 }

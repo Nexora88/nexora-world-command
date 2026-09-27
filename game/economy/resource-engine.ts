@@ -1,0 +1,8 @@
+import type {Province} from "@/lib/types";
+import type {Resources} from "@/data/economy/resources";
+import {ECONOMY_CONFIG} from "./economy-config";
+import {BUILDINGS} from "@/data/economy/buildings";
+const provinceMultiplier=(p:Province)=>{const industrial=BUILDINGS.industrialComplex.levels[p.buildings.industrialComplex]?.productionMultiplier??1;return (1+p.infrastructureLevel*ECONOMY_CONFIG.infrastructureMultiplierPerLevel+p.industryLevel*ECONOMY_CONFIG.industryMultiplierPerLevel)*industrial;};
+export function calculateProvinceProduction(p:Province):Resources{const m=provinceMultiplier(p);const industrial=BUILDINGS.industrialComplex.levels[p.buildings.industrialComplex]?.steelPerHour??0;return{money:Math.round(p.population*ECONOMY_CONFIG.baseMoneyPerPopulationPerHour*m),manpower:Math.round(p.population*ECONOMY_CONFIG.baseManpowerPerPopulationPerHour*m),oil:Math.round(p.industryLevel*ECONOMY_CONFIG.baseOilPerIndustryPerHour*m),steel:Math.round((p.industryLevel*ECONOMY_CONFIG.baseSteelPerIndustryPerHour+industrial)*m)}}
+export function calculatePlayerIncome(provinces:Province[]):Resources{return provinces.reduce((t,p)=>{const x=calculateProvinceProduction(p);return{money:t.money+x.money,manpower:t.manpower+x.manpower,oil:t.oil+x.oil,steel:t.steel+x.steel}},{money:0,manpower:0,oil:0,steel:0})}
+export function applyResourceDelta(r:Resources,d:Partial<Resources>):Resources{return{money:Math.max(0,r.money+(d.money??0)),manpower:Math.max(0,r.manpower+(d.manpower??0)),oil:Math.max(0,r.oil+(d.oil??0)),steel:Math.max(0,r.steel+(d.steel??0))}}

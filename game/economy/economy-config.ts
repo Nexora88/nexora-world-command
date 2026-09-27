@@ -1,0 +1,1 @@
+export const ECONOMY_CONFIG={baseMoneyPerPopulationPerHour:.0024,baseManpowerPerPopulationPerHour:.0017,baseOilPerIndustryPerHour:140,baseSteelPerIndustryPerHour:320,infrastructureMultiplierPerLevel:.08,industryMultiplierPerLevel:.12,minimumResourceValue:0} as const;

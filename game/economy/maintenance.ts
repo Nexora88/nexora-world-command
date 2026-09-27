@@ -1,0 +1,1 @@
+import type {Resources} from "@/data/economy/resources";export const EMPTY_CONSUMPTION:Resources={money:0,manpower:0,oil:0,steel:0};export function calculateMaintenance():Resources{return EMPTY_CONSUMPTION}
