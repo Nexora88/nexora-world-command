@@ -45,18 +45,30 @@ export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,ma
       const owned=!!playerCountryId&&code===safeCountryCode(playerCountryId);
       const terrain=world?.terrain??p.terrain;
       const fill=mapMode==="terrain"?(terrainFill[terrain]??"#536b59"):fillFor(p);
-      return <polygon
-        key={p.id}
-        points={polygonPoints(p.id)}
-        className={`province-territory ${selected?"selected":""} ${hovered?"hovered":""} ${owned?"owned":""}`}
-        fill={fill}
-        fillOpacity={selected?.42:hovered?.31:.22}
-        stroke={country?.color??"#52615d"}
-        onMouseEnter={()=>onHover(p.id)}
-        onMouseLeave={()=>onHover(null)}
-        onClick={()=>onSelect(p.id)}
-        aria-label={`${p.name}, ${world?.country??"Unknown"}`}
-      />;
+      const geometry=world.geometry?.points;
+      const hasGeometry=Array.isArray(geometry)&&geometry.length>=3;
+      return <g key={p.id} className="province-hit-region">
+        {hasGeometry ? <polygon
+          points={polygonPoints(p.id)}
+          className={`province-territory ${selected?"selected":""} ${hovered?"hovered":""} ${owned?"owned":""}`}
+          fill={fill}
+          fillOpacity={selected?.42:hovered?.31:.22}
+          stroke={country?.color??"#52615d"}
+          onMouseEnter={()=>onHover(p.id)}
+          onMouseLeave={()=>onHover(null)}
+          onClick={()=>onSelect(p.id)}
+          aria-label={`${p.name}, ${world?.country??"Unknown"}`}
+        /> : <>
+          <circle
+            cx={world.coordinates.x} cy={world.coordinates.y} r="6.5"
+            className={`province-territory-fallback ${selected?"selected":""} ${hovered?"hovered":""}`}
+            stroke={country?.color??"#52615d"}
+            onMouseEnter={()=>onHover(p.id)} onMouseLeave={()=>onHover(null)} onClick={()=>onSelect(p.id)}
+            aria-label={`${p.name}, ${world?.country??"Unknown"}`}
+          />
+          <circle cx={world.coordinates.x} cy={world.coordinates.y} r="1.15" className="province-center-fallback"/>
+        </>}
+      </g>;
     })}
   </g>;
 }

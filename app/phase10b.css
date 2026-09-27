@@ -1,0 +1,53 @@
+/* Phase 10B — clean SVG map surface and interaction containment */
+.real-world-map{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  isolation:isolate;
+  background:#08100f;
+}
+.map-stage{position:relative;min-width:0;min-height:0;overflow:hidden;z-index:1}
+.real-world-map .real-world-svg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  padding:3%;
+  display:block;
+  pointer-events:none;
+  z-index:1;
+}
+.real-world-map .province-territories,
+.real-world-map .province-territories > polygon,
+.real-world-map .province-territories > g,
+.real-world-map .province-territories > circle{pointer-events:auto}
+.real-world-map .country-territory-underlay,
+.real-world-map .country-borders,
+.real-world-map .city-markers,
+.real-world-map .world-grid-lines,
+.real-world-map .continent-silhouette{pointer-events:none}
+.real-world-map .world-grid-lines,
+.real-world-map .continent-silhouette{display:none}
+.real-world-map .map-vignette,
+.real-world-map .weather-layer{pointer-events:none}
+.real-world-map .map-header,
+.real-world-map .map-compass,
+.real-world-map .map-modebar,
+.real-world-map .map-controls,
+.real-world-map .map-legend,
+.real-world-map .map-weather,
+.real-world-map .province-tooltip{z-index:20}
+.real-world-map .map-modebar,
+.real-world-map .map-controls{pointer-events:auto}
+.real-world-map .army-markers{pointer-events:auto}
+.real-world-map .army-marker{pointer-events:auto;cursor:pointer}
+.real-world-map .province-territory{pointer-events:auto;cursor:pointer}
+.real-world-map .country-territory-fill,
+.real-world-map .country-border{pointer-events:none}
+.real-world-map .province-territory-fallback{fill:none;stroke:#5f806b;stroke-width:.38;stroke-dasharray:1 1;vector-effect:non-scaling-stroke;pointer-events:auto}
+.real-world-map .province-center-fallback{fill:#91dda3;stroke:#dff5e4;stroke-width:.28;vector-effect:non-scaling-stroke;pointer-events:none}
+.real-world-map .province-territory-fallback.hovered{stroke:#b7e7c2;stroke-width:.62}
+.real-world-map .province-territory-fallback.selected{stroke:#8df0a4;stroke-width:.9;filter:url(#provinceGlow)}
+.real-world-map .map-controls button,
+.real-world-map .map-modebar button{pointer-events:auto}
+.aaa-top,.aaa-bottom,.command-left,.command-right,.aaa-alert,.command-overlay,.newspaper-overlay{position:relative;z-index:45}

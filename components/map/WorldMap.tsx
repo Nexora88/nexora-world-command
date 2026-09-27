@@ -5,7 +5,7 @@ import type {Province} from "@/lib/types";
 import type {Army} from "@/game/movement/server/types";
 import {REAL_WORLD_COUNTRIES,REAL_WORLD_PROVINCES} from "@/data/world/real-world-provinces";
 import {audioManager} from "@/lib/audio-manager";
-import {safeCountryCode} from "@/lib/safe-country";
+import {safeCountryCode,safeCountryName} from "@/lib/safe-country";
 import {ProvinceLayer} from "@/components/map/ProvinceLayer";
 
 export type MapMode="political"|"population"|"economy"|"resources"|"military"|"weather"|"terrain"|"frontline";
@@ -55,8 +55,6 @@ export function WorldMap({provinces,armies,selectedId,selectedArmyId,onSelect,on
     <svg viewBox="0 0 100 100" className="province-map real-world-svg" style={{transform:`scale(${zoom})`}}>
       <defs><filter id="provinceGlow"><feGaussianBlur stdDeviation=".8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
       <g className="country-territory-underlay">{countryShapes.map(({country,points})=><polygon key={country.id} points={points.map(p=>`${p.x},${p.y}`).join(" ")} fill={country.color} className="country-territory-fill"/>)}</g>
-      <g className="world-grid-lines" aria-hidden="true">{Array.from({length:10},(_,i)=><line key={`v${i}`} x1={i*10} y1="0" x2={i*10} y2="100"/>)}{Array.from({length:10},(_,i)=><line key={`h${i}`} x1="0" y1={i*10} x2="100" y2={i*10}/>)}</g>
-      <g className="continent-silhouette" aria-hidden="true"><path d="M10 10 Q20 3 32 9 L38 17 34 28 28 34 29 44 24 51 31 59 38 66 47 61 55 54 66 48 74 43 82 35 94 31 98 44 90 54 81 59 77 70 68 82 55 88 45 83 34 88 22 82 16 70 8 60 4 46 8 32Z"/></g>
       <ProvinceLayer provinces={provinces} selectedId={selectedId} hoveredId={hovered} playerCountryId={playerCountryId} mapMode={mapMode} maxPopulation={maxPop} maxIndustry={maxInd} onSelect={id=>{audioManager.provinceSelected();onSelect(id)}} onHover={setHovered} fillFor={fillFor}/>
       <g className="country-borders">{countryShapes.map(({country,points})=><polygon key={`border-${country.id}`} points={points.map(p=>`${p.x},${p.y}`).join(" ")} fill="none" stroke={country.color} className="country-border"/>)}</g>
 
@@ -68,7 +66,7 @@ export function WorldMap({provinces,armies,selectedId,selectedArmyId,onSelect,on
           return <g key={p.id} transform={`translate(${rw.coordinates.x},${rw.coordinates.y})`} className={`city-marker ${selected?"selected":""} ${hover?"hovered":""}`} pointerEvents="none">
             <circle r={capital?1.45:1.05} className={capital?"capital-dot":"city-dot"}/>
             {capital&&<circle r="2.5" className="capital-ring"/>}
-            {(selected||hover)&&<text x="2.3" y=".8" className="city-label">{rw.name.toUpperCase()}</text>}
+            {(selected||hover)&&<text x="2.3" y=".8" className="city-label">{safeCountryName(rw.name)}</text>}
           </g>;
         })}
       </g>
@@ -81,10 +79,10 @@ export function WorldMap({provinces,armies,selectedId,selectedArmyId,onSelect,on
         })}
       </g>
     </svg>
-    {hoveredProvince&&hoveredWorld&&<div className="province-tooltip"><strong>{hoveredWorld.name.toUpperCase()}</strong><span>{hoveredWorld.country.toUpperCase()}</span><i>POPULATION <b>{hoveredProvince.population.toLocaleString()}</b></i><i>TERRAIN <b>{hoveredProvince.terrain.toUpperCase()}</b></i><i>OWNER <b>{safeCountryCode(hoveredProvince.ownerId)||"UNKNOWN"}</b></i></div>}
+    {hoveredProvince&&hoveredWorld&&<div className="province-tooltip"><strong>{safeCountryName(hoveredWorld.name)}</strong><span>{safeCountryName(hoveredWorld.country)}</span><i>POPULATION <b>{hoveredProvince.population.toLocaleString()}</b></i><i>TERRAIN <b>{safeCountryName(hoveredProvince.terrain)}</b></i><i>OWNER <b>{safeCountryCode(hoveredProvince.ownerId)||"UNKNOWN"}</b></i></div>}
     <div className="map-modebar">{(Object.keys(modeLabel) as MapMode[]).map(m=><button key={m} className={mapMode===m?"active":""} onClick={()=>onMapModeChange(m)}>{modeLabel[m]}</button>)}</div>
     <div className="map-controls"><button onClick={()=>setZoom(z=>Math.min(1.7,z+.15))}>＋</button><button onClick={()=>setZoom(z=>Math.max(1,z-.15))}>−</button><button onClick={()=>setZoom(1)}>⌖</button></div>
     <div className="map-legend"><span><i className="legend-infantry"/>INF</span><span><i className="legend-armored"/>ARM</span><span><i className="legend-capital">★</i>CAPITAL</span><span>154 PROVINCE TERRITORIES</span></div>
-    <div className="map-weather">WEATHER // {(selected?.weather??"clear").toUpperCase()}</div>
+    <div className="map-weather">WEATHER // {safeCountryName(selected?.weather??"clear")}</div>
   </div>;
 }
