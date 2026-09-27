@@ -1,0 +1,17 @@
+export type RelationStatus="neutral"|"friendly"|"hostile"|"war";
+export interface Relation {from:string;to:string;score:number;status:RelationStatus;trade:boolean;nonAggression:boolean;alliance:boolean;updatedAt:number}
+export interface Message {id:string;category:"system"|"diplomacy"|"military"|"economy"|"research";title:string;body:string;read:boolean;createdAt:number}
+export interface Research {id:string;branch:string;name:string;status:"available"|"researching"|"completed";progress:number;startedAt?:number;finishesAt?:number}
+const key=(a:string,b:string)=>a<b?`${a}:${b}`:`${b}:${a}`;
+const relations=new Map<string,Relation>();
+const messages:Message[]=[{id:"welcome",category:"system",title:"COMMAND NETWORK ONLINE",body:"Secure command channels are operational. New events will appear here.",read:false,createdAt:Date.now()}];
+const names=["Improved Rifles","Light Tanks","Industrial Engineering","Logistics Doctrine","Recon Systems","Advanced Administration"];
+const branches=["INFANTRY","ARMOR","INDUSTRY","LOGISTICS","INTELLIGENCE","GOVERNANCE"];
+const research:Research[]=names.map((name,i)=>({id:`tech-${i+1}`,branch:branches[i],name,status:"available",progress:0}));
+export function getRelations(){return [...relations.values()]}
+export function getMessages(){return [...messages].sort((a,b)=>b.createdAt-a.createdAt)}
+export function getResearch(){return [...research]}
+export function setRead(id:string){const m=messages.find(x=>x.id===id);if(!m)throw new Error("Message not found.");m.read=true;return m}
+export function changeRelation(from:string,to:string,action:"improve"|"trade"|"nap"|"alliance"|"embargo"){if(from===to)throw new Error("A nation cannot negotiate with itself.");const k=key(from,to);const r=relations.get(k)??{from,to,score:0,status:"neutral",trade:false,nonAggression:false,alliance:false,updatedAt:Date.now()};if(action==="improve")r.score=Math.min(100,r.score+10);if(action==="trade")r.trade=true;if(action==="nap")r.nonAggression=true;if(action==="alliance"){if(r.score<50)throw new Error("Alliance requires relation score 50.");r.alliance=true}if(action==="embargo"){r.trade=false;r.status="hostile";r.score=Math.max(-100,r.score-15)}r.status=r.score>=50?"friendly":r.score<=-50?"hostile":"neutral";r.updatedAt=Date.now();relations.set(k,r);messages.unshift({id:`dip-${Date.now()}`,category:"diplomacy",title:"DIPLOMATIC UPDATE",body:`${action.toUpperCase()} action recorded for ${from} / ${to}.`,read:false,createdAt:Date.now()});return r}
+export function startResearch(id:string){const t=research.find(x=>x.id===id);if(!t)throw new Error("Technology not found.");if(t.status==="completed")throw new Error("Technology already completed.");if(research.some(x=>x.status==="researching"))throw new Error("Only one research project may run at once.");t.status="researching";t.progress=0;t.startedAt=Date.now();t.finishesAt=Date.now()+120000;messages.unshift({id:`research-${Date.now()}`,category:"research",title:"RESEARCH STARTED",body:`${t.name} is now under research.`,read:false,createdAt:Date.now()});return t}
+export function tickResearch(){const t=research.find(x=>x.status==="researching");if(t?.finishesAt&&Date.now()>=t.finishesAt){t.status="completed";t.progress=100;messages.unshift({id:`complete-${Date.now()}`,category:"research",title:"RESEARCH COMPLETED",body:`${t.name} has been completed.`,read:false,createdAt:Date.now()})}else if(t?.startedAt&&t.finishesAt)t.progress=Math.min(99,Math.round((Date.now()-t.startedAt)/(t.finishesAt-t.startedAt)*100));return research}
