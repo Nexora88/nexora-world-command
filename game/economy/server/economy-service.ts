@@ -165,12 +165,9 @@ export function performEconomyAction(action: EconomyAction, now = Date.now()): E
   }
   if (action.type === "startProduction") {
     const unit = action.unitType;
-    if (unit !== "infantry") {
-      throw new EconomyValidationError("This phase only exposes infantry production.");
-    }
-
     const barracksLevel = state.provinceBuildings[province.id]?.barracks ?? province.buildings.barracks;
-    const unitConfig = unit === "infantry" ? 1 : 3;
+    const requiredLevel = unit === "tank" ? 3 : 1;
+    const unitConfig = requiredLevel;
     if (barracksLevel < unitConfig) {
       throw new EconomyValidationError("Required barracks level is not available.");
     }
