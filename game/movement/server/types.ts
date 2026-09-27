@@ -10,6 +10,9 @@ export interface Army {
   strength: number;
   morale: number;
   organization: number;
+  supply: number;
+  fuel: number;
+  maintenancePerHour: number;
   status: ArmyStatus;
   createdAt: number;
   updatedAt: number;

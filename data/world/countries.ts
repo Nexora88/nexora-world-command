@@ -1,7 +1,20 @@
-export interface Nation { id:string; name:string; capitalProvinceId:string; population:number; governmentType:string; stability:number; treasury:number; nationalPower:number; color:string; }
-export const nations:Nation[]=[
-{id:"TR",name:"Turkey",capitalProvinceId:"TR_ANKARA",population:85200000,governmentType:"Republic",stability:78,treasury:125000,nationalPower:62,color:"#45c878"},
-{id:"DE",name:"Germany",capitalProvinceId:"DE_BERLIN",population:84000000,governmentType:"Federal Republic",stability:80,treasury:140000,nationalPower:72,color:"#d5a84b"},
-{id:"GB",name:"United Kingdom",capitalProvinceId:"GB_LONDON",population:69000000,governmentType:"Constitutional Monarchy",stability:76,treasury:135000,nationalPower:70,color:"#6f9fe8"},
-{id:"RU",name:"Russia",capitalProvinceId:"RU_MOSCOW",population:144000000,governmentType:"Federal Republic",stability:68,treasury:150000,nationalPower:78,color:"#c96b6b"}
-];
+import {REAL_WORLD_COUNTRIES,REAL_WORLD_PROVINCES} from "./real-world-provinces";
+
+export interface StartingResources { money:number; food:number; steel:number; oil:number; rareMaterials:number; }
+export interface Nation {
+  id:string; name:string; displayName:string; countryCode:string; flag:string;
+  capitalProvinceId:string; population:number; governmentType:string; stability:number;
+  treasury:number; nationalPower:number; startingTechnologyLevel:number; startingResources:StartingResources;
+  color:string;
+}
+const populationByCountry=(id:string)=>Object.values(REAL_WORLD_PROVINCES).filter(p=>p.countryCode===id).reduce((s,p)=>s+(p.population??0),0);
+const government=(id:string)=>id==="GB"?"Constitutional Monarchy":id==="DE"?"Federal Republic":id==="FR"?"Republic":"Republic";
+const nation=(c:(typeof REAL_WORLD_COUNTRIES)[number],i:number):Nation=>({
+  id:c.id,name:c.name,displayName:c.displayName,countryCode:c.countryCode,flag:c.flag,
+  capitalProvinceId:c.capitalProvinceId,population:populationByCountry(c.id),governmentType:government(c.id),
+  stability:68+(i%5)*3,treasury:c.id==="TR"?125000:c.id==="DE"?140000:c.id==="GB"?135000:c.id==="RU"?150000:100000+i*2500,nationalPower:45+(i%9)*4,startingTechnologyLevel:1,
+  startingResources:{money:100000+i*5000,food:50000+i*3000,steel:30000+i*2500,oil:20000+i*1800,rareMaterials:10000+i*700},
+  color:c.color
+});
+export const nations:Nation[]=REAL_WORLD_COUNTRIES.map(nation);
+export const getNationFlag=(id:string)=>nations.find(n=>n.id===id)?.flag??"🏳️";

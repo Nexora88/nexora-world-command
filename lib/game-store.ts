@@ -7,7 +7,7 @@ import type { Province } from "@/lib/types";
 import type { EconomySnapshot } from "@/game/economy/server/types";
 import type { Army } from "@/game/movement/server/types";
 import type { War,BattleResult } from "@/game/war/server/types";
-export type ProvinceBuildingLevels={industrialComplex:number;barracks:number;fortification:number};
+export type ProvinceBuildingLevels={industrialComplex:number;barracks:number;fortification:number;airBase?:number;navalBase?:number;infrastructure?:number;resourceCenter?:number;[key:string]:number|undefined};
 export interface QueueItem{id:string;provinceId:string;type:BuildingType|UnitType;kind:"construction"|"production";startedAt:number;finishesAt:number;level?:number}
 interface GameState{
  selectedProvinceId:string|null;resources:Resources;income:Resources;provinceBuildings:Record<string,ProvinceBuildingLevels>;

@@ -1,21 +1,16 @@
-export type BuildingType = "industrialComplex" | "barracks" | "fortification";
-export interface BuildingLevelConfig { level:number; productionMultiplier?:number; steelPerHour?:number; infantryProductionMinutes?:number; defenseBonus?:number; upgradeCost:{money:number;steel:number}; constructionMinutes:number; }
-export const BUILDING_MAX_LEVEL=3;
-export const BUILDINGS:Record<BuildingType,{name:string;levels:BuildingLevelConfig[]}> = {
- industrialComplex:{name:"Industrial Complex",levels:[
-  {level:0,productionMultiplier:1,upgradeCost:{money:500,steel:200},constructionMinutes:5},
-  {level:1,productionMultiplier:1.2,steelPerHour:100,upgradeCost:{money:750,steel:300},constructionMinutes:5},
-  {level:2,productionMultiplier:1.5,steelPerHour:150,upgradeCost:{money:1000,steel:450},constructionMinutes:8},
-  {level:3,productionMultiplier:1.9,steelPerHour:220,upgradeCost:{money:0,steel:0},constructionMinutes:0}]},
- barracks:{name:"Barracks",levels:[
-  {level:0,infantryProductionMinutes:70,upgradeCost:{money:400,steel:150},constructionMinutes:4},
-  {level:1,infantryProductionMinutes:60,upgradeCost:{money:600,steel:220},constructionMinutes:5},
-  {level:2,infantryProductionMinutes:50,upgradeCost:{money:850,steel:300},constructionMinutes:6},
-  {level:3,infantryProductionMinutes:40,upgradeCost:{money:0,steel:0},constructionMinutes:0}]},
- fortification:{name:"Fortification",levels:[
-  {level:0,defenseBonus:0,upgradeCost:{money:350,steel:180},constructionMinutes:4},
-  {level:1,defenseBonus:.1,upgradeCost:{money:500,steel:260},constructionMinutes:5},
-  {level:2,defenseBonus:.2,upgradeCost:{money:700,steel:360},constructionMinutes:6},
-  {level:3,defenseBonus:.3,upgradeCost:{money:0,steel:0},constructionMinutes:0}]}
+export type BuildingType="industrialComplex"|"barracks"|"fortification"|"airBase"|"navalBase"|"infrastructure"|"resourceCenter";
+export interface BuildingLevelConfig{level:number;productionMultiplier?:number;steelPerHour?:number;infantryProductionMinutes?:number;defenseBonus?:number;upgradeCost:{money:number;steel:number};constructionMinutes:number}
+export const BUILDING_MAX_LEVEL=5;
+export const BUILDINGS:Record<BuildingType,{name:string;levels:BuildingLevelConfig[]}>={
+industrialComplex:{name:"Industrial Complex",levels:[
+{level:0,productionMultiplier:1,upgradeCost:{money:500,steel:200},constructionMinutes:5},{level:1,productionMultiplier:1.2,steelPerHour:100,upgradeCost:{money:750,steel:300},constructionMinutes:5},{level:2,productionMultiplier:1.5,steelPerHour:150,upgradeCost:{money:1000,steel:450},constructionMinutes:8},{level:3,productionMultiplier:1.9,steelPerHour:220,upgradeCost:{money:1400,steel:600},constructionMinutes:11},{level:4,productionMultiplier:2.2,steelPerHour:300,upgradeCost:{money:1900,steel:800},constructionMinutes:14},{level:5,productionMultiplier:2.5,steelPerHour:400,upgradeCost:{money:0,steel:0},constructionMinutes:0}]},
+barracks:{name:"Barracks",levels:[
+{level:0,infantryProductionMinutes:70,upgradeCost:{money:400,steel:150},constructionMinutes:4},{level:1,infantryProductionMinutes:60,upgradeCost:{money:600,steel:220},constructionMinutes:5},{level:2,infantryProductionMinutes:50,upgradeCost:{money:850,steel:300},constructionMinutes:6},{level:3,infantryProductionMinutes:40,upgradeCost:{money:1100,steel:420},constructionMinutes:8},{level:4,infantryProductionMinutes:34,upgradeCost:{money:1500,steel:600},constructionMinutes:10},{level:5,infantryProductionMinutes:30,upgradeCost:{money:0,steel:0},constructionMinutes:0}]},
+fortification:{name:"Fortification",levels:[
+{level:0,defenseBonus:0,upgradeCost:{money:350,steel:180},constructionMinutes:4},{level:1,defenseBonus:.1,upgradeCost:{money:500,steel:260},constructionMinutes:5},{level:2,defenseBonus:.2,upgradeCost:{money:700,steel:360},constructionMinutes:6},{level:3,defenseBonus:.3,upgradeCost:{money:950,steel:500},constructionMinutes:8},{level:4,defenseBonus:.4,upgradeCost:{money:1300,steel:650},constructionMinutes:10},{level:5,defenseBonus:.5,upgradeCost:{money:0,steel:0},constructionMinutes:0}]},
+airBase:{name:"Air Base",levels:[0,1,2,3,4,5].map(level=>({level,upgradeCost:{money:level<5?800+level*450:0,steel:level<5?300+level*170:0},constructionMinutes:level<5?6+level*2:0}))},
+navalBase:{name:"Naval Base",levels:[0,1,2,3,4,5].map(level=>({level,upgradeCost:{money:level<5?1000+level*500:0,steel:level<5?400+level*180:0},constructionMinutes:level<5?8+level*2:0}))},
+infrastructure:{name:"Infrastructure",levels:[0,1,2,3,4,5].map(level=>({level,productionMultiplier:1+level*.05,upgradeCost:{money:level<5?500+level*350:0,steel:level<5?250+level*150:0},constructionMinutes:level<5?5+level*2:0}))},
+resourceCenter:{name:"Resource Center",levels:[0,1,2,3,4,5].map(level=>({level,productionMultiplier:1+level*.12,upgradeCost:{money:level<5?700+level*400:0,steel:level<5?300+level*160:0},constructionMinutes:level<5?6+level*2:0}))}
 };
 export const getBuildingLevel=(type:BuildingType,level:number)=>BUILDINGS[type].levels[Math.min(Math.max(level,0),BUILDING_MAX_LEVEL)];

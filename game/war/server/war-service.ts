@@ -18,11 +18,11 @@ const factor = (seed?:number) => {
   const v = Math.abs(Math.sin(seed ?? now()) * 10000) % 1;
   return WAR_CONFIG.randomFactorMin + v * (WAR_CONFIG.randomFactorMax - WAR_CONFIG.randomFactorMin);
 };
-function power(id:string) {
+function power(id:string,terrainModifier=1,weatherModifier=1) {
   const a = getArmy(id);
   if (!a || a.status === "destroyed") throw new WarValidationError("Army is unavailable.");
-  return a.strength * (1 + a.morale / 100 * WAR_CONFIG.armyMoraleMultiplier)
-    * (1 + a.organization / 100 * WAR_CONFIG.armyOrganizationMultiplier);
+  const supplyModifier=.55+.45*(a.supply/100),fuelModifier=.65+.35*(a.fuel/100);
+  return a.strength*(1+a.morale/100*WAR_CONFIG.armyMoraleMultiplier)*(1+a.organization/100*WAR_CONFIG.armyOrganizationMultiplier)*supplyModifier*fuelModifier*terrainModifier*weatherModifier;
 }
 function losses(id:string,c:number) {
   const a = getArmy(id);
@@ -35,6 +35,8 @@ function losses(id:string,c:number) {
   a.strength = Math.max(0,a.infantry+a.tanks*3);
   a.morale = Math.max(0,a.morale-WAR_CONFIG.moraleLossPerBattle);
   a.organization = Math.max(0,a.organization-WAR_CONFIG.organizationLossPerBattle);
+  a.supply = Math.max(0,a.supply-8);
+  a.fuel = Math.max(0,a.fuel-(a.tanks>0?12:4));
   if (a.strength === 0) a.status = "destroyed";
   a.updatedAt = now();
   return a;
@@ -60,10 +62,12 @@ export function attackProvince(warId:string,armyId:string,provinceId:string,rand
   if(!origin||!origin.neighbors.includes(target.id)) throw new WarValidationError("Target is not adjacent.");
   const defender=getArmies().filter(a=>a.countryId===w.defender&&a.provinceId===target.id&&a.status!=="destroyed")
     .sort((a,b)=>b.strength-a.strength)[0];
-  const ap=power(army.id)*weatherCombatModifier(origin.weather);
-  const dp=defender?power(defender.id):WAR_CONFIG.baseAttackStrength;
-  const fort=Math.max(0,Math.min(3,target.fortificationLevel)) as 0|1|2|3;
-  const defense=dp*(1+FORTIFICATION_CONFIG[fort])*weatherCombatModifier(target.weather);
+  const terrainAttack=origin.terrain==="mountain"?.75:origin.terrain==="urban"?.9:origin.terrain==="forest"?.85:1;
+  const terrainDefense=target.terrain==="mountain"?1.3:target.terrain==="urban"?1.2:target.terrain==="forest"?1.12:target.terrain==="hills"?1.08:1;
+  const ap=power(army.id,terrainAttack,weatherCombatModifier(origin.weather));
+  const dp=defender?power(defender.id,terrainDefense,weatherCombatModifier(target.weather)):WAR_CONFIG.baseAttackStrength;
+  const fort=Math.max(0,Math.min(5,target.fortificationLevel)) as 0|1|2|3|4|5;
+  const defense=dp*(1+Math.min(.5,fort*.06))*weatherCombatModifier(target.weather);
   const rf=factor(randomSeed);
   const winner=ap*rf>=defense?"attacker":"defender";
   const ac=Math.max(0,Math.round((winner==="attacker"?defense/Math.max(1,ap):1.15)

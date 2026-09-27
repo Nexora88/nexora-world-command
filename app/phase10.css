@@ -1,0 +1,13 @@
+.country-shape{opacity:.08;stroke-width:.22;stroke-dasharray:1 .8;vector-effect:non-scaling-stroke;pointer-events:none}
+.map-stage .continent-silhouette{fill:#0c1516;opacity:.9}
+.aaa-top .commander-identity{display:flex;align-items:center;gap:9px;min-width:190px}
+.aaa-top .commander-identity .flag{width:38px;height:30px;display:grid;place-items:center;background:#10191b;border:1px solid #33443f;font-size:22px;line-height:1}
+.level-strip{position:relative;height:10px;margin-top:5px;width:145px;background:#14201c;border:1px solid #263932;overflow:hidden}
+.level-strip i{display:block;height:100%;background:#4f9d63;opacity:.9}
+.level-strip b,.level-strip em{position:absolute;top:-1px;font:6px/10px monospace;letter-spacing:.4px}
+.level-strip b{left:4px;color:#d8e7dc}
+.level-strip em{right:4px;color:#8ca194;font-style:normal}
+.aaa-top .commander-identity>div:last-child>span{display:block;color:#71817a;font:7px monospace;letter-spacing:.8px}
+.command-left .portrait{position:relative}
+.command-left .portrait:after{content:"LVL 4";position:absolute;right:0;top:0;font:7px monospace;color:#86ca93;border:1px solid #31543a;padding:3px 5px}
+@media(max-width:1100px){.level-strip{width:110px}.aaa-top .commander-identity{min-width:160px}}

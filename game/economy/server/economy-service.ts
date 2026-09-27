@@ -7,7 +7,7 @@ import { applyResourceDelta } from "../resource-engine";
 import type { ProvinceBuildingLevels, QueueItem } from "@/lib/game-store";
 import type { EconomyAction, EconomySnapshot, EconomyState, ResourceTransaction } from "./types";
 import { DEMO_COUNTRY_ID, DEMO_PLAYER_ID, getEconomyState } from "./memory-store";
-import { addProducedUnits } from "@/game/movement/server/movement-service";
+import { addProducedUnits, getArmies, getArmy } from "@/game/movement/server/movement-service";
 
 export class EconomyValidationError extends Error {
   constructor(message: string) {
@@ -48,8 +48,13 @@ function tick(state: EconomyState, now: number): void {
     manpower: Math.floor(income.manpower * hours),
     oil: Math.floor(income.oil * hours),
     steel: Math.floor(income.steel * hours),
+    food: Math.floor((income.food??0) * hours),
+    rareMaterials: Math.floor((income.rareMaterials??0) * hours),
   };
+  const upkeep = getArmies().filter(a=>a.countryId===DEMO_COUNTRY_ID&&a.status!=="destroyed").reduce((sum,a)=>sum+a.maintenancePerHour,0);
+  delta.money -= Math.floor(upkeep * hours);
   state.resources = applyResourceDelta(state.resources, delta);
+  for(const snapshotArmy of getArmies().filter(a=>a.countryId===DEMO_COUNTRY_ID&&a.status!=="destroyed")){const army=getArmy(snapshotArmy.id);if(army){army.supply=Math.max(0,army.supply-hours*2);army.fuel=Math.max(0,army.fuel-hours*(army.tanks*.5+1));}}
   (Object.keys(delta) as Array<keyof typeof delta>).forEach((resource) => {
     transaction(state, resource, delta[resource], "ECONOMY_TICK");
   });
@@ -123,7 +128,7 @@ export function performEconomyAction(action: EconomyAction, now = Date.now()): E
     const type = action.buildingType;
     if (!BUILDINGS[type]) throw new EconomyValidationError("Invalid building type.");
 
-    const currentLevel = state.provinceBuildings[province.id]?.[type] ?? province.buildings[type];
+    const currentLevel = state.provinceBuildings[province.id]?.[type] ?? ((province.buildings as Record<string,number>)[type] ?? 0);
     if (!Number.isInteger(currentLevel) || currentLevel < 0 || currentLevel > BUILDING_MAX_LEVEL) {
       throw new EconomyValidationError("Invalid building level.");
     }
