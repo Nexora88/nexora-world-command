@@ -13,13 +13,16 @@ export function GameScreen(){
   const selectedId=useGameStore(s=>s.selectedProvinceId);
   const selectProvince=useGameStore(s=>s.selectProvince);
   const resources=useGameStore(s=>s.resources);
+  const income=useGameStore(s=>s.income);
   const provinceBuildings=useGameStore(s=>s.provinceBuildings);
   const productionQueue=useGameStore(s=>s.productionQueue);
   const constructionQueue=useGameStore(s=>s.constructionQueue);
+  const loadServerState=useGameStore(s=>s.loadServerState);
   const syncQueues=useGameStore(s=>s.syncQueues);
+  const error=useGameStore(s=>s.error);
   const startConstruction=useGameStore(s=>s.startConstruction);
   const startProduction=useGameStore(s=>s.startProduction);
-  useEffect(()=>{const id=setInterval(()=>syncQueues(Date.now()),1000);return()=>clearInterval(id)},[syncQueues]);
+  useEffect(()=>{void loadServerState();const id=setInterval(()=>void syncQueues(),1000);return()=>clearInterval(id)},[loadServerState,syncQueues]);
   const selectedBase=provinces.find(p=>p.id===selectedId)??null;
   const selected=selectedBase?{...selectedBase,buildings:provinceBuildings[selectedBase.id]??selectedBase.buildings}:null;
   return <main className="command-shell">
@@ -31,7 +34,7 @@ export function GameScreen(){
       <div className="side-card"><small>WORLD STATUS</small><strong>STABLE</strong><span>8 provinces · 3 powers</span></div></aside>
       <div className="map-wrap"><WorldMap provinces={provinces} onSelect={selectProvince}/><div className="map-overlay"><span>SECTOR: NORTH CONTINENT</span><span>LIVE WORLD · TICK 0042</span></div><div className="minimap"><div className="mini-grid"/><b>TACTICAL MAP</b></div></div>
       <ProvincePanel province={selected} onUpgrade={t=>selected&&startConstruction(selected,t)} onInfantry={()=>selected&&startProduction(selected,"infantry")}/></section>
-    <section className="lower-panels"><EconomyPanel resources={resources} provinces={provinces}/><ConstructionPanel province={selected??provinces[0]} queue={constructionQueue} onUpgrade={t=>selected&&startConstruction(selected,t)}/><ProductionPanel queue={productionQueue}/></section>
-    <footer className="newsbar"><strong>WORLD NEWS</strong><span>Economic simulation active.</span><span>Construction and infantry production use client timers; server tick integration is next.</span></footer>
+    <section className="lower-panels"><EconomyPanel resources={resources} income={income}/><ConstructionPanel province={selected??provinces[0]} queue={constructionQueue} onUpgrade={t=>selected&&startConstruction(selected,t)}/><ProductionPanel queue={productionQueue}/></section>
+    <footer className="newsbar"><strong>WORLD NEWS</strong><span>Economic simulation active.</span><span>Server-authoritative economy online.</span>{error&&<span role="alert">{error}</span>}</footer>
   </main>;
 }

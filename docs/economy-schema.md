@@ -1,12 +1,30 @@
-# Supabase economy schema plan
+# Server-authoritative economy schema
 
-The browser prototype keeps UI state local, but authoritative economy state should move server-side when Supabase is connected.
+The Phase 3 economy now has a server-owned action boundary. The current development adapter is in-memory so local tests and development do not require Supabase credentials.
 
-- player_resources: player_id, money, manpower, oil, steel, updated_at
-- province_economy: province_id, money_production, manpower_production, oil_production, steel_production, updated_at
-- buildings: province_id, building_type, level, updated_at
-- construction_queue: id, province_id, building_type, target_level, started_at, finishes_at, status
-- production_queue: id, province_id, unit_type, quantity, started_at, finishes_at, status
-- resource_transactions: id, player_id, resource_type, amount, reason, created_at
+## Application mapping
 
-No credentials are committed.
+- `player_resources` -> `EconomyState.resources`
+- `province_economy` -> calculated province income from `resource-engine.ts`
+- `buildings` -> `EconomyState.provinceBuildings`
+- `construction_queue` -> `EconomyState.constructionQueue`
+- `production_queue` -> `EconomyState.productionQueue`
+- `resource_transactions` -> server-side resource mutation audit trail
+
+The SQL source of truth is `supabase/economy-schema.sql`.
+
+## Server boundary
+
+Browser code can request actions but cannot submit resource balances, queue timestamps, completion timestamps, or building levels for mutation. The server derives costs and times from the existing Phase 3 configuration.
+
+Construction and production completion are resolved against server time. Client countdowns are display-only.
+
+## Supabase status
+
+No credentials are committed and no Supabase dependency is required for local development. The schema and an atomic resource-deduction SQL function are prepared for the database-backed adapter.
+
+When Supabase is connected, resource deductions should use the row-locking transaction function rather than client-side arithmetic.
+
+## Environment
+
+`.env.example` contains placeholders for the Supabase URL, anon key and server-only service role key.
