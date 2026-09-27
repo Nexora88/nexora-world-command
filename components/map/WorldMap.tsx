@@ -10,6 +10,8 @@ import {ProvinceLayer} from "@/components/map/ProvinceLayer";
 
 export type MapMode="political"|"population"|"economy"|"resources"|"military"|"weather"|"terrain"|"frontline";
 const modeLabel:Record<MapMode,string>={political:"SİYASİ",population:"NÜFUS",economy:"EKONOMİ",resources:"KAYNAKLAR",military:"ASKERİ",weather:"HAVA",terrain:"ARAZİ",frontline:"CEPHE"};
+const weatherLabel:Record<string,string>={clear:"AÇIK",rain:"YAĞMUR",snow:"KAR",blizzard:"TIPI",storm:"FIRTINA",fog:"SİS",heatwave:"SICAK HAVA"};
+const terrainLabel:Record<string,string>={plains:"OVA",forest:"ORMAN",mountain:"DAĞ",hills:"TEPE",urban:"ŞEHİR",coast:"KIYI",desert:"ÇÖL",tundra:"TUNDRA"};
 
 function UnitGlyph({army,large=false}:{army:Army;large?:boolean}){
   const armored=army.tanks>0;
@@ -67,10 +69,10 @@ export function WorldMap({provinces,armies,selectedId,selectedArmyId,onSelect,on
         })}
       </g>
     </svg>
-    {hoveredProvince&&hoveredWorld&&<div className="province-tooltip"><strong>{safeCountryName(hoveredWorld.name)}</strong><span>{safeCountryName(hoveredWorld.country)}</span><i>NÜFUS <b>{hoveredProvince.population.toLocaleString()}</b></i><i>ARAZİ <b>{safeCountryName(hoveredProvince.terrain)}</b></i><i>SAHİP <b>{safeCountryCode(hoveredProvince.ownerId)||"BİLİNMİYOR"}</b></i></div>}
+    {hoveredProvince&&hoveredWorld&&<div className="province-tooltip"><strong>{safeCountryName(hoveredWorld.name)}</strong><span>{safeCountryName(hoveredWorld.country)}</span><i>NÜFUS <b>{hoveredProvince.population.toLocaleString()}</b></i><i>ARAZİ <b>{terrainLabel[hoveredProvince.terrain]??safeCountryName(hoveredProvince.terrain)}</b></i><i>SAHİP <b>{safeCountryCode(hoveredProvince.ownerId)||"BİLİNMİYOR"}</b></i></div>}
     <div className="map-modebar">{(Object.keys(modeLabel) as MapMode[]).map(m=><button key={m} className={mapMode===m?"active":""} onClick={()=>onMapModeChange(m)}>{modeLabel[m]}</button>)}</div>
     <div className="map-controls"><button onClick={()=>setZoom(z=>Math.min(1.7,z+.15))}>＋</button><button onClick={()=>setZoom(z=>Math.max(1,z-.15))}>−</button><button onClick={()=>setZoom(1)}>⌖</button></div>
     <div className="map-legend"><span><i className="legend-infantry"/>PİY</span><span><i className="legend-armored"/>ZIRH</span><span><i className="legend-capital">★</i>BAŞKENT</span><span>{provinces.length} BÖLGE</span></div>
-    <div className="map-weather">HAVA // {safeCountryName(selected?.weather??"clear")}</div>
+    <div className="map-weather">HAVA // {weatherLabel[selected?.weather??"clear"]??"AÇIK"}</div>
   </div>;
 }

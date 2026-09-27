@@ -12,10 +12,11 @@
   inset:0;
   width:100%;
   height:100%;
-  padding:3%;
+  padding:1.5%;
   display:block;
   pointer-events:none;
   z-index:1;
+  transform-origin:50% 52%;
 }
 .real-world-map .province-territories,
 .real-world-map .province-territories > polygon,
@@ -40,7 +41,17 @@
 .real-world-map .map-modebar,
 .real-world-map .map-controls{pointer-events:auto}
 .real-world-map .map-modebar{left:18px;top:42px;transform:none;max-width:calc(100% - 90px);overflow-x:auto;justify-content:flex-start;box-shadow:0 8px 24px rgba(0,0,0,.28)}
-.real-world-map .map-modebar button{flex:0 0 auto;min-width:58px}
+.real-world-map .map-modebar button{flex:0 0 auto;min-width:58px;height:29px}
+.real-world-map .map-modebar::-webkit-scrollbar{height:0}
+.real-world-map .map-header{background:linear-gradient(90deg,rgba(5,12,10,.72),transparent 72%);padding:6px 8px;left:10px;right:10px;top:8px}
+.real-world-map .map-header span{white-space:nowrap}
+.real-world-map .map-compass{right:14px;top:86px;background:#08100ed9;border:1px solid #273c32;padding:5px 7px}
+.real-world-map .city-label{paint-order:stroke;stroke:#06100c;stroke-width:.5px}
+.real-world-map .capital-ring{animation:capitalPulse 2.8s ease-in-out infinite}
+.real-world-map .army-marker{filter:drop-shadow(0 2px 3px rgba(0,0,0,.65))}
+.real-world-map .army-marker.selected .real-unit{transform:scale(1.12);transform-origin:center}
+.real-world-map .map-legend{max-width:calc(100% - 36px);overflow:hidden;white-space:nowrap}
+@keyframes capitalPulse{50%{opacity:.35;transform:scale(1.12)}}
 .real-world-map .army-markers{pointer-events:auto}
 .real-world-map .army-marker{pointer-events:auto;cursor:pointer}
 .real-world-map .province-territory{pointer-events:auto;cursor:pointer}
