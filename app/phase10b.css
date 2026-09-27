@@ -6,7 +6,7 @@
   isolation:isolate;
   background:#08100f;
 }
-.map-stage{position:relative;min-width:0;min-height:0;overflow:hidden;z-index:1}
+.map-stage{position:relative;display:flex;flex:1 1 auto;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden;z-index:10}
 .real-world-map .real-world-svg{
   position:absolute;
   inset:0;
@@ -68,7 +68,7 @@
 .aaa-top,.aaa-bottom,.command-left,.command-right,.aaa-alert,.command-overlay,.newspaper-overlay{position:relative;z-index:45}
 
 /* World strategic layer — clean country-only overview */
-.world-map-clean{background:#0a171c!important;display:block}
+.world-map-clean{background:#0a171c!important;display:flex;flex:1 1 auto;width:100%!important;height:100%!important;min-width:0;min-height:0;overflow:hidden!important;position:relative;z-index:10}
 .world-map-clean .world-map-svg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .world-map-clean .world-ocean{fill:#0a171c}
 .world-map-clean .country-world-layer{display:block}
@@ -110,3 +110,18 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden!important}
 .world-map-clean .world-country.player .world-country-label{fill:#fff1b7}
 @media(max-width:1100px){.aaa-body{grid-template-columns:200px minmax(0,1fr) 280px}.command-drawer{left:200px;right:280px}.top-resource{min-width:82px}}
 @media(max-width:760px){.aaa-body{grid-template-columns:1fr}.command-left,.command-right{display:none}.command-drawer{left:0;right:0}.aaa-top{padding:0 8px}.aaa-bottom{overflow-x:auto;justify-content:flex-start}.aaa-bottom button{min-width:72px}}
+
+/* MAP THEATRE LAYERING + RADAR BORDER HOVER */
+.map-stage{display:flex;flex:1 1 auto;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden!important;position:relative;z-index:10}
+.world-map-clean{display:flex;flex:1 1 auto;width:100%!important;height:100%!important;min-width:0;min-height:0;overflow:hidden!important;position:relative;z-index:10}
+.world-map-clean .world-map-svg{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-width:0;min-height:0;overflow:hidden!important;display:block;z-index:10}
+.world-map-clean .country-world-layer{position:relative;z-index:10;overflow:hidden}
+.world-map-clean .world-country-shape{transition:fill-opacity .15s ease,stroke .15s ease,stroke-width .15s ease,filter .18s ease}
+.world-map-clean .world-country-shape:hover{fill-opacity:1;stroke:#4dff88;stroke-width:.28;filter:drop-shadow(0 0 2px rgba(77,255,136,.95)) drop-shadow(0 0 6px rgba(77,255,136,.78)) drop-shadow(0 0 10px rgba(77,255,136,.42));}
+.world-map-clean .world-country.player .world-country-shape:hover{stroke:#6ee7ff;stroke-width:.34;filter:drop-shadow(0 0 3px rgba(110,231,255,1)) drop-shadow(0 0 8px rgba(77,210,255,.8));}
+.world-map-clean .world-ocean{position:relative;z-index:9}
+.aaa-top,.aaa-bottom{z-index:50}
+.command-left,.command-right{z-index:40}
+.command-drawer{z-index:45}
+.command-overlay,.newspaper-overlay{z-index:70!important}
+.aaa-alert{z-index:60}
