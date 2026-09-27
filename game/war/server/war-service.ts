@@ -4,6 +4,7 @@ import { getArmy, getArmies } from "@/game/movement/server/movement-service";
 import { WAR_CONFIG, FORTIFICATION_CONFIG } from "@/data/war/config";
 import type { BattleResult, War } from "./types";
 import {weatherCombatModifier} from "@/game/world/server/weather-service";
+import {climateMovementCost} from "@/game/world/server/climate-service";
 import {pushWorldEvent} from "@/game/events/server/event-store";
 import {pushAlert} from "@/game/alerts/server/alert-store";
 
@@ -60,6 +61,7 @@ export function attackProvince(warId:string,armyId:string,provinceId:string,rand
   if(!target||target.ownerId===w.attacker) throw new WarValidationError("Target province is not enemy-controlled.");
   const origin=getProvince(army.provinceId);
   if(!origin||!origin.neighbors.includes(target.id)) throw new WarValidationError("Target is not adjacent.");
+  army.order={type:"attack",fromProvinceId:origin.id,targetProvinceId:target.id,route:[origin.id,target.id],issuedAt:now(),eta:now()+Math.max(3000,Math.round(climateMovementCost(target)*900))};
   const defender=getArmies().filter(a=>a.countryId===w.defender&&a.provinceId===target.id&&a.status!=="destroyed")
     .sort((a,b)=>b.strength-a.strength)[0];
   const terrainAttack=origin.terrain==="mountain"?.75:origin.terrain==="urban"?.9:origin.terrain==="forest"?.85:1;
@@ -81,7 +83,7 @@ export function attackProvince(warId:string,armyId:string,provinceId:string,rand
     setProvinceOwner(target.id,w.attacker);
     if(!w.occupiedProvinces.includes(target.id)) w.occupiedProvinces.push(target.id);
     w.attackerScore+=WAR_CONFIG.captureWarScore;
-    army.provinceId=target.id; army.status="ready";
+    army.provinceId=target.id; army.status="ready"; army.order=undefined;
     pushWorldEvent({type:"capture",title:"PROVINCE CAPTURED",message:`${target.name} captured by ${w.attacker}`,provinceId:target.id,countryId:w.attacker});
     if(countries.some(c=>c.id===w.defender&&c.capitalProvinceId===target.id))pushAlert({key:`capital-${target.id}`,level:"critical",title:"CAPITAL UNDER ATTACK",message:`${target.name} has changed hands`,provinceId:target.id},60000);
   } else {

@@ -60,6 +60,13 @@ export function WorldMap({provinces,armies,selectedId,selectedArmyId,onSelect,on
           </g>;
         })}
       </g>
+      <g className="army-orders" pointerEvents="none">
+        {armies.filter(a=>a.id===selectedArmyId&&a.order).map(a=>a.order!.route.length>1 ? a.order!.route.map((provinceId,i,route)=>{
+          const from=REAL_WORLD_PROVINCES[provinceId],to=REAL_WORLD_PROVINCES[route[i+1]];
+          if(!to||!from)return null;
+          return <line key={provinceId} x1={from.coordinates.x+2.5} y1={from.coordinates.y-2.5} x2={to.coordinates.x+2.5} y2={to.coordinates.y-2.5} className={a.order!.type==="attack"?"army-route attack":"army-route"} />;
+        }):null)}
+      </g>
       <g className="army-markers">
         {armies.map(a=>{
           const p=REAL_WORLD_PROVINCES[a.provinceId]; if(!p)return null;

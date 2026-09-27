@@ -50,6 +50,8 @@
 .real-world-map .capital-ring{animation:capitalPulse 2.8s ease-in-out infinite}
 .real-world-map .army-marker{filter:drop-shadow(0 2px 3px rgba(0,0,0,.65))}
 .real-world-map .army-marker.selected .real-unit{transform:scale(1.12);transform-origin:center}
+.real-world-map .army-route{stroke:#d5b86a;stroke-width:.45;stroke-dasharray:1.4 1;opacity:.9;filter:drop-shadow(0 0 1px rgba(0,0,0,.8))}
+.real-world-map .army-route.attack{stroke:#d36a5f;stroke-width:.65;stroke-dasharray:1.8 .8}
 .real-world-map .map-legend{max-width:calc(100% - 36px);overflow:hidden;white-space:nowrap}
 @keyframes capitalPulse{50%{opacity:.35;transform:scale(1.12)}}
 .real-world-map .army-markers{pointer-events:auto}

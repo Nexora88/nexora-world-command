@@ -14,8 +14,18 @@ export interface Army {
   fuel: number;
   maintenancePerHour: number;
   status: ArmyStatus;
+  order?: ArmyOrder;
   createdAt: number;
   updatedAt: number;
+}
+
+export interface ArmyOrder {
+  type: "move" | "attack";
+  fromProvinceId: string;
+  targetProvinceId: string;
+  route: string[];
+  issuedAt: number;
+  eta: number;
 }
 
 export interface MovementAction {
