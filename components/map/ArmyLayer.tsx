@@ -24,18 +24,25 @@ function shortNumber(value: number): string {
 }
 
 export function ArmyLayer({ armies, selectedArmyId, onSelectArmy }: Props) {
+  const active = armies.filter((army) => army.status !== "destroyed");
+  const stackCounts = new Map<string, number>();
   return (
     <g className="army-layer" aria-label="Field armies">
-      {armies.filter((army) => army.status !== "destroyed").map((army) => {
+      {active.map((army) => {
         const point = positionForArmy(army);
         if (!point) return null;
+        const stackIndex = stackCounts.get(army.provinceId) ?? 0;
+        stackCounts.set(army.provinceId, stackIndex + 1);
+        const angle = stackIndex * 2.35;
+        const radius = stackIndex === 0 ? 0 : 3.2;
+        const offset = { x: Math.cos(angle) * radius, y: Math.sin(angle) * radius };
         const selected = army.id === selectedArmyId;
         const moving = army.status === "moving";
         return (
           <g
             key={army.id}
             className={`army-marker ${selected ? "selected" : ""} ${moving ? "moving" : ""}`}
-            transform={`translate(${point.x} ${point.y})`}
+            transform={`translate(${point.x + offset.x} ${point.y + offset.y})`}
             onClick={(event) => {
               event.stopPropagation();
               onSelectArmy(army.id);

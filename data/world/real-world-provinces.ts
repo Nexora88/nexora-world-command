@@ -69,8 +69,8 @@ const EXTRA_PROVINCES:Record<string,CitySeed[]>={
 };
 for(const country of countrySeeds){const extra=EXTRA_PROVINCES[country.id];if(extra)country.cities.push(...extra);}
 const FLAGS:Record<string,string>={TR:"🇹🇷",PT:"🇵🇹",ES:"🇪🇸",FR:"🇫🇷",BE:"🇧🇪",NL:"🇳🇱",LU:"🇱🇺",DE:"🇩🇪",CH:"🇨🇭",AT:"🇦🇹",IT:"🇮🇹",MC:"🇲🇨",SM:"🇸🇲",VA:"🇻🇦",GB:"🇬🇧",IE:"🇮🇪",IS:"🇮🇸",DK:"🇩🇰",NO:"🇳🇴",SE:"🇸🇪",FI:"🇫🇮",EE:"🇪🇪",LV:"🇱🇻",LT:"🇱🇹",PL:"🇵🇱",CZ:"🇨🇿",SK:"🇸🇰",HU:"🇭🇺",SI:"🇸🇮",HR:"🇭🇷",BA:"🇧🇦",RS:"🇷🇸",ME:"🇲🇪",MK:"🇲🇰",AL:"🇦🇱",RO:"🇷🇴",BG:"🇧🇬",GR:"🇬🇷",MD:"🇲🇩",UA:"🇺🇦",BY:"🇧🇾",RU:"🇷🇺"};
-const X=(lon:number)=>Math.max(1,Math.min(99,((lon+22)/105)*100));
-const Y=(lat:number)=>Math.max(1,Math.min(99,((72-lat)/38)*100));
+const X=(lon:number)=>Math.max(0.5,Math.min(99.5,((lon+180)/360)*100));
+const Y=(lat:number)=>Math.max(0.5,Math.min(55.75,((90-lat)/180)*56.25));
 const terrainDefaults=(terrain:TerrainType)=>({movementModifier:terrain==="mountain"?.5:terrain==="forest"?.75:terrain==="urban"?.65:terrain==="coast"?.9:terrain==="hills"?.8:terrain==="tundra"?.65:1,defenseModifier:terrain==="mountain"?1.3:terrain==="forest"?1.15:terrain==="urban"?1.25:terrain==="hills"?1.1:1,visibilityModifier:terrain==="forest"?.65:terrain==="mountain"?.75:1,supplyModifier:terrain==="mountain"?.8:terrain==="tundra"?.8:1});
 const cityId=(code:string,name:string)=>`${code}_${name.toUpperCase().replace(/[^A-Z]+/g,"_").replace(/^_|_$/g,"")}`;
 const distance=(a:CitySeed,b:CitySeed)=>Math.hypot(a.lat-b.lat,a.lon-b.lon);
@@ -100,7 +100,7 @@ function clipCell(subject:{x:number;y:number}[], site:{x:number;y:number}, other
 }
 function buildVoronoiGeometry(){
   const sites=seeds.map(p=>({id:p.id,x:p.coordinates.x,y:p.coordinates.y}));
-  const bounds=[{x:0,y:0},{x:100,y:0},{x:100,y:100},{x:0,y:100}];
+  const bounds=[{x:0,y:0},{x:100,y:0},{x:100,y:56.25},{x:0,y:56.25}];
   for(const site of sites){
     let cell=bounds.map(p=>({...p}));
     for(const other of sites){if(other.id===site.id||cell.length<3)continue;cell=clipCell(cell,{x:site.x,y:site.y},[{x:other.x,y:other.y}]);}

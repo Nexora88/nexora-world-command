@@ -37,6 +37,8 @@ function polygonPoints(id:string){
 
 export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,zoom=1,mapMode,onSelect,onHover,fillFor}:Props){
   const shapes=useMemo(()=>provinces.map(p=>({p,world:REAL_WORLD_PROVINCES[p.id]})).filter(x=>x.world),[provinces]);
+  // Province territories are a strategic zoom layer. At world scale the country layer stays clean; zooming in reveals the playable provinces.
+  if(zoom<1.65)return <g className="province-territories"/>;
   return <g className="province-territories">
     {shapes.map(({p,world})=>{
       const code=safeCountryCode(world?.countryCode??p.countryId);

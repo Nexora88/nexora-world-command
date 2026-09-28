@@ -13,10 +13,10 @@ type Props={zoom:number;playerCountryId?:string;showLabels?:boolean;showBorders?
 const iso2ToGame:Record<string,string>={TR:"TR",DE:"DE",GB:"GB",RU:"RU",FR:"FR",ES:"ES",PT:"PT",IT:"IT",CH:"CH",AT:"AT",BE:"BE",NL:"NL",LU:"LU",PL:"PL",CZ:"CZ",SK:"SK",HU:"HU",RO:"RO",BG:"BG",GR:"GR",RS:"RS",HR:"HR",SI:"SI",BA:"BA",ME:"ME",MK:"MK",AL:"AL",DK:"DK",NO:"NO",SE:"SE",FI:"FI",EE:"EE",LV:"LV",LT:"LT",BY:"BY",UA:"UA",MD:"MD",IE:"IE",IS:"IS",MC:"MC",SM:"SM",VA:"VA"};
 
 function project([lon,lat]:number[]){
-  // Match the Europe-normalized province coordinate system in real-world-provinces.ts.
-  const x=((lon+22)/105)*100;
-  const y=((72-lat)/38)*100;
-  return [Math.max(-2,Math.min(102,x)),Math.max(-2,Math.min(102,y))] as const;
+  // Equirectangular WORLD projection. Keep the same 100 x 56.25 coordinate space as province data.
+  const x=((lon+180)/360)*100;
+  const y=((90-lat)/180)*56.25;
+  return [Math.max(-2,Math.min(102,x)),Math.max(-2,Math.min(58.25,y))] as const;
 }
 function ringPath(ring:Ring){
   if(!ring.length)return "";

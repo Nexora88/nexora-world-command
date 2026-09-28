@@ -510,8 +510,8 @@ export function GameScreen() {
             <small>WORLD STATUS</small>
             <b>{activeWar ? "WAR ACTIVE" : "STABLE THEATRE"}</b>
             <span>
-              {EUROPEAN_PROVINCE_COUNT} provinces · {EUROPEAN_COUNTRY_COUNT}{" "}
-              nations
+              {EUROPEAN_PROVINCE_COUNT} active provinces · {EUROPEAN_COUNTRY_COUNT}{" "}
+              playable nations · WORLD MAP
             </span>
           </div>
         </aside>

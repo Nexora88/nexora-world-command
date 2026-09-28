@@ -10,7 +10,8 @@ import {ArmyLayer} from "@/components/map/ArmyLayer";
 
 type Props={provinces:Province[];armies:Army[];selectedId:string|null;selectedArmyId:string|null;onSelect:(id:string)=>void;onSelectArmy:(id:string)=>void;onCountrySelect?:(iso2:string)=>void;selectedCountryId?:string|null;mapMode:MapMode;onMapModeChange:(mode:MapMode)=>void;playerCountryId?:string;showLabels?:boolean;showBorders?:boolean};
 export type MapMode="political"|"population"|"economy"|"resources"|"military"|"weather"|"terrain"|"frontline";
-const MIN_ZOOM=.82,MAX_ZOOM=3.25,DEFAULT_ZOOM=1;
+const MIN_ZOOM=0.72,MAX_ZOOM=4.5,DEFAULT_ZOOM=1;
+const MAP_CENTER_Y=28.125;
 
 export function WorldMap({provinces,armies,selectedId,selectedArmyId,playerCountryId,showLabels=true,showBorders=true,onSelect,onSelectArmy,onCountrySelect,mapMode="political",onMapModeChange}:Props){
   const [zoom,setZoom]=useState(DEFAULT_ZOOM);
@@ -18,12 +19,15 @@ export function WorldMap({provinces,armies,selectedId,selectedArmyId,playerCount
   const drag=useRef<{x:number;y:number;panX:number;panY:number;distance:number;pinch:boolean}|null>(null);
   const [dragging,setDragging]=useState(false);
   const clampPan=useCallback((x:number,y:number,z=zoom)=>{
-    const limit=Math.max(0,(z-1)*38+8);
-    return {x:Math.max(-limit,Math.min(limit,x)),y:Math.max(-limit*.62,Math.min(limit*.62,y))};
+    const horizontal=Math.max(0,(z-1)*50+5);
+    const vertical=Math.max(0,(z-1)*28+4);
+    return {x:Math.max(-horizontal,Math.min(horizontal,x)),y:Math.max(-vertical,Math.min(vertical,y))};
   },[zoom]);
   const setZoomAt=useCallback((next:number)=>{setZoom(z=>{const value=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,next));setPan(p=>clampPan(p.x,p.y,value));return value})},[clampPan]);
+  const zoomIn=()=>setZoomAt(zoom+.25);
+  const zoomOut=()=>setZoomAt(zoom-.25);
   const reset=()=>{setZoom(DEFAULT_ZOOM);setPan({x:0,y:0})};
-  const onWheel=(e:React.WheelEvent<HTMLDivElement>)=>{e.preventDefault();setZoomAt(zoom+(e.deltaY<0?.12:-.12))};
+  const onWheel=(e:React.WheelEvent<HTMLDivElement>)=>{e.preventDefault();setZoomAt(zoom+(e.deltaY<0?.18:-.18))};
   const pointDistance=(a:React.Touch,b:React.Touch)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
   const touchStart=(e:React.TouchEvent<HTMLDivElement>)=>{
     if(e.touches.length===2){drag.current={x:0,y:0,panX:pan.x,panY:pan.y,distance:pointDistance(e.touches[0],e.touches[1]),pinch:true};return}
@@ -40,16 +44,16 @@ export function WorldMap({provinces,armies,selectedId,selectedArmyId,playerCount
   const modes:Array<[MapMode,string]>= [["political","POLITICAL"],["terrain","TERRAIN"],["economy","ECONOMY"],["resources","RESOURCES"],["military","MILITARY"],["weather","WEATHER"]];
   const handleProvince=(id:string)=>{if(!dragging)onSelect(id)};
   return <div className={`world-map real-world-map world-map-clean mode-${mapMode} ${dragging?"is-dragging":""}`} onWheel={onWheel} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={pointerUp} onPointerLeave={pointerUp} onTouchStart={touchStart} onTouchMove={touchMove} onTouchEnd={pointerUp}>
-    <svg viewBox="0 0 100 100" className="world-map-svg" preserveAspectRatio="xMidYMid meet" aria-label="World strategic map">
-      <rect width="100" height="100" className="world-ocean"/>
-      <g className="world-map-zoom" transform={`translate(${pan.x} ${pan.y}) translate(50 50) scale(${zoom}) translate(-50 -50)`}>
+    <svg viewBox="0 0 100 56.25" className="world-map-svg" preserveAspectRatio="xMidYMid meet" aria-label="World strategic map">
+      <rect width="100" height="56.25" className="world-ocean"/>
+      <g className="world-map-zoom" transform={`translate(${pan.x} ${pan.y}) translate(50 ${MAP_CENTER_Y}) scale(${zoom}) translate(-50 -${MAP_CENTER_Y})`}>
         <CountryWorldLayer zoom={zoom} playerCountryId={playerCountryId} showLabels={showLabels} showBorders={showBorders} onCountrySelect={onCountrySelect}/>
         <ProvinceLayer provinces={provinces} selectedId={selectedId} hoveredId={null} playerCountryId={playerCountryId} zoom={zoom} mapMode={mapMode} maxPopulation={0} maxIndustry={0} onSelect={handleProvince} onHover={()=>{}} fillFor={p=>p.ownerId===playerCountryId?"#45c878":"#65756d"}/>
         <ArmyLayer armies={armies} selectedArmyId={selectedArmyId} onSelectArmy={onSelectArmy}/>
         <WorldWeatherLayer mode={mapMode}/>
       </g>
     </svg>
-    <div className="strategic-map-toolbar"><span>STRATEGIC MAP</span>{modes.map(([id,label])=><button key={id} className={mapMode===id?"active":""} onClick={()=>onMapModeChange(id)}>{label}</button>)}<button className="zoom-button" onClick={()=>setZoomAt(zoom+.18)} aria-label="Zoom in">+</button><button className="zoom-button" onClick={()=>setZoomAt(zoom-.18)} aria-label="Zoom out">−</button><button className="zoom-button reset" onClick={reset}>RESET</button></div>
-    <div className="map-scale">EUROPE THEATRE · {Math.round(zoom*100)}%</div>
+    <div className="strategic-map-toolbar"><span>STRATEGIC MAP</span>{modes.map(([id,label])=><button key={id} className={mapMode===id?"active":""} onClick={()=>onMapModeChange(id)}>{label}</button>)}<button className="zoom-button" onClick={zoomIn} aria-label="Zoom in">+</button><button className="zoom-button" onClick={zoomOut} aria-label="Zoom out">−</button><button className="zoom-button reset" onClick={reset}>RESET</button></div>
+    <div className="map-scale">WORLD THEATRE · {Math.round(zoom*100)}% · WHEEL / PINCH TO ZOOM</div>
   </div>;
 }
