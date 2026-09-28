@@ -77,7 +77,9 @@ export function ArmyLayer({ armies, selectedArmyId, onSelectArmy, zoom = 1, game
             <circle className="army-marker-shadow" cx="0" cy="0" r="2.9" />
             <circle className="army-marker-ring" cx="0" cy="0" r="2.65" />
             <path className="army-marker-shield" d="M0-2.05 L1.75-1.15 L1.35 1.25 L0 2.05 L-1.35 1.25 L-1.75-1.15 Z" />
-            <path className="army-marker-chevron" d="M-.85-.35 L0 .45 L.85-.35" />
+            {army.tanks > 0 && army.infantry > 0 ? <><path className="army-unit-icon tank" d="M-1.35-.7 H.35 V.15 H-1.35 Z M.35-.25 H1.25 V.15 H.35 Z" /><path className="army-unit-icon infantry" d="M.75-.9 L1.35-.25 .85-.25 1.15.55 .45.55 .7-.25 .15-.25 Z" /></> : army.tanks > 0 ? <path className="army-unit-icon tank" d="M-1.35-.7 H.35 V.15 H-1.35 Z M.35-.25 H1.25 V.15 H.35 Z" /> : <path className="army-unit-icon infantry" d="M-.35-1.05 L.35-.35 .05-.35 .45.65 H-.45 L-.05-.35 H-.35 Z" />}
+            <circle className="army-unit-badge" cx="1.75" cy="-1.55" r=".75" />
+            <text className="army-unit-letter" x="1.75" y="-1.55">{army.tanks>0&&army.infantry>0?"M":army.tanks>0?"T":"P"}</text>
             {zoom >= 1.45 && <text className="army-marker-strength" x="3.35" y=".65">{shortNumber(army.strength)}</text>}
             {zoom >= 1.75 && <text className="army-marker-name" x="0" y="5.1">{army.name.toUpperCase().slice(0, 16)}</text>}
           </g>

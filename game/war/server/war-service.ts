@@ -57,10 +57,11 @@ export function attackProvince(warId:string,armyId:string,provinceId:string,rand
   const w=wars.get(warId);
   if(!w||w.status!=="active") throw new WarValidationError("War is not active.");
   const army=getArmy(armyId), target=getProvince(provinceId);
-  if(!army||army.countryId!==w.attacker) throw new WarValidationError("Invalid attacking army.");
-  if(!target||target.ownerId===w.attacker) throw new WarValidationError("Target province is not enemy-controlled.");
+  if(!army||army.countryId!==w.attacker||army.status==="destroyed"||army.status==="moving") throw new WarValidationError("Invalid attacking army.");
+  if(!target||target.ownerId!==w.defender) throw new WarValidationError("Target province is not controlled by the war defender.");
   const origin=getProvince(army.provinceId);
   if(!origin||!origin.neighbors.includes(target.id)) throw new WarValidationError("Target is not adjacent.");
+  if(army.supply<=0||army.fuel<=0) throw new WarValidationError("Army cannot attack without supply and fuel.");
   army.order={type:"attack",fromProvinceId:origin.id,targetProvinceId:target.id,route:[origin.id,target.id],issuedAt:now(),eta:now()+Math.max(3000,Math.round(climateMovementCost(target)*900))};
   const defender=getArmies().filter(a=>a.countryId===w.defender&&a.provinceId===target.id&&a.status!=="destroyed")
     .sort((a,b)=>b.strength-a.strength)[0];

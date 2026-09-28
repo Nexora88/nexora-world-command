@@ -91,7 +91,7 @@ export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,se
         </>}
         {target&&<circle cx={world.coordinates.x} cy={world.coordinates.y} r="2.2" className="province-target-ring" pointerEvents="none"/>}
         {target&&zoom>=1.65&&<text x={world.coordinates.x} y={world.coordinates.y+3.8} className="province-target-label" pointerEvents="none">DESTINATION</text>}
-        {((owned&&zoom>=1.05)||(selectedCountryId&&zoom>=1.65)||(zoom>=2.15&&selected))&&<text x={world.coordinates.x} y={world.coordinates.y-1.9} className={`province-label ${owned?"owned":""}`}>{p.name.toUpperCase()}</text>}
+        {((owned&&zoom>=1.05)||(selectedCountryId&&zoom>=1.65)||(zoom>=1.95))&&<text x={world.coordinates.x} y={world.coordinates.y-1.9} className={`province-label ${owned?"owned":""}`}>{p.name.toUpperCase()}</text>}
       </g>;
     })}
   </g>;

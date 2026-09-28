@@ -1,7 +1,7 @@
 "use client";
 
 import {useEffect,useMemo,useState} from "react";
-import {REAL_WORLD_COUNTRIES} from "@/data/world/real-world-provinces";
+import {REAL_WORLD_COUNTRIES,REAL_WORLD_PROVINCES,getCountryFlag} from "@/data/world/real-world-provinces";
 
 type Ring=number[][];
 type Geometry={type:"Polygon"|"MultiPolygon";coordinates:Ring[]|Ring[][]};
@@ -58,7 +58,8 @@ export function CountryWorldLayer({zoom,playerCountryId,showLabels=true,showBord
         <path d={geometryPath(f.geometry)} fill={colorFor(f,i,playerCountryId)} className={`world-country-shape ${showBorders?"":"no-borders"}`} onClick={()=>onCountrySelect?.(iso)}>
           <title>{name}</title>
         </path>
-        {showLabels&&(zoom<1.55||gameId===playerCountryId)&&<text x={x} y={y} className="world-country-label" style={{fontSize:`${gameId===playerCountryId?1.35:Math.max(.9,1.18/Math.sqrt(Math.max(1,zoom)))}px`}}>{name.toUpperCase()}</text>}
+        {showLabels&&(zoom<2.0||gameId===playerCountryId)&&<g pointerEvents="none"><text x={x} y={y-.55} className="world-country-label" style={{fontSize:`${gameId===playerCountryId?1.35:Math.max(.9,1.18/Math.sqrt(Math.max(1,zoom)))}px`}}>{getCountryFlag(gameId??"")} {name.toUpperCase()}</text></g>}
+        {gameId&&zoom>=1.75&&(()=>{const country=REAL_WORLD_COUNTRIES.find(c=>c.id===gameId);const capital=country?REAL_WORLD_PROVINCES[country.capitalProvinceId]:undefined;return capital?<g className="capital-marker" pointerEvents="none"><circle cx={capital.coordinates.x} cy={capital.coordinates.y} r=".72" className="capital-ring"/><circle cx={capital.coordinates.x} cy={capital.coordinates.y} r=".25" className="capital-core"/><text x={capital.coordinates.x+1.05} y={capital.coordinates.y-.7} className="capital-label">★ {capital.name.toUpperCase()}</text></g>:null})()}
       </g>;
     })}
   </g>;
