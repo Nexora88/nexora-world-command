@@ -119,6 +119,8 @@ export function GameScreen() {
   const [commandScreen, setCommandScreen] = useState<CommandScreenId | null>(null);
   const [commander, setCommander] = useState("COMMANDER");
   const [commanderProfile, setCommanderProfile] = useState("default");
+  const [commanderAvatar, setCommanderAvatar] = useState("");
+  const [commanderBio, setCommanderBio] = useState("");
   const [playerCountryId, setPlayerCountryId] = useState("TR");
   const [selectedCountryId, setSelectedCountryId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("WORLD");
@@ -152,10 +154,14 @@ export function GameScreen() {
     void load();
     const saved = localStorage.getItem("nwc-commander-callsign");
     const nation = localStorage.getItem("nwc-player-country");
-    const profile = localStorage.getItem("nwc-commander-profile");
+    const profileRaw = localStorage.getItem("nwc-commander-profile");
+    let profileData: {profile?:string;avatar?:string;bio?:string} = {};
+    try { profileData = profileRaw ? JSON.parse(profileRaw) : {}; } catch { profileData = {profile: profileRaw || "default"}; }
 
     if (saved) setTimeout(() => setCommander(saved), 0);
-    if (profile) setTimeout(() => setCommanderProfile(profile), 0);
+    if (profileData.profile) setTimeout(() => setCommanderProfile(profileData.profile!), 0);
+    if (profileData.avatar) setTimeout(() => setCommanderAvatar(profileData.avatar!), 0);
+    if (profileData.bio) setTimeout(() => setCommanderBio(profileData.bio!), 0);
     if (nation) setTimeout(() => setPlayerCountryId(nation), 0);
 
     audioManager.setEnabled(localStorage.getItem("nwc-command-audio") !== "0");
@@ -443,14 +449,8 @@ export function GameScreen() {
         <aside className="command-left">
           <div className="portrait">
             <div className="portrait-art">
-              {playerCountryId === "TR" || commanderProfile === "ataturk" ? (
-                <img
-                  src="/portraits/ataturk.png"
-                  alt="Mustafa Kemal Atatürk"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
+              {commanderAvatar ? (
+                <img src={commanderAvatar} alt="Commander profile" onError={(e) => { e.currentTarget.style.display = "none"; }} />
               ) : (
                 <span>NC</span>
               )}
@@ -458,9 +458,7 @@ export function GameScreen() {
             <div>
               <small>COMMANDER PROFILE</small>
               <b>
-                {playerCountryId === "TR" || commanderProfile === "ataturk"
-                  ? "MUSTAFA KEMAL ATATÜRK"
-                  : commander}
+                {commanderProfile === "ataturk" ? "MUSTAFA KEMAL ATATÜRK" : commander}
               </b>
               <span>
                 {playerCountryId === "TR"
@@ -469,6 +467,7 @@ export function GameScreen() {
                     ? "HISTORICAL COMMANDER PROFILE"
                     : "PLAYER COMMAND · LOCAL IDENTITY"}
               </span>
+              {commanderBio && <small className="commander-bio">{commanderBio}</small>}
             </div>
           </div>
 
