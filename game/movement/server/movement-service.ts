@@ -3,6 +3,8 @@ import { climateMovementCost } from "@/game/world/server/climate-service";
 import { getTerrainModifiers } from "@/game/world/terrain";
 import { createOrder, getOrders, tickOrders, resetOrders } from "@/game/core/server/order-manager";
 import { getGameClock, nowGameTimestamp } from "@/game/core/server/game-clock";
+import { STARTING_ARMIES } from "@/data/world/starting-armies";
+import { provinces } from "@/data/provinces";
 import type { MovementAction, Army } from "./types";
 
 const DEMO_COUNTRY_ID = "TR";
@@ -13,6 +15,19 @@ function province(id: string) { return getProvince(id); }
 function assertOwned(id: string) { const p = province(id); if (!p || p.ownerId !== DEMO_COUNTRY_ID) throw new Error("Province is not controlled by the player."); return p; }
 function assertArmyOwner(a: Army) { if (a.countryId !== DEMO_COUNTRY_ID) throw new Error("Army is not controlled by the player."); return a; }
 function recalc(a: Army) { a.strength = Math.max(0, a.infantry + a.tanks * 3); a.updatedAt = Date.now(); }
+
+function initializeStartingArmies() {
+  if (armies.size || aiArmies.size) return;
+  for (const seed of STARTING_ARMIES) {
+    const p = province(seed.provinceId) ?? provinces.find(x => x.id === seed.provinceId);
+    if (!p || p.ownerId !== seed.countryId || (p.barracksLevel ?? p.buildings?.barracks ?? 0) < 1) continue;
+    const army:Army={id:`start-${seed.provinceId}`,countryId:seed.countryId,name:seed.name,provinceId:seed.provinceId,infantry:seed.infantry,tanks:seed.tanks,strength:0,morale:100,organization:100,supply:100,fuel:100,maintenancePerHour:Math.round(seed.infantry*.02+seed.tanks*.75),status:"ready",createdAt:Date.now(),updatedAt:Date.now()};
+    recalc(army);
+    (seed.countryId===DEMO_COUNTRY_ID ? armies : aiArmies).set(army.id,army);
+  }
+}
+
+initializeStartingArmies();
 
 export function addProducedUnits(provinceId: string, infantry: number, tanks = 0) {
   assertOwned(provinceId); const c = stockpile.get(provinceId) ?? { infantry: 0, tanks: 0 };

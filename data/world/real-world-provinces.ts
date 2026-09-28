@@ -57,7 +57,18 @@ C("Istanbul",41.01,28.98,15800000,"urban"),C("Edirne",41.68,26.56,420000,"plains
 {id:"UA",name:"Ukraine",displayName:"UKRAYNA",capital:"Kyiv",color:"#7d8d52",cities:[C("Kyiv",50.45,30.52,2900000,"urban"),C("Lviv",49.84,24.03,720000,"urban"),C("Odesa",46.48,30.72,1000000,"coast"),C("Dnipro",48.46,35.05,970000,"urban"),C("Kharkiv",49.99,36.23,1400000,"urban")]},
 {id:"BY",name:"Belarus",displayName:"BELARUS",capital:"Minsk",color:"#72826b",cities:[C("Minsk",53.90,27.56,2100000,"urban"),C("Brest",52.10,23.69,340000,"plains"),C("Gomel",52.43,31.00,500000,"plains")]},
 {id:"RU",name:"Russia",displayName:"RUSYA",capital:"Moscow",color:"#c96b6b",cities:[C("Moscow",55.76,37.62,13000000,"urban"),C("Saint Petersburg",59.93,30.33,5600000,"coast"),C("Nizhny Novgorod",56.33,44.00,1250000,"plains"),C("Kazan",55.79,49.12,1300000,"plains"),C("Voronezh",51.67,39.18,1050000,"plains"),C("Rostov",47.24,39.71,1100000,"plains"),C("Volgograd",48.71,44.51,1000000,"plains"),C("Samara",53.20,50.15,1200000,"plains"),C("Yekaterinburg",56.84,60.61,1500000,"hills"),C("Novosibirsk",55.03,82.92,1600000,"plains")]},
-];const FLAGS:Record<string,string>={TR:"🇹🇷",PT:"🇵🇹",ES:"🇪🇸",FR:"🇫🇷",BE:"🇧🇪",NL:"🇳🇱",LU:"🇱🇺",DE:"🇩🇪",CH:"🇨🇭",AT:"🇦🇹",IT:"🇮🇹",MC:"🇲🇨",SM:"🇸🇲",VA:"🇻🇦",GB:"🇬🇧",IE:"🇮🇪",IS:"🇮🇸",DK:"🇩🇰",NO:"🇳🇴",SE:"🇸🇪",FI:"🇫🇮",EE:"🇪🇪",LV:"🇱🇻",LT:"🇱🇹",PL:"🇵🇱",CZ:"🇨🇿",SK:"🇸🇰",HU:"🇭🇺",SI:"🇸🇮",HR:"🇭🇷",BA:"🇧🇦",RS:"🇷🇸",ME:"🇲🇪",MK:"🇲🇰",AL:"🇦🇱",RO:"🇷🇴",BG:"🇧🇬",GR:"🇬🇷",MD:"🇲🇩",UA:"🇺🇦",BY:"🇧🇾",RU:"🇷🇺"};
+
+]
+// Phase 11 seed expansion: a small, verified set of additional provinces for major playable countries.
+const EXTRA_PROVINCES:Record<string,CitySeed[]>={
+  TR:[C("Kocaeli",40.77,29.94,2050000,"urban"),C("Manisa",38.62,27.43,1450000,"plains"),C("Mersin",36.80,34.63,1900000,"coast"),C("Hatay",36.20,36.16,1650000,"coast"),C("Sivas",39.75,37.02,650000,"hills")],
+  DE:[C("Bremen",53.08,8.80,680000,"coast"),C("Essen",51.46,7.01,580000,"urban"),C("Nuremberg",49.45,11.08,550000,"urban"),C("Bonn",50.74,7.10,340000,"urban")],
+  FR:[C("Toulouse",43.60,1.44,1050000,"urban"),C("Nice",43.71,7.26,950000,"coast"),C("Nantes",47.22,-1.55,650000,"coast"),C("Strasbourg",48.57,7.75,500000,"urban")],
+  GB:[C("Edinburgh",55.95,-3.19,530000,"hills"),C("Glasgow",55.86,-4.25,1200000,"urban"),C("Cardiff",51.48,-3.18,370000,"coast"),C("Belfast",54.60,-5.93,340000,"coast")],
+  RU:[C("Smolensk",54.78,32.04,330000,"hills"),C("Kursk",51.73,36.19,440000,"plains"),C("Krasnodar",45.04,38.98,1100000,"plains"),C("Saratov",51.53,46.03,840000,"plains")]
+};
+for(const country of countrySeeds){const extra=EXTRA_PROVINCES[country.id];if(extra)country.cities.push(...extra);}
+const FLAGS:Record<string,string>={TR:"🇹🇷",PT:"🇵🇹",ES:"🇪🇸",FR:"🇫🇷",BE:"🇧🇪",NL:"🇳🇱",LU:"🇱🇺",DE:"🇩🇪",CH:"🇨🇭",AT:"🇦🇹",IT:"🇮🇹",MC:"🇲🇨",SM:"🇸🇲",VA:"🇻🇦",GB:"🇬🇧",IE:"🇮🇪",IS:"🇮🇸",DK:"🇩🇰",NO:"🇳🇴",SE:"🇸🇪",FI:"🇫🇮",EE:"🇪🇪",LV:"🇱🇻",LT:"🇱🇹",PL:"🇵🇱",CZ:"🇨🇿",SK:"🇸🇰",HU:"🇭🇺",SI:"🇸🇮",HR:"🇭🇷",BA:"🇧🇦",RS:"🇷🇸",ME:"🇲🇪",MK:"🇲🇰",AL:"🇦🇱",RO:"🇷🇴",BG:"🇧🇬",GR:"🇬🇷",MD:"🇲🇩",UA:"🇺🇦",BY:"🇧🇾",RU:"🇷🇺"};
 const X=(lon:number)=>Math.max(1,Math.min(99,((lon+22)/105)*100));
 const Y=(lat:number)=>Math.max(1,Math.min(99,((72-lat)/38)*100));
 const terrainDefaults=(terrain:TerrainType)=>({movementModifier:terrain==="mountain"?.5:terrain==="forest"?.75:terrain==="urban"?.65:terrain==="coast"?.9:terrain==="hills"?.8:terrain==="tundra"?.65:1,defenseModifier:terrain==="mountain"?1.3:terrain==="forest"?1.15:terrain==="urban"?1.25:terrain==="hills"?1.1:1,visibilityModifier:terrain==="forest"?.65:terrain==="mountain"?.75:1,supplyModifier:terrain==="mountain"?.8:terrain==="tundra"?.8:1});
@@ -123,6 +134,8 @@ export const getCountryFlag=(countryId:string)=>FLAGS[countryId]??"🏳️";
 export const realWorldProvincesAsGameData:Province[]=seeds.map((p,i)=>{
   const dev=Math.min(10,Math.max(1,Math.round((p.population??500000)/1500000)));
   const industrial=Math.max(1,Math.round((p.population??500000)/1000000));
-  const baseBuildings={industrialComplex:Math.min(3,Math.max(1,Math.round(industrial/2))),barracks:i%3===0?2:1,fortification:i%5===0?2:1};
+  const capital=p.id===REAL_WORLD_COUNTRIES.find(c=>c.id===p.countryCode)?.capitalProvinceId;
+  const strategic=p.countryCode==="TR"&&["TR_ISTANBUL","TR_IZMIR","TR_KOCAELI","TR_GAZIANTEP"].includes(p.id);
+  const baseBuildings={industrialComplex:Math.min(3,Math.max(1,Math.round(industrial/2))),barracks:capital||strategic||i%3===0?2:1,fortification:capital||i%5===0?2:1};
   return {id:p.id,name:p.name,ownerId:p.countryCode,countryId:p.countryCode,population:p.population??0,terrain:p.terrain??"plains",neighbors:p.neighbors,industryLevel:industrial,barracksLevel:baseBuildings.barracks,fortificationLevel:baseBuildings.fortification,infrastructureLevel:Math.min(5,Math.max(1,Math.round(dev/2))),buildings:baseBuildings,coordinates:[p.coordinates.x,p.coordinates.y],weather:"clear",developmentLevel:dev,...terrainDefaults(p.terrain??"plains")};
 });
