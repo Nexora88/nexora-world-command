@@ -15,7 +15,6 @@ export type MapMode =
   | "frontline";
 
 type Props = {
-  // GameScreen'in gönderdiği props (uyumluluk için hepsi var)
   provinces?: Province[];
   armies?: Army[];
   selectedId?: string | null;
@@ -32,9 +31,6 @@ type Props = {
   className?: string;
 };
 
-// ────────────────────────────────────────────────
-// Modern ülke isimleri (ISO 3166-1 alpha-2)
-// ────────────────────────────────────────────────
 const COUNTRY_NAMES: Record<string, string> = {
   AF: "AFGANİSTAN", AL: "ARNAVUTLUK", DZ: "CEZAYİR", AD: "ANDORRA", AO: "ANGOLA",
   AG: "ANTİGUA VE BARBUDA", AR: "ARJANTİN", AM: "ERMENİSTAN", AU: "AVUSTRALYA",
@@ -79,7 +75,6 @@ const COUNTRY_NAMES: Record<string, string> = {
   ZW: "ZİMBABVE", XK: "KOSOVA", PS: "FİLİSTİN",
 };
 
-// Oyun odaklı renkler
 const GAME_COLORS: Record<string, string> = {
   TR: "#c43c3c", DE: "#d5a84b", FR: "#557fc5", GB: "#8e5a4a", RU: "#6a7a8a",
   US: "#4a6a9a", CN: "#c05a4a", JP: "#e05a6a", IN: "#d4a04a", BR: "#5a9a5a",
@@ -90,17 +85,27 @@ const GAME_COLORS: Record<string, string> = {
   SK: "#7a8a6a", RS: "#8a6b4a", HR: "#6a8a7a", BA: "#7a7a6a", AL: "#6a7a8a",
   MK: "#7a6a8a", GE: "#8a6a5a", AM: "#9a6a5a", AZ: "#8a7a4a", KZ: "#8a8a5a",
   IQ: "#8a6a4a", SY: "#7a6a5a", LB: "#6a7a5a", JO: "#7a7a5a", IL: "#6a8a9a",
-  SA: "#8a9a4a", AE: "#5a8a7a", KW: "#7a9a6a", QA: "#6a8a8a", BH: "#8a7a6a",
-  OM: "#7a8a6a", YE: "#8a6a5a", PK: "#6a8a5a", AF: "#8a7a5a", BD: "#5a8a6a",
-  TH: "#6a9a7a", VN: "#5a8a6a", ID: "#6a8a5a", MY: "#5a9a6a", PH: "#6a8a7a",
-  KR: "#5a7a9a", KP: "#8a5a5a", AU: "#6a8a5a", NZ: "#5a8a7a", ZA: "#7a8a5a",
-  NG: "#6a9a5a", ET: "#8a7a5a", KE: "#6a8a5a", MA: "#6a7a5a", DZ: "#7a8a5a",
-  TN: "#8a7a5a", LY: "#a08a5a", SD: "#8a7a5a", MX: "#6a8a5a", AR: "#6a8a9a",
-  CL: "#7a8a9a", CO: "#8a7a5a", PE: "#8a7a6a", VE: "#8a6a5a", CA: "#6a7a8a",
+  AE: "#5a8a7a", KW: "#7a9a6a", QA: "#6a8a8a", BH: "#8a7a6a", OM: "#7a8a6a",
+  YE: "#8a6a5a", PK: "#6a8a5a", AF: "#8a7a5a", BD: "#5a8a6a", TH: "#6a9a7a",
+  VN: "#5a8a6a", ID: "#6a8a5a", MY: "#5a9a6a", PH: "#6a8a7a", KR: "#5a7a9a",
+  KP: "#8a5a5a", AU: "#6a8a5a", NZ: "#5a8a7a", ZA: "#7a8a5a", NG: "#6a9a5a",
+  ET: "#8a7a5a", KE: "#6a8a5a", MA: "#6a7a5a", DZ: "#7a8a5a", TN: "#8a7a5a",
+  LY: "#a08a5a", SD: "#8a7a5a", MX: "#6a8a5a", AR: "#6a8a9a", CL: "#7a8a9a",
+  CO: "#8a7a5a", PE: "#8a7a6a", VE: "#8a6a5a", CA: "#6a7a8a",
 };
 
 const DEFAULT_FILL = "#3a4a42";
 const OCEAN = "#08100f";
+
+function lighten(hex: string, amount: number): string {
+  const clean = hex.replace("#", "");
+  const num = parseInt(clean, 16);
+  if (Number.isNaN(num)) return hex;
+  const r = Math.min(255, (num >> 16) + amount);
+  const g = Math.min(255, ((num >> 8) & 0xff) + amount);
+  const b = Math.min(255, (num & 0xff) + amount);
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+}
 
 export function WorldMap({
   playerCountryId = "TR",
@@ -116,13 +121,13 @@ export function WorldMap({
 
   useEffect(() => {
     let cancelled = false;
-    const el = containerRef.current;
-    if (!el) return;
+    const container = containerRef.current;
+    if (!container) return;
 
     fetch("/map/world-simple.svg")
-      .then((r) => {
-        if (!r.ok) throw new Error("SVG yüklenemedi");
-        return r.text();
+      .then((res) => {
+        if (!res.ok) throw new Error("SVG yüklenemedi");
+        return res.text();
       })
       .then((svgText) => {
         if (cancelled || !containerRef.current) return;
@@ -136,52 +141,67 @@ export function WorldMap({
         svg.setAttribute("width", "100%");
         svg.setAttribute("height", "100%");
         svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-        svg.style.display = "block";
-        svg.style.background = OCEAN;
+        (svg as SVGElement).style.display = "block";
+        (svg as SVGElement).style.background = OCEAN;
 
         const paths = svg.querySelectorAll("path[id]");
-        paths.forEach((path) => {
+        paths.forEach((rawPath) => {
+          const path = rawPath as SVGPathElement;
           const rawId = (path.getAttribute("id") || "").toLowerCase();
           const iso = rawId.toUpperCase();
           const isPlayer = iso === (playerCountryId || "").toUpperCase();
-          const isSelected = selectedCountryId && iso === selectedCountryId.toUpperCase();
+          const isSelected =
+            !!selectedCountryId && iso === selectedCountryId.toUpperCase();
 
           let fill = GAME_COLORS[iso] || DEFAULT_FILL;
           if (isPlayer) fill = "#c9a84c";
           if (isSelected) fill = "#e8c96a";
 
           path.setAttribute("fill", fill);
-          path.setAttribute("stroke", isPlayer || isSelected ? "#f0e0a0" : "#1a2822");
-          path.setAttribute("stroke-width", isPlayer || isSelected ? "1.4" : "0.35");
+          path.setAttribute(
+            "stroke",
+            isPlayer || isSelected ? "#f0e0a0" : "#1a2822"
+          );
+          path.setAttribute(
+            "stroke-width",
+            isPlayer || isSelected ? "1.4" : "0.35"
+          );
           path.style.cursor = "pointer";
           path.style.transition = "fill 0.12s ease, stroke 0.12s ease";
 
-          path.addEventListener("mouseenter", () => {
+          const onEnter = () => {
             setHovered(iso);
             if (!isPlayer && !isSelected) {
               path.setAttribute("fill", lighten(fill, 28));
             }
-          });
-          path.addEventListener("mouseleave", () => {
+          };
+          const onLeave = () => {
             setHovered(null);
             path.setAttribute("fill", fill);
-          });
-
-          path.addEventListener("click", (e) => {
+          };
+          const onClick = (e: Event) => {
             e.stopPropagation();
             onCountrySelect?.(iso);
-          });
+          };
 
-          const name = COUNTRY_NAMES[iso] || iso;
-          // title ekle
-          const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
-          title.textContent = name;
+          path.addEventListener("mouseenter", onEnter);
+          path.addEventListener("mouseleave", onLeave);
+          path.addEventListener("click", onClick);
+
+          // title
+          const existingTitle = path.querySelector("title");
+          if (existingTitle) existingTitle.remove();
+          const title = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "title"
+          );
+          title.textContent = COUNTRY_NAMES[iso] || iso;
           path.appendChild(title);
         });
 
         setReady(true);
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         console.error("Harita yüklenemedi:", err);
         setReady(false);
       });
@@ -202,7 +222,7 @@ export function WorldMap({
 
   return (
     <div
-      className={`world-map real-world-map ${className || ""}`}
+      className={`world-map real-world-map ${className}`}
       style={{
         position: "relative",
         width: "100%",
@@ -213,7 +233,12 @@ export function WorldMap({
     >
       <div
         ref={containerRef}
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+        }}
       />
 
       {!ready && (
@@ -232,7 +257,6 @@ export function WorldMap({
         </div>
       )}
 
-      {/* Mod çubuğu */}
       <div
         style={{
           position: "absolute",
@@ -279,7 +303,6 @@ export function WorldMap({
         ))}
       </div>
 
-      {/* Hover bilgi */}
       {hovered && (
         <div
           style={{
@@ -315,14 +338,4 @@ export function WorldMap({
       </div>
     </div>
   );
-}
-
-function lighten(hex: string, amount: number): string {
-  const clean = hex.replace("#", "");
-  const num = parseInt(clean, 16);
-  if (isNaN(num)) return hex;
-  const r = Math.min(255, (num >> 16) + amount);
-  const g = Math.min(255, ((num >> 8) & 0xff) + amount);
-  const b = Math.min(255, (num & 0xff) + amount);
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
               }
