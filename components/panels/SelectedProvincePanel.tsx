@@ -1,11 +1,12 @@
 "use client";
 
-import { Factory, Shield, Home, Building2, Crosshair } from "lucide-react";
+import { Factory, Shield, Home, Building2, Crosshair, Users, Smile, AlertTriangle, Wheat } from "lucide-react";
 import type { Province } from "@/lib/types";
 import type { Nation } from "@/data/world/countries";
 import type { Army } from "@/game/movement/server/types";
 import { FlagImage } from "@/components/ui/FlagImage";
 import type { BuildingType } from "@/data/economy/buildings";
+import { getCitySocialState } from "@/game/world/social-stability";
 
 const fmt = (n: number) =>
   n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}K` : Math.round(n).toString();
@@ -64,6 +65,7 @@ export function SelectedProvincePanel({
   const barracksLvl = buildings.barracks ?? 0;
   const fortLvl = buildings.fortification ?? 0;
   const morale = 70 + Math.min(25, Math.floor((province.population || 0) / 500000));
+  const social = getCitySocialState(province);
   const ownerName = country?.displayName ?? country?.name ?? province.ownerId ?? "—";
   const isCapital = country?.capitalProvinceId === province.id;
   const targetId = army?.order?.targetProvinceId;
@@ -113,6 +115,17 @@ export function SelectedProvincePanel({
             +{fmt(incomePerHour || Math.max(1, industryLvl) * 320)} /h
           </b>
         </div>
+      </div>
+
+      <div className={`city-social-card mood-${social.mood}`}>
+        <div className="city-social-head"><span><Users size={13}/> ŞEHİR & HALK PSİKOLOJİSİ</span><b>{social.eventLabel}</b></div>
+        <div className="social-meters">
+          <div><small>HALK DESTEĞİ</small><i><em style={{width:`${social.approval}%`}}/></i><b>%{social.approval}</b></div>
+          <div><small>İSTİKRAR</small><i><em style={{width:`${social.stability}%`}}/></i><b>%{social.stability}</b></div>
+          <div><small>İSYAN BASKISI</small><i><em style={{width:`${social.unrest}%`}}/></i><b>%{social.unrest}</b></div>
+        </div>
+        <div className="social-event"><span><Smile size={14}/></span><div><strong>{social.mood === "unrest" ? "HALK HUZURSUZ" : social.mood === "tense" ? "ŞEHİR GERGİN" : social.mood === "uneasy" ? "TEMKİNLİ HALK" : "HALK MEMNUN"}</strong><small>{social.eventEffect}</small></div></div>
+        <div className="social-mini"><span><Wheat size={12}/> GÖÇ BASKISI %{social.migrationPressure}</span><span><AlertTriangle size={12}/> SOSYAL TANSİYON %{social.unrest}</span></div>
       </div>
 
       <div className="eyalet-section">

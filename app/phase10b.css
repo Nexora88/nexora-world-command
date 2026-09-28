@@ -632,3 +632,58 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden!important}
 /* PROFILE + CAMPAIGN HUB */
 .profile-choice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.profile-option{min-height:74px;flex-direction:column;text-align:center}.profile-option img{width:42px;height:42px;object-fit:cover;border-radius:50%;border:1px solid #496354}.profile-avatar-fallback{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1px solid #496354;color:#75d59a;background:#0d1712;font:700 13px monospace}.profile-option input{display:none}.optional-label{font-size:8px;color:#6d8176;margin-left:5px}.profile-choice+label{margin-top:10px}.entry-card textarea{width:100%;min-height:70px;resize:vertical;background:#0b1115;border:1px solid #26323d;color:#dce9e1;padding:10px;font:11px monospace}.profile-rules{margin:12px 0;padding:10px;border-left:2px solid #4b8f68;background:#0c1511;display:grid;gap:4px}.profile-rules b{font:700 9px monospace;color:#8ed5a7;letter-spacing:.08em}.profile-rules span{font:10px/1.5 monospace;color:#7e9086}.commander-bio{display:block!important;margin-top:5px;color:#789084!important;font-size:8px!important;line-height:1.35}
 .campaign-hub{width:min(980px,94vw);padding:10px}.campaign-header{display:flex;justify-content:space-between;gap:25px;align-items:flex-start;margin-bottom:22px}.campaign-header h1{margin:5px 0 8px;font-size:25px;letter-spacing:.06em}.campaign-header p{max-width:650px;color:#82928b;font:11px/1.6 monospace}.campaign-network{min-width:190px;padding:12px;border:1px solid #294235;background:#0b1511;display:grid;grid-template-columns:22px 1fr;gap:3px 7px}.campaign-network svg{grid-row:span 2;color:#56cb85}.campaign-network b{font:700 10px monospace;color:#bde8ca}.campaign-network span{font:8px monospace;color:#71847a}.campaign-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.campaign-card{border:1px solid #26362e;background:#0a100d;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.18)}.campaign-card.live{border-color:#38694d}.campaign-map-art{height:110px;background:radial-gradient(circle at 45% 45%,#1a3327 0,#0b1410 58%,#080c0b 100%);display:flex;align-items:center;justify-content:space-between;padding:18px;color:#4a8d67}.campaign-map-art span{font:700 20px monospace;letter-spacing:.12em}.campaign-map-art svg{width:58px;height:58px;opacity:.55}.campaign-card-body{padding:16px}.campaign-meta{display:flex;justify-content:space-between;align-items:center}.campaign-status{font:700 9px monospace;color:#8b9a91}.campaign-status.live{color:#67d795}.campaign-status.starting{color:#d1b96f}.campaign-meta small{font:8px monospace;color:#4f6359}.campaign-card h2{font-size:19px;margin:8px 0}.campaign-card p{min-height:52px;color:#82928b;font:10px/1.55 monospace}.campaign-stats{display:flex;gap:14px;margin:12px 0;color:#93a79b;font:9px monospace}.campaign-stats span{display:flex;align-items:center;gap:5px}.campaign-stats svg{width:13px}.campaign-tags{display:flex;gap:5px;flex-wrap:wrap}.campaign-tags b{font:7px monospace;color:#6e897a;border:1px solid #26382f;padding:4px 5px}.campaign-card button{width:100%;margin-top:14px;padding:11px;background:#12251a;border:1px solid #3b8057;color:#d8f5e1;font:700 10px monospace;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:8px}.campaign-card button:disabled{opacity:.45;cursor:not-allowed}.campaign-card button svg{width:14px}@media(max-width:760px){.profile-choice,.campaign-grid{grid-template-columns:1fr}.campaign-header{flex-direction:column}.campaign-network{width:100%}.campaign-hub{padding:0}}
+/* PHASE 13 — living history palette / welcoming entry experience */
+.commander-entry{
+  background:radial-gradient(circle at 12% 18%,rgba(213,160,76,.18),transparent 25%),radial-gradient(circle at 88% 12%,rgba(62,155,214,.18),transparent 28%),linear-gradient(135deg,#10161d 0%,#17231f 48%,#251c17 100%);
+}
+.commander-entry::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 0 35%,rgba(236,193,112,.07) 50%,transparent 65%),radial-gradient(circle at 50% 100%,rgba(190,76,54,.14),transparent 32%);animation:historyGlow 10s ease-in-out infinite;pointer-events:none}
+@keyframes historyGlow{50%{transform:scale(1.06) rotate(1deg);opacity:.72}}
+.entry-grid{opacity:.34;background-image:linear-gradient(rgba(224,183,105,.11) 1px,transparent 1px),linear-gradient(90deg,rgba(98,170,205,.08) 1px,transparent 1px),radial-gradient(circle,rgba(255,255,255,.06) 0 1px,transparent 1.2px);background-size:44px 44px,44px 44px,90px 90px}
+.entry-card{
+  background:linear-gradient(145deg,rgba(17,27,31,.96),rgba(35,28,23,.94));
+  border:1px solid rgba(224,184,103,.42);box-shadow:0 30px 100px rgba(0,0,0,.7),0 0 70px rgba(219,158,70,.08);backdrop-filter:blur(12px)
+}
+.entry-brand strong{color:#f0d28d;text-shadow:0 2px 18px rgba(231,177,76,.25)}
+.entry-brand span{color:#8cb5b0}
+.entry-mark{color:#e0a957;filter:drop-shadow(0 0 12px rgba(224,169,87,.3))}
+.entry-kicker{color:#7fc3bd}
+.entry-card h1{color:#f2eee3;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.entry-copy{color:#a9b5af}
+.entry-card input,.entry-card textarea{background:rgba(7,13,16,.82);border-color:#43504e}
+.entry-card input:focus,.entry-card textarea:focus{border-color:#e1ad5d;box-shadow:0 0 0 2px rgba(225,173,93,.1)}
+/* vivid command choices */
+.entry-tabs button{background:linear-gradient(145deg,#121d25,#172018);border-color:#344a4b;color:#9db2b0}
+.entry-tabs button:nth-child(1).active{border-color:#62b8e8;background:linear-gradient(145deg,#102b3d,#12352f);box-shadow:inset 0 0 24px rgba(74,177,224,.16),0 0 20px rgba(74,177,224,.08);color:#d9f5ff}
+.entry-tabs button:nth-child(2).active{border-color:#d9a955;background:linear-gradient(145deg,#352514,#24351d);box-shadow:inset 0 0 24px rgba(224,169,87,.14);color:#fff0c9}
+.entry-tabs button:nth-child(3).active{border-color:#65d891;background:linear-gradient(145deg,#112d22,#10263a);box-shadow:inset 0 0 24px rgba(76,210,143,.14);color:#ddffec}
+.profile-option.active{border-color:#e0b263;background:linear-gradient(145deg,#2b2115,#18271e);box-shadow:inset 0 0 20px rgba(222,175,91,.13)}
+.entry-card button.entry-primary,.entry-card form>button{background:linear-gradient(90deg,#234a32,#765328);border-color:#e3ad55;color:#fff1cb;box-shadow:0 8px 25px rgba(192,137,55,.14)}
+.guest-warning{border-color:#d09542;background:linear-gradient(135deg,#2b2113,#18231b);color:#f1d18f}
+.profile-rules{border-left-color:#58c889;background:linear-gradient(90deg,rgba(49,120,79,.18),rgba(20,30,24,.3))}
+.campaign-hub{position:relative}
+.campaign-card.europe{border-color:#3d7a86;background:linear-gradient(145deg,#0c1d22,#121913)}
+.campaign-card.world{border-color:#775b8e;background:linear-gradient(145deg,#171326,#101c25)}
+.campaign-card.europe .campaign-map-art{background:radial-gradient(circle at 35% 45%,#1c5962 0,#122d32 42%,#0b1515 100%);color:#6ed3d5}
+.campaign-card.world .campaign-map-art{background:radial-gradient(circle at 62% 42%,#5a356d 0,#282044 40%,#0b131c 100%);color:#d09bf0}
+.campaign-card h2{color:#f0eadb}.campaign-card p{color:#9ca9a4}
+.campaign-card button{background:linear-gradient(90deg,#193b35,#4a3620);border-color:#b58a49}
+.campaign-network{border-color:#55746e;background:linear-gradient(145deg,#12241f,#18202a)}
+/* PHASE 13 — social atmosphere, unrest and city psychology */
+.city-social-card{padding:11px;border:1px solid #2d5140;background:linear-gradient(145deg,#101b16,#0c1414);border-radius:5px;display:grid;gap:9px;box-shadow:inset 0 0 25px rgba(71,180,115,.04)}
+.city-social-card.mood-content{border-color:#3d8b5d}.city-social-card.mood-uneasy{border-color:#8a7a3d;background:linear-gradient(145deg,#1b1910,#101613)}.city-social-card.mood-tense{border-color:#a46a38;background:linear-gradient(145deg,#23170f,#121613)}.city-social-card.mood-unrest{border-color:#a84c48;background:linear-gradient(145deg,#271414,#151112);box-shadow:0 0 22px rgba(190,65,57,.08)}
+.city-social-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.city-social-head span{display:flex;align-items:center;gap:5px;font-size:8px;letter-spacing:.08em;color:#b9c9bf}.city-social-head b{font-size:7px;color:#e0bb72;text-align:right}
+.social-meters{display:grid;gap:6px}.social-meters>div{display:grid;grid-template-columns:74px 1fr 27px;gap:6px;align-items:center}.social-meters small{font-size:7px;color:#72877b}.social-meters i{height:5px;background:#17231d;border:1px solid #24392d;overflow:hidden;border-radius:3px}.social-meters i em{display:block;height:100%;background:linear-gradient(90deg,#53bd7d,#e0b25e);border-radius:3px}.mood-unrest .social-meters i em{background:linear-gradient(90deg,#d59a50,#c85c50)}.social-meters b{font-size:8px;text-align:right;color:#d7e1db}
+.social-event{display:flex;gap:8px;align-items:center;padding:7px;background:rgba(255,255,255,.025);border:1px solid rgba(160,190,170,.1)}.social-event>span{width:27px;height:27px;display:grid;place-items:center;border-radius:50%;background:#173524;color:#72d398}.mood-tense .social-event>span,.mood-unrest .social-event>span{background:#42241d;color:#e08b67}.social-event div{display:grid;gap:2px}.social-event strong{font-size:8px;color:#dce7e0}.social-event small{font-size:8px;line-height:1.35;color:#7e9187}
+.social-mini{display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;font-size:7px;color:#73877c}.social-mini span{display:flex;align-items:center;gap:4px}
+/* richer map / world command colors */
+.aaa-top{background:linear-gradient(90deg,#101b20,#18231d 52%,#211b16);border-bottom:1px solid #5b4930}
+.command-left{background:linear-gradient(180deg,#101c1a,#131a20 48%,#211a15);border-right-color:#3e4e48}
+.command-right{background:linear-gradient(180deg,#111b1a,#101820 55%,#1e1915);border-left-color:#4a4031}
+.aaa-bottom{background:linear-gradient(90deg,#111b1d,#1a211d,#241b16);border-top:1px solid #554631}
+.aaa-bottom button{color:#91a59e}.aaa-bottom button.active{color:#ffe0a0;background:linear-gradient(180deg,rgba(207,157,72,.16),rgba(64,142,105,.08));border-top:2px solid #dfad57}
+.world-map-clean .world-ocean{fill:#132b36}
+.world-map-clean .world-country.player .world-country-shape{stroke:#f2c86f;filter:drop-shadow(0 0 5px rgba(242,200,111,.18))}
+.world-map-clean .world-country-shape:hover{filter:brightness(1.2) saturate(1.2);stroke:#f4d27d}
+.world-map-clean .world-country-label{fill:#f2e8d0}
+.world-map-clean .capital-core{fill:#f0b85b}.world-map-clean .capital-ring{stroke:#f0b85b}
+@media(max-width:760px){.entry-card{padding:20px 16px}.entry-tabs{grid-template-columns:1fr}.campaign-card p{min-height:auto}.city-social-head{align-items:flex-start}.social-meters>div{grid-template-columns:66px 1fr 25px}}
