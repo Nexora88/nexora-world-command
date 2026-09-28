@@ -693,6 +693,7 @@ export function GameScreen() {
           armies={armies}
           resources={resources}
           income={income}
+          playerCountryId={playerCountryId}
         />
       )}
 
