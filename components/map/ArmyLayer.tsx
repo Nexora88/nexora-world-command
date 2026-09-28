@@ -7,6 +7,7 @@ type Props = {
   armies: Army[];
   selectedArmyId: string | null;
   onSelectArmy: (id: string) => void;
+  zoom?: number;
 };
 
 type Point = { x: number; y: number };
@@ -23,8 +24,9 @@ function shortNumber(value: number): string {
   return Math.round(value).toString();
 }
 
-export function ArmyLayer({ armies, selectedArmyId, onSelectArmy }: Props) {
+export function ArmyLayer({ armies, selectedArmyId, onSelectArmy, zoom = 1 }: Props) {
   const active = armies.filter((army) => army.status !== "destroyed");
+  if (zoom < 1.15) return <g className="army-layer" />;
   const stackCounts = new Map<string, number>();
   return (
     <g className="army-layer" aria-label="Field armies">
@@ -55,8 +57,8 @@ export function ArmyLayer({ armies, selectedArmyId, onSelectArmy }: Props) {
             <circle className="army-marker-ring" cx="0" cy="0" r="2.65" />
             <path className="army-marker-shield" d="M0-2.05 L1.75-1.15 L1.35 1.25 L0 2.05 L-1.35 1.25 L-1.75-1.15 Z" />
             <path className="army-marker-chevron" d="M-.85-.35 L0 .45 L.85-.35" />
-            <text className="army-marker-strength" x="3.35" y=".65">{shortNumber(army.strength)}</text>
-            <text className="army-marker-name" x="0" y="5.1">{army.name.toUpperCase().slice(0, 16)}</text>
+            {zoom >= 1.45 && <text className="army-marker-strength" x="3.35" y=".65">{shortNumber(army.strength)}</text>}
+            {zoom >= 1.75 && <text className="army-marker-name" x="0" y="5.1">{army.name.toUpperCase().slice(0, 16)}</text>}
           </g>
         );
       })}

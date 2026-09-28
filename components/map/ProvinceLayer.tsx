@@ -11,6 +11,7 @@ type Props={
   selectedId:string|null;
   hoveredId:string|null;
   playerCountryId?:string;
+  selectedCountryId?:string|null;
   zoom?:number;
   mapMode:string;
   maxPopulation:number;
@@ -35,12 +36,14 @@ function polygonPoints(id:string){
   return points.map(point=>`${point.x},${point.y}`).join(" ");
 }
 
-export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,zoom=1,mapMode,onSelect,onHover,fillFor}:Props){
+export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,selectedCountryId,zoom=1,mapMode,onSelect,onHover,fillFor}:Props){
   const shapes=useMemo(()=>provinces.map(p=>({p,world:REAL_WORLD_PROVINCES[p.id]})).filter(x=>x.world),[provinces]);
-  // Province territories are a strategic zoom layer. At world scale the country layer stays clean; zooming in reveals the playable provinces.
-  if(zoom<1.65)return <g className="province-territories"/>;
+  const focusCountry=selectedCountryId??playerCountryId;
+  const focusedShapes=useMemo(()=>focusCountry?shapes.filter(({p,world})=>safeCountryCode(world?.countryCode??p.countryId)===safeCountryCode(focusCountry)):shapes,[focusCountry,shapes]);
+  // Province territories are the command layer: a selected country is revealed immediately, otherwise the layer appears after zoom.
+  if(zoom<1.65 && !selectedCountryId)return <g className="province-territories"/>;
   return <g className="province-territories">
-    {shapes.map(({p,world})=>{
+    {(selectedCountryId ? focusedShapes : (zoom>=1.65 ? shapes : focusedShapes)).map(({p,world})=>{
       const code=safeCountryCode(world?.countryCode??p.countryId);
       const country=REAL_WORLD_COUNTRIES.find(c=>safeCountryCode(c.id)===code);
       const selected=p.id===selectedId;
@@ -71,7 +74,7 @@ export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,zo
           />
           <circle cx={world.coordinates.x} cy={world.coordinates.y} r="1.15" className="province-center-fallback"/>
         </>}
-        {(owned&&zoom>=1.05)||(zoom>=2.15&&selected)&&<text x={world.coordinates.x} y={world.coordinates.y-1.9} className={`province-label ${owned?"owned":""}`}>{p.name.toUpperCase()}</text>}
+        {((owned&&zoom>=1.05)||(selectedCountryId&&zoom>=1.65)||(zoom>=2.15&&selected))&&<text x={world.coordinates.x} y={world.coordinates.y-1.9} className={`province-label ${owned?"owned":""}`}>{p.name.toUpperCase()}</text>}
       </g>;
     })}
   </g>;
