@@ -105,6 +105,7 @@ export function GameScreen() {
 
   const [selectedArmyId, setSelectedArmyId] = useState<string | null>(null);
   const [clockNow, setClockNow] = useState(() => Date.now());
+  const [gameClock, setGameClock] = useState({ day: 1, hour: 8, minute: 0, speed: 1, paused: false });
   const [mode, setMode] = useState<MapMode>("political");
   const [tab, setTab] = useState("WORLD");
   const [filter, setFilter] = useState("");

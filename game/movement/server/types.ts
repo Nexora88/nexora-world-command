@@ -21,6 +21,7 @@ export interface Army {
 
 export interface ArmyOrder {
   type: "move" | "attack";
+  orderId?: string;
   fromProvinceId: string;
   targetProvinceId: string;
   route: string[];

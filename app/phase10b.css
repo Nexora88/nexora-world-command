@@ -600,3 +600,13 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden!important}
 @media(min-width:1400px){.aaa-body{grid-template-columns:260px minmax(0,1fr) 350px}.command-drawer{left:260px;right:350px}}
 @media(min-width:2200px){.aaa-body{grid-template-columns:290px minmax(0,1fr) 390px}.command-drawer{left:290px;right:390px}}
 @media(max-width:390px){.aaa-bottom button{flex-basis:68px;min-width:68px}.aaa-bottom button span{font-size:6px}.strategic-map-toolbar button{padding:0 7px}.map-scale{font-size:6px}}
+
+/* PHASE 2 — authoritative game clock */
+.game-clock{min-width:126px;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;gap:2px 8px;align-items:center}
+.game-clock-time{display:flex;flex-direction:column}
+.game-clock-time b{font-variant-numeric:tabular-nums}
+.game-clock-controls{display:flex;gap:2px}
+.game-clock-controls button{border:1px solid #26372e;background:#0b120f;color:#789184;font-size:8px;padding:3px 4px;cursor:pointer}
+.game-clock-controls button:hover,.game-clock-controls button.active{border-color:#5b8969;color:#d5eadc;background:#142219}
+.game-clock>i{grid-column:1/-1}
+@media(max-width:900px){.game-clock{min-width:94px}.game-clock-controls button{font-size:7px;padding:2px 3px}}
