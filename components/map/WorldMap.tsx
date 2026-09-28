@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { Province } from "@/lib/types";
+import type { Army } from "@/game/movement/server/types";
 
 export type MapMode =
   | "political"
@@ -13,112 +15,88 @@ export type MapMode =
   | "frontline";
 
 type Props = {
-  playerCountryId?: string;
-  selectedCountryId?: string | null;
+  // GameScreen'in gönderdiği props (uyumluluk için hepsi var)
+  provinces?: Province[];
+  armies?: Army[];
+  selectedId?: string | null;
+  selectedArmyId?: string | null;
+  onSelect?: (id: string) => void;
+  onSelectArmy?: (id: string) => void;
   onCountrySelect?: (iso2: string) => void;
   mapMode?: MapMode;
   onMapModeChange?: (mode: MapMode) => void;
+  playerCountryId?: string;
+  selectedCountryId?: string | null;
   showLabels?: boolean;
   showBorders?: boolean;
   className?: string;
 };
 
-// Modern ülke isimleri (ISO2 → Türkçe / oyun ismi)
+// ────────────────────────────────────────────────
+// Modern ülke isimleri (ISO 3166-1 alpha-2)
+// ────────────────────────────────────────────────
 const COUNTRY_NAMES: Record<string, string> = {
-  TR: "TÜRKİYE",
-  DE: "ALMANYA",
-  FR: "FRANSA",
-  GB: "BİRLEŞİK KRALLIK",
-  RU: "RUSYA",
-  US: "ABD",
-  CN: "ÇİN",
-  JP: "JAPONYA",
-  IN: "HİNDİSTAN",
-  BR: "BREZİLYA",
-  IT: "İTALYA",
-  ES: "İSPANYA",
-  PL: "POLONYA",
-  UA: "UKRAYNA",
-  SA: "SUUDİ ARABİSTAN",
-  IR: "İRAN",
-  IQ: "IRAK",
-  SY: "SURİYE",
-  EG: "MISIR",
-  GR: "YUNANİSTAN",
-  BG: "BULGARİSTAN",
-  RO: "ROMANYA",
-  HU: "MACARİSTAN",
-  AT: "AVUSTURYA",
-  CH: "İSVİÇRE",
-  NL: "HOLLANDA",
-  BE: "BELÇİKA",
-  SE: "İSVEÇ",
-  NO: "NORVEÇ",
-  FI: "FİNLANDİYA",
-  DK: "DANİMARKA",
-  PT: "PORTEKİZ",
-  IE: "İRLANDA",
-  CZ: "ÇEKYA",
-  SK: "SLOVAKYA",
-  RS: "SIRBİSTAN",
-  HR: "HIRVATİSTAN",
-  BA: "BOSNA",
-  AL: "ARNAVUTLUK",
-  MK: "KUZEY MAKEDONYA",
-  GE: "GÜRCİSTAN",
-  AM: "ERMENİSTAN",
-  AZ: "AZERBAYCAN",
-  KZ: "KAZAKİSTAN",
-  UZ: "ÖZBEKİSTAN",
-  AF: "AFGANİSTAN",
-  PK: "PAKİSTAN",
-  BD: "BANGLADEŞ",
-  TH: "TAYLAND",
-  VN: "VIETNAM",
-  ID: "ENDONEZYA",
-  MY: "MALEZYA",
-  PH: "FİLİPİNLER",
-  KR: "GÜNEY KORE",
-  KP: "KUZEY KORE",
-  AU: "AVUSTRALYA",
-  NZ: "YENİ ZELANDA",
-  ZA: "GÜNEY AFRİKA",
-  NG: "NİJERYA",
-  ET: "ETİYOPYA",
-  KE: "KENYA",
-  MA: "FAS",
-  DZ: "CEZAYİR",
-  TN: "TUNUS",
-  LY: "LİBYA",
-  SD: "SUDAN",
-  MX: "MEKSİKA",
-  AR: "ARJANTİN",
-  CL: "ŞİLİ",
-  CO: "KOLOMBİYA",
-  PE: "PERU",
-  VE: "VENEZUELA",
-  CA: "KANADA",
+  AF: "AFGANİSTAN", AL: "ARNAVUTLUK", DZ: "CEZAYİR", AD: "ANDORRA", AO: "ANGOLA",
+  AG: "ANTİGUA VE BARBUDA", AR: "ARJANTİN", AM: "ERMENİSTAN", AU: "AVUSTRALYA",
+  AT: "AVUSTURYA", AZ: "AZERBAYCAN", BS: "BAHAMALAR", BH: "BAHREYN", BD: "BANGLADEŞ",
+  BB: "BARBADOS", BY: "BELARUS", BE: "BELÇİKA", BZ: "BELİZE", BJ: "BENİN",
+  BT: "BUTAN", BO: "BOLİVYA", BA: "BOSNA HERSEK", BW: "BOTSVANA", BR: "BREZİLYA",
+  BN: "BRUNEİ", BG: "BULGARİSTAN", BF: "BURKİNA FASO", BI: "BURUNDİ", CV: "CAPE VERDE",
+  KH: "KAMBOÇYA", CM: "KAMERUN", CA: "KANADA", CF: "ORTA AFRİKA CUMHURİYETİ",
+  TD: "ÇAD", CL: "ŞİLİ", CN: "ÇİN", CO: "KOLOMBİYA", KM: "KOMORLAR",
+  CG: "KONGO", CD: "KONGO DC", CR: "KOSTA RİKA", CI: "FİLDİŞİ SAHİLİ", HR: "HIRVATİSTAN",
+  CU: "KUBA", CY: "KIBRIS", CZ: "ÇEKYA", DK: "DANİMARKA", DJ: "CİBUTİ",
+  DM: "DOMİNİKA", DO: "DOMİNİK CUMHURİYETİ", EC: "EKVADOR", EG: "MISIR", SV: "EL SALVADOR",
+  GQ: "EKVATOR GİNESİ", ER: "ERİTRE", EE: "ESTONYA", SZ: "ESVATİNİ", ET: "ETİYOPYA",
+  FJ: "FİJİ", FI: "FİNLANDİYA", FR: "FRANSA", GA: "GABON", GM: "GAMBİYA",
+  GE: "GÜRCİSTAN", DE: "ALMANYA", GH: "GANA", GR: "YUNANİSTAN", GD: "GRENADA",
+  GT: "GUATEMALA", GN: "GİNE", GW: "GİNE-BİSSAU", GY: "GUYANA", HT: "HAİTİ",
+  HN: "HONDURAS", HU: "MACARİSTAN", IS: "İZLANDA", IN: "HİNDİSTAN", ID: "ENDONEZYA",
+  IR: "İRAN", IQ: "IRAK", IE: "İRLANDA", IL: "İSRAİL", IT: "İTALYA",
+  JM: "JAMAİKA", JP: "JAPONYA", JO: "ÜRDÜN", KZ: "KAZAKİSTAN", KE: "KENYA",
+  KI: "KİRİBATİ", KP: "KUZEY KORE", KR: "GÜNEY KORE", KW: "KUVEYT", KG: "KIRGIZİSTAN",
+  LA: "LAOS", LV: "LETONYA", LB: "LÜBNAN", LS: "LESOTHO", LR: "LİBERYA",
+  LY: "LİBYA", LI: "LİHTENŞTAYN", LT: "LİTVANYA", LU: "LÜKSEMBURG", MG: "MADAGASKAR",
+  MW: "MALAVİ", MY: "MALEZYA", MV: "MALDİVLER", ML: "MALİ", MT: "MALTA",
+  MH: "MARSHALL ADALARI", MR: "MORİTANYA", MU: "MAURİTİUS", MX: "MEKSİKA",
+  FM: "MİKRONEZYA", MD: "MOLDOVA", MC: "MONAKO", MN: "MOĞOLİSTAN", ME: "KARADAĞ",
+  MA: "FAS", MZ: "MOZAMBİK", MM: "MYANMAR", NA: "NAMİBYA", NR: "NAURU",
+  NP: "NEPAL", NL: "HOLLANDA", NZ: "YENİ ZELANDA", NI: "NİKARAGUA", NE: "NİJER",
+  NG: "NİJERYA", MK: "KUZEY MAKEDONYA", NO: "NORVEÇ", OM: "UMMAN", PK: "PAKİSTAN",
+  PW: "PALAU", PA: "PANAMA", PG: "PAPUA YENİ GİNE", PY: "PARAGUAY", PE: "PERU",
+  PH: "FİLİPİNLER", PL: "POLONYA", PT: "PORTEKİZ", QA: "KATAR", RO: "ROMANYA",
+  RU: "RUSYA", RW: "RUANDA", KN: "SAINT KITTS VE NEVİS", LC: "SAINT LUCIA",
+  VC: "SAINT VINCENT", WS: "SAMOA", SM: "SAN MARİNO", ST: "SAO TOME VE PRİNCİPE",
+  SA: "SUUDİ ARABİSTAN", SN: "SENEGAL", RS: "SIRBİSTAN", SC: "SEYŞELLER",
+  SL: "SİERRA LEONE", SG: "SİNGAPUR", SK: "SLOVAKYA", SI: "SLOVENYA", SB: "SOLOMON ADALARI",
+  SO: "SOMALİ", ZA: "GÜNEY AFRİKA", SS: "GÜNEY SUDAN", ES: "İSPANYA", LK: "SRİ LANKA",
+  SD: "SUDAN", SR: "SURİNAM", SE: "İSVEÇ", CH: "İSVİÇRE", SY: "SURİYE",
+  TW: "TAYVAN", TJ: "TACİKİSTAN", TZ: "TANZANYA", TH: "TAYLAND", TL: "DOĞU TİMOR",
+  TG: "TOGO", TO: "TONGA", TT: "TRİNİDAD VE TOBAGO", TN: "TUNUS", TR: "TÜRKİYE",
+  TM: "TÜRKMENİSTAN", TV: "TUVALU", UG: "UGANDA", UA: "UKRAYNA", AE: "BİRLEŞİK ARAP EMİRLİKLERİ",
+  GB: "BİRLEŞİK KRALLIK", US: "ABD", UY: "URUGUAY", UZ: "ÖZBEKİSTAN", VU: "VANUATU",
+  VA: "VATİKAN", VE: "VENEZUELA", VN: "VİETNAM", YE: "YEMEN", ZM: "ZAMBİYA",
+  ZW: "ZİMBABVE", XK: "KOSOVA", PS: "FİLİSTİN",
 };
 
-// Oyun ülkeleri için özel renkler
+// Oyun odaklı renkler
 const GAME_COLORS: Record<string, string> = {
-  TR: "#c43c3c",
-  DE: "#d5a84b",
-  FR: "#557fc5",
-  GB: "#8e5a4a",
-  RU: "#6a7a8a",
-  US: "#4a6a9a",
-  CN: "#c05a4a",
-  JP: "#e05a6a",
-  IN: "#d4a04a",
-  BR: "#5a9a5a",
-  IT: "#4f9a79",
-  ES: "#c99a4a",
-  PL: "#d4a84b",
-  UA: "#9a8a5a",
-  SA: "#8a9a4a",
-  IR: "#9a7a4a",
-  EG: "#c9a04a",
+  TR: "#c43c3c", DE: "#d5a84b", FR: "#557fc5", GB: "#8e5a4a", RU: "#6a7a8a",
+  US: "#4a6a9a", CN: "#c05a4a", JP: "#e05a6a", IN: "#d4a04a", BR: "#5a9a5a",
+  IT: "#4f9a79", ES: "#c99a4a", PL: "#d4a84b", UA: "#9a8a5a", SA: "#8a9a4a",
+  IR: "#9a7a4a", EG: "#c9a04a", GR: "#4a7c9b", RO: "#b85c4a", HU: "#c99a4a",
+  AT: "#b85b68", NL: "#d27b4b", BE: "#8e73b8", SE: "#6a8a9a", NO: "#5a7a8a",
+  FI: "#7a9aaa", DK: "#c05a4a", PT: "#6b8f5e", IE: "#5a8a5e", CZ: "#8a7a6a",
+  SK: "#7a8a6a", RS: "#8a6b4a", HR: "#6a8a7a", BA: "#7a7a6a", AL: "#6a7a8a",
+  MK: "#7a6a8a", GE: "#8a6a5a", AM: "#9a6a5a", AZ: "#8a7a4a", KZ: "#8a8a5a",
+  IQ: "#8a6a4a", SY: "#7a6a5a", LB: "#6a7a5a", JO: "#7a7a5a", IL: "#6a8a9a",
+  SA: "#8a9a4a", AE: "#5a8a7a", KW: "#7a9a6a", QA: "#6a8a8a", BH: "#8a7a6a",
+  OM: "#7a8a6a", YE: "#8a6a5a", PK: "#6a8a5a", AF: "#8a7a5a", BD: "#5a8a6a",
+  TH: "#6a9a7a", VN: "#5a8a6a", ID: "#6a8a5a", MY: "#5a9a6a", PH: "#6a8a7a",
+  KR: "#5a7a9a", KP: "#8a5a5a", AU: "#6a8a5a", NZ: "#5a8a7a", ZA: "#7a8a5a",
+  NG: "#6a9a5a", ET: "#8a7a5a", KE: "#6a8a5a", MA: "#6a7a5a", DZ: "#7a8a5a",
+  TN: "#8a7a5a", LY: "#a08a5a", SD: "#8a7a5a", MX: "#6a8a5a", AR: "#6a8a9a",
+  CL: "#7a8a9a", CO: "#8a7a5a", PE: "#8a7a6a", VE: "#8a6a5a", CA: "#6a7a8a",
 };
 
 const DEFAULT_FILL = "#3a4a42";
@@ -161,12 +139,11 @@ export function WorldMap({
         svg.style.display = "block";
         svg.style.background = OCEAN;
 
-        // Tüm path'leri stilize et
         const paths = svg.querySelectorAll("path[id]");
         paths.forEach((path) => {
           const rawId = (path.getAttribute("id") || "").toLowerCase();
           const iso = rawId.toUpperCase();
-          const isPlayer = iso === playerCountryId.toUpperCase();
+          const isPlayer = iso === (playerCountryId || "").toUpperCase();
           const isSelected = selectedCountryId && iso === selectedCountryId.toUpperCase();
 
           let fill = GAME_COLORS[iso] || DEFAULT_FILL;
@@ -179,7 +156,6 @@ export function WorldMap({
           path.style.cursor = "pointer";
           path.style.transition = "fill 0.12s ease, stroke 0.12s ease";
 
-          // Hover
           path.addEventListener("mouseenter", () => {
             setHovered(iso);
             if (!isPlayer && !isSelected) {
@@ -191,15 +167,16 @@ export function WorldMap({
             path.setAttribute("fill", fill);
           });
 
-          // Tıklama
           path.addEventListener("click", (e) => {
             e.stopPropagation();
             onCountrySelect?.(iso);
           });
 
-          // Tooltip için title
           const name = COUNTRY_NAMES[iso] || iso;
-          path.innerHTML = `<title>${name}</title>`;
+          // title ekle
+          const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+          title.textContent = name;
+          path.appendChild(title);
         });
 
         setReady(true);
@@ -225,7 +202,7 @@ export function WorldMap({
 
   return (
     <div
-      className={`world-map real-world-map ${className}`}
+      className={`world-map real-world-map ${className || ""}`}
       style={{
         position: "relative",
         width: "100%",
@@ -234,18 +211,11 @@ export function WorldMap({
         overflow: "hidden",
       }}
     >
-      {/* SVG konteyner */}
       <div
         ref={containerRef}
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-        }}
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
       />
 
-      {/* Yükleniyor */}
       {!ready && (
         <div
           style={{
@@ -264,7 +234,6 @@ export function WorldMap({
 
       {/* Mod çubuğu */}
       <div
-        className="strategic-map-toolbar"
         style={{
           position: "absolute",
           top: 12,
@@ -273,6 +242,7 @@ export function WorldMap({
           gap: 4,
           zIndex: 20,
           flexWrap: "wrap",
+          maxWidth: "70%",
         }}
       >
         <span
@@ -330,7 +300,6 @@ export function WorldMap({
         </div>
       )}
 
-      {/* Ölçek */}
       <div
         style={{
           position: "absolute",
@@ -342,7 +311,7 @@ export function WorldMap({
           zIndex: 20,
         }}
       >
-        DÜNYA TİYATROSU · MODERN
+        DÜNYA TİYATROSU · {Object.keys(COUNTRY_NAMES).length}+ ÜLKE
       </div>
     </div>
   );
@@ -356,4 +325,4 @@ function lighten(hex: string, amount: number): string {
   const g = Math.min(255, ((num >> 8) & 0xff) + amount);
   const b = Math.min(255, (num & 0xff) + amount);
   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
-}
+              }
