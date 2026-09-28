@@ -14,6 +14,7 @@ export interface Army {
   fuel: number;
   maintenancePerHour: number;
   status: ArmyStatus;
+  battleId?: string;
   order?: ArmyOrder;
   createdAt: number;
   updatedAt: number;
