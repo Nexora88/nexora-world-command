@@ -57,6 +57,23 @@ export function moveArmyForCountry(armyId: string, targetId: string, allowNeutra
 }
 
 export function performMovementAction(action: MovementAction): Army {
+  if (action.type === "mergeArmies") {
+    if (!action.sourceArmyId || !action.targetArmyId || action.sourceArmyId === action.targetArmyId) throw new Error("Two different armies are required.");
+    const sourceRaw = armies.get(action.sourceArmyId); const targetRaw = armies.get(action.targetArmyId); if (!sourceRaw || !targetRaw) throw new Error("Army does not exist."); const source = assertArmyOwner(sourceRaw); const target = assertArmyOwner(targetRaw);
+    if (!source || !target) throw new Error("Army does not exist.");
+    if (source.status !== "ready" || target.status !== "ready" || source.provinceId !== target.provinceId) throw new Error("Armies must be ready in the same province.");
+    target.infantry += source.infantry; target.tanks += source.tanks; target.morale = Math.round((target.morale + source.morale) / 2); target.organization = Math.min(target.organization, source.organization); target.supply = Math.min(target.supply, source.supply); target.fuel = Math.min(target.fuel, source.fuel); recalc(target); armies.delete(source.id); return { ...target };
+  }
+
+  if (action.type === "splitArmy") {
+    if (!action.armyId) throw new Error("Army is required.");
+    const source = assertArmyOwner(armies.get(action.armyId)!); if (!source || source.status !== "ready") throw new Error("Army is not available for splitting.");
+    const infantry = Math.max(0, Math.floor(action.infantry ?? 0)); const tanks = Math.max(0, Math.floor(action.tanks ?? 0));
+    if (infantry + tanks <= 0 || infantry > source.infantry || tanks > source.tanks || infantry + tanks >= source.infantry + source.tanks) throw new Error("Invalid split composition.");
+    source.infantry -= infantry; source.tanks -= tanks; recalc(source);
+    const created: Army = { ...source, id: crypto.randomUUID(), name: `${source.name} · Detached`, infantry, tanks, strength: 0, morale: source.morale, organization: source.organization, supply: source.supply, fuel: source.fuel, maintenancePerHour: Math.round(infantry*.02+tanks*.75), createdAt: Date.now(), updatedAt: Date.now() }; recalc(created); armies.set(created.id, created); return { ...created };
+  }
+
   if (action.type === "createArmy") {
     if (!action.provinceId) throw new Error("Province is required.");
     const p = assertOwned(action.provinceId); const pool = stockpile.get(p.id) ?? { infantry: 0, tanks: 0 };

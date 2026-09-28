@@ -30,10 +30,12 @@ export interface ArmyOrder {
 }
 
 export interface MovementAction {
-  type: "createArmy" | "moveArmy";
+  type: "createArmy" | "moveArmy" | "mergeArmies" | "splitArmy";
   armyId?: string;
   provinceId?: string;
   name?: string;
   infantry?: number;
   tanks?: number;
+  sourceArmyId?: string;
+  targetArmyId?: string;
 }
