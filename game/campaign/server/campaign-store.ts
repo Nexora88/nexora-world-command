@@ -11,5 +11,5 @@ export function enterSession(accountId:string,campaignId:string,nationId:string)
  const existing=all.find(s=>s.accountId===accountId&&s.campaignId===campaignId&&s.status==="active");
  if(existing){existing.lastPlayedAt=now;write(all);return existing}
  const session:CampaignSession={campaignId,accountId,nationId,mode:"online_live",createdAt:now,lastPlayedAt:now,gameDay:1,status:"active"};
- all.push({...session, campaignId:campaignId || crypto.randomUUID()});write(all);return session;
+ all.push(session);write(all);return session;
 }
