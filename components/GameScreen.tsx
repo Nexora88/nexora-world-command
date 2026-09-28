@@ -27,7 +27,7 @@ import {
   Route,
   MessageSquare,
 } from "lucide-react";
-import { WorldMap, type MapMode } from "@/components/map/WorldMap";
+import { WorldMap, type MapMode, type MapCommandMode } from "@/components/map/WorldMap";
 import { SelectedProvincePanel } from "@/components/panels/SelectedProvincePanel";
 import { EconomyPanel } from "@/components/panels/EconomyPanel";
 import { ProductionPanel } from "@/components/panels/ProductionPanel";
@@ -103,6 +103,7 @@ export function GameScreen() {
   const [clockNow, setClockNow] = useState(() => Date.now());
   const [gameClock, setGameClock] = useState({ day: 1, hour: 8, minute: 0, speed: 1, paused: false });
   const [mode, setMode] = useState<MapMode>("political");
+  const [commandMode, setCommandMode] = useState<MapCommandMode>("select");
   const [tab, setTab] = useState("WORLD");
   const [filter, setFilter] = useState("");
   const [living, setLiving] = useState<any>({
@@ -163,7 +164,10 @@ export function GameScreen() {
     );
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setCommandScreen(null);
+      if (e.key === "Escape") {
+        setCommandScreen(null);
+        setCommandMode("select");
+      }
     };
     window.addEventListener("keydown", onKey);
 
@@ -220,17 +224,24 @@ export function GameScreen() {
 
   const orderProvince = async (id: string) => {
     select(id);
-    if (!selectedArmyId || id === selectedArmy?.provinceId) return;
+    if (commandMode === "select" || !selectedArmyId || id === selectedArmy?.provinceId) return;
     const target = provinces.find((p) => p.id === id);
     if (!target) return;
-    const war =
-      activeWar &&
-      activeWar.attacker === playerCountryId &&
-      activeWar.defender === target.ownerId
+    if (commandMode === "move" || commandMode === "defend") {
+      if (target.ownerId !== playerCountryId) return;
+      await moveArmy(selectedArmyId, id);
+      setCommandMode("select");
+      return;
+    }
+    if (commandMode === "attack") {
+      if (target.ownerId === playerCountryId) return;
+      const war = activeWar && activeWar.attacker === playerCountryId && activeWar.defender === target.ownerId
         ? activeWar
         : null;
-    if (war) await useGameStore.getState().attack(war.warId, selectedArmyId, id);
-    else if (target.ownerId === playerCountryId) await moveArmy(selectedArmyId, id);
+      if (!war) return;
+      await useGameStore.getState().attack(war.warId, selectedArmyId, id);
+      setCommandMode("select");
+    }
   };
 
   const alert = living.alerts?.[0];
@@ -528,6 +539,8 @@ export function GameScreen() {
             selectedId={selectedId}
             selectedArmyId={selectedArmyId}
             gameClock={gameClock}
+            commandMode={commandMode}
+            onCommandModeChange={setCommandMode}
             onSelect={orderProvince}
             onSelectArmy={(id) => {
               setSelectedArmyId(id);

@@ -8,12 +8,13 @@ import {ProvinceLayer} from "@/components/map/ProvinceLayer";
 import {WorldWeatherLayer} from "@/components/map/WorldWeatherLayer";
 import {ArmyLayer} from "@/components/map/ArmyLayer";
 
-type Props={provinces:Province[];armies:Army[];selectedId:string|null;selectedArmyId:string|null;gameClock?:{day:number;hour:number;minute:number};onSelect:(id:string)=>void;onSelectArmy:(id:string)=>void;onCountrySelect?:(iso2:string)=>void;selectedCountryId?:string|null;mapMode:MapMode;onMapModeChange:(mode:MapMode)=>void;playerCountryId?:string;showLabels?:boolean;showBorders?:boolean};
+export type MapCommandMode="select"|"move"|"attack"|"defend";
+type Props={provinces:Province[];armies:Army[];selectedId:string|null;selectedArmyId:string|null;gameClock?:{day:number;hour:number;minute:number};commandMode:MapCommandMode;onCommandModeChange:(mode:MapCommandMode)=>void;onSelect:(id:string)=>void;onSelectArmy:(id:string)=>void;onCountrySelect?:(iso2:string)=>void;selectedCountryId?:string|null;mapMode:MapMode;onMapModeChange:(mode:MapMode)=>void;playerCountryId?:string;showLabels?:boolean;showBorders?:boolean};
 export type MapMode="political"|"population"|"economy"|"resources"|"military"|"weather"|"terrain"|"frontline";
 const MIN_ZOOM=0.72,MAX_ZOOM=4.5,DEFAULT_ZOOM=1;
 const MAP_CENTER_Y=28.125;
 
-export function WorldMap({provinces,armies,selectedId,selectedArmyId,gameClock,playerCountryId,selectedCountryId,showLabels=true,showBorders=true,onSelect,onSelectArmy,onCountrySelect,mapMode="political",onMapModeChange}:Props){
+export function WorldMap({provinces,armies,selectedId,selectedArmyId,gameClock,playerCountryId,selectedCountryId,showLabels=true,showBorders=true,commandMode,onCommandModeChange,onSelect,onSelectArmy,onCountrySelect,mapMode="political",onMapModeChange}:Props){
   const [zoom,setZoom]=useState(DEFAULT_ZOOM);
   const [pan,setPan]=useState({x:0,y:0});
   const lastFocus=useRef<string|null>(null);
@@ -68,7 +69,7 @@ export function WorldMap({provinces,armies,selectedId,selectedArmyId,gameClock,p
         <WorldWeatherLayer mode={mapMode}/>
       </g>
     </svg>
-    <div className="strategic-map-toolbar"><span>STRATEGIC MAP</span>{modes.map(([id,label])=><button key={id} className={mapMode===id?"active":""} onClick={()=>onMapModeChange(id)}>{label}</button>)}<button className="zoom-button" onClick={zoomIn} aria-label="Zoom in">+</button><button className="zoom-button" onClick={zoomOut} aria-label="Zoom out">−</button><button className="zoom-button reset" onClick={reset}>RESET</button></div>
+    <div className="strategic-map-toolbar"><span>STRATEGIC MAP</span>{modes.map(([id,label])=><button key={id} className={mapMode===id?"active":""} onClick={()=>onMapModeChange(id)}>{label}</button>)}<span className="command-mode-label">COMMAND</span>{([["select","SELECT"],["move","MOVE"],["attack","ATTACK"],["defend","DEFEND"]] as const).map(([id,label])=><button key={id} className={`command-mode ${commandMode===id?"active":""}`} onClick={()=>onCommandModeChange(id)} disabled={id!=="select"&&!selectedArmyId}>{label}</button>)}<button className="zoom-button" onClick={zoomIn} aria-label="Zoom in">+</button><button className="zoom-button" onClick={zoomOut} aria-label="Zoom out">−</button><button className="zoom-button reset" onClick={reset}>RESET</button></div>
     <div className="map-scale">WORLD THEATRE · {Math.round(zoom*100)}% · WHEEL / PINCH TO ZOOM</div>
   </div>;
 }
