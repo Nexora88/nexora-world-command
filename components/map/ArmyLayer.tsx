@@ -33,7 +33,14 @@ export function ArmyLayer({ armies, selectedArmyId, onSelectArmy, zoom = 1, game
   if (zoom < 1.15) return <g className="army-layer" />;
   const stackCounts = new Map<string, number>();
   const moving = active.filter(a=>a.status==="moving"&&a.order?.route && a.order.route.length>=2);
-  return (<>
+  const roads = Object.values(REAL_WORLD_PROVINCES).flatMap((p)=>p.neighbors.map(n=>({a:p.id,b:n}))).filter((r,i,all)=>i===all.findIndex(x=>(x.a===r.b&&x.b===r.a)|| (x.a===r.a&&x.b===r.b)));
+  const bases = Object.values(REAL_WORLD_PROVINCES).filter((p,i)=>p.id.endsWith("_ANKARA")||p.id.endsWith("_BERLIN")||p.id.endsWith("_PARIS")||p.id.endsWith("_LONDON")||p.id.endsWith("_MOSCOW")||i%11===0);
+  return (<>\n    <g className="strategic-road-network" pointerEvents="none">
+      {roads.map(r=>{const a=REAL_WORLD_PROVINCES[r.a],b=REAL_WORLD_PROVINCES[r.b];if(!a||!b)return null;return <line key={r.a+"-"+r.b} x1={a.coordinates.x} y1={a.coordinates.y} x2={b.coordinates.x} y2={b.coordinates.y} className="strategic-road"/>})}
+    </g>
+    <g className="army-infrastructure" pointerEvents="none">
+      {bases.map(p=><g key={"base-"+p.id} transform={"translate("+p.coordinates.x+" "+p.coordinates.y+")"}><circle r="1.45" className="army-base-halo"/><path d="M-1-.4 L0-1.25 1-.4V1H-1Z" className="army-base-icon"/><text y="2.35" className="army-base-label">{p.id.endsWith("_ANKARA")||p.id.endsWith("_BERLIN")||p.id.endsWith("_PARIS")||p.id.endsWith("_LONDON")||p.id.endsWith("_MOSCOW")?"FIELD HQ":"LOGISTICS"}</text></g>)}
+    </g>
     <g className="army-routes" pointerEvents="none">
       {moving.map(a=>{
         const points=a.order!.route.map(id=>REAL_WORLD_PROVINCES[id]?.coordinates).filter(Boolean) as Point[];
