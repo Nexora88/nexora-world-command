@@ -8,6 +8,7 @@ type Props = {
   selectedArmyId: string | null;
   onSelectArmy: (id: string) => void;
   zoom?: number;
+  gameClock?: { day:number; hour:number; minute:number };
 };
 
 type Point = { x: number; y: number };
@@ -18,17 +19,24 @@ function positionForArmy(army: Army): Point | null {
   return { x: province.coordinates.x, y: province.coordinates.y };
 }
 
+function gameStamp(c:{day:number;hour:number;minute:number}) { return (c.day-1)*1440+c.hour*60+c.minute; }
+function etaText(eta:number|undefined, clock:Props["gameClock"]) { if(eta===undefined||!clock)return "ETA --"; const delta=Math.max(0,eta-gameStamp(clock)); return delta<60?`ETA ${delta}m`:`ETA ${Math.floor(delta/60)}h ${delta%60}m`; }
+
 function shortNumber(value: number): string {
   if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
   if (value >= 1000) return `${Math.round(value / 1000)}K`;
   return Math.round(value).toString();
 }
 
-export function ArmyLayer({ armies, selectedArmyId, onSelectArmy, zoom = 1 }: Props) {
+export function ArmyLayer({ armies, selectedArmyId, onSelectArmy, zoom = 1, gameClock }: Props) {
   const active = armies.filter((army) => army.status !== "destroyed");
   if (zoom < 1.15) return <g className="army-layer" />;
   const stackCounts = new Map<string, number>();
-  return (
+  const moving = active.filter(a=>a.status==="moving"&&a.order?.route && a.order.route.length>=2);
+  return (<>
+    <g className="army-routes" pointerEvents="none">
+      {moving.map(a=>{ const from=REAL_WORLD_PROVINCES[a.order!.route[0]]?.coordinates; const to=REAL_WORLD_PROVINCES[a.order!.route[a.order!.route.length-1]]?.coordinates; if(!from||!to)return null; const selected=a.id===selectedArmyId; return <g key={`route-${a.id}`} className={`army-route ${selected?"selected":""}`}><line x1={from.x} y1={from.y} x2={to.x} y2={to.y} className="army-route-line"/>{zoom>=1.45&&<text x={(from.x+to.x)/2} y={(from.y+to.y)/2-1} className="army-route-eta">{etaText(a.order!.eta,gameClock)}</text>}</g>; })}
+    </g>
     <g className="army-layer" aria-label="Field armies">
       {active.map((army) => {
         const point = positionForArmy(army);
@@ -63,5 +71,5 @@ export function ArmyLayer({ armies, selectedArmyId, onSelectArmy, zoom = 1 }: Pr
         );
       })}
     </g>
-  );
+  </>);
 }

@@ -523,6 +523,7 @@ export function GameScreen() {
             armies={armies}
             selectedId={selectedId}
             selectedArmyId={selectedArmyId}
+            gameClock={gameClock}
             onSelect={orderProvince}
             onSelectArmy={(id) => {
               setSelectedArmyId(id);

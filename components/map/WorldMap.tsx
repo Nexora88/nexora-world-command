@@ -8,12 +8,12 @@ import {ProvinceLayer} from "@/components/map/ProvinceLayer";
 import {WorldWeatherLayer} from "@/components/map/WorldWeatherLayer";
 import {ArmyLayer} from "@/components/map/ArmyLayer";
 
-type Props={provinces:Province[];armies:Army[];selectedId:string|null;selectedArmyId:string|null;onSelect:(id:string)=>void;onSelectArmy:(id:string)=>void;onCountrySelect?:(iso2:string)=>void;selectedCountryId?:string|null;mapMode:MapMode;onMapModeChange:(mode:MapMode)=>void;playerCountryId?:string;showLabels?:boolean;showBorders?:boolean};
+type Props={provinces:Province[];armies:Army[];selectedId:string|null;selectedArmyId:string|null;gameClock?:{day:number;hour:number;minute:number};onSelect:(id:string)=>void;onSelectArmy:(id:string)=>void;onCountrySelect?:(iso2:string)=>void;selectedCountryId?:string|null;mapMode:MapMode;onMapModeChange:(mode:MapMode)=>void;playerCountryId?:string;showLabels?:boolean;showBorders?:boolean};
 export type MapMode="political"|"population"|"economy"|"resources"|"military"|"weather"|"terrain"|"frontline";
 const MIN_ZOOM=0.72,MAX_ZOOM=4.5,DEFAULT_ZOOM=1;
 const MAP_CENTER_Y=28.125;
 
-export function WorldMap({provinces,armies,selectedId,selectedArmyId,playerCountryId,selectedCountryId,showLabels=true,showBorders=true,onSelect,onSelectArmy,onCountrySelect,mapMode="political",onMapModeChange}:Props){
+export function WorldMap({provinces,armies,selectedId,selectedArmyId,gameClock,playerCountryId,selectedCountryId,showLabels=true,showBorders=true,onSelect,onSelectArmy,onCountrySelect,mapMode="political",onMapModeChange}:Props){
   const [zoom,setZoom]=useState(DEFAULT_ZOOM);
   const [pan,setPan]=useState({x:0,y:0});
   const lastFocus=useRef<string|null>(null);
@@ -64,7 +64,7 @@ export function WorldMap({provinces,armies,selectedId,selectedArmyId,playerCount
       <g className="world-map-zoom" transform={`translate(${pan.x} ${pan.y}) translate(50 ${MAP_CENTER_Y}) scale(${zoom}) translate(-50 -${MAP_CENTER_Y})`}>
         <CountryWorldLayer zoom={zoom} playerCountryId={playerCountryId} showLabels={showLabels} showBorders={showBorders} onCountrySelect={onCountrySelect}/>
         <ProvinceLayer provinces={provinces} selectedId={selectedId} hoveredId={null} playerCountryId={playerCountryId} selectedCountryId={selectedCountryId} zoom={zoom} mapMode={mapMode} maxPopulation={0} maxIndustry={0} onSelect={handleProvince} onHover={()=>{}} fillFor={p=>p.ownerId===playerCountryId?"#45c878":"#65756d"}/>
-        <ArmyLayer armies={armies} selectedArmyId={selectedArmyId} onSelectArmy={onSelectArmy} zoom={zoom}/>
+        <ArmyLayer armies={armies} selectedArmyId={selectedArmyId} onSelectArmy={onSelectArmy} zoom={zoom} gameClock={gameClock}/>
         <WorldWeatherLayer mode={mapMode}/>
       </g>
     </svg>
