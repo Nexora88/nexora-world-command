@@ -340,6 +340,26 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden!important}
   padding-top: 10px;
   border-top: 1px solid #1a2822;
 }
+.army-layer{pointer-events:none;overflow:visible}
+.army-marker{pointer-events:auto;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.75));transition:opacity .15s ease,transform .15s ease}
+.army-marker:hover{opacity:.95}
+.army-marker-shadow{fill:#000;opacity:.65}
+.army-marker-ring{fill:#101915;stroke:#c5d5cc;stroke-width:.35}
+.army-marker-shield{fill:#2e7a4c;stroke:#d5e7db;stroke-width:.18}
+.army-marker-chevron{fill:none;stroke:#eef7f1;stroke-width:.28;stroke-linecap:round;stroke-linejoin:round}
+.army-marker-strength{font-size:2.1px;font-weight:800;fill:#edf5ef;paint-order:stroke;stroke:#07100c;stroke-width:.55px;pointer-events:none}
+.army-marker-name{font-size:1.55px;font-weight:700;letter-spacing:.15px;fill:#d5e2da;paint-order:stroke;stroke:#07100c;stroke-width:.42px;pointer-events:none}
+.army-marker.selected .army-marker-ring{stroke:#f0d78a;stroke-width:.55}
+.army-marker.selected .army-marker-shield{fill:#3d9a61}
+.army-marker.moving .army-marker-shield{fill:#3d6f9a}
+.province-army-list{display:flex;flex-direction:column;gap:5px;margin:0 0 8px}
+.province-army-row{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:7px;width:100%;padding:7px 8px;background:#0c1410;border:1px solid #1c2a24;border-radius:4px;color:#b9c9bf;text-align:left;cursor:pointer}
+.province-army-row:hover,.province-army-row.selected{border-color:#39664a;background:#122019}
+.province-army-row span:nth-child(2){display:flex;flex-direction:column;min-width:0}
+.province-army-row b{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.province-army-row small{font-size:8px;color:#63786d;margin-top:2px}
+.province-army-row strong{font-size:9px;color:#a8d6b6}
+.army-mini-badge{display:grid;place-items:center;width:22px;height:22px;border:1px solid #355442;border-radius:3px;background:#13251a;color:#82bf94}
 .selected-army-card {
   background: #0f1613;
   border: 1px solid #1c2a24;

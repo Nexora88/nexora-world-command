@@ -14,6 +14,9 @@ type Props = {
   province: Province | null;
   country?: Nation | null;
   army?: Army | null;
+  provinceArmies?: Army[];
+  canCreateArmy?: boolean;
+  onCreateArmy?: () => void;
   incomePerHour?: number;
   onUpgrade?: (type: BuildingType) => void;
   onClose?: () => void;
@@ -23,6 +26,9 @@ export function SelectedProvincePanel({
   province,
   country,
   army,
+  provinceArmies = [],
+  canCreateArmy = false,
+  onCreateArmy,
   incomePerHour = 0,
   onUpgrade,
   onClose,
@@ -153,7 +159,24 @@ export function SelectedProvincePanel({
       </div>
 
       <div className="eyalet-section army-section">
-        <div className="section-label">SEÇİLİ ORDU</div>
+        <div className="section-label">SAHA KOMUTANLIĞI</div>
+        {canCreateArmy && onCreateArmy && (
+          <button type="button" className="eyalet-btn primary army-create-btn" onClick={onCreateArmy}>
+            <Crosshair size={14} />
+            SEÇİLİ EYALETTE ORDU KUR
+          </button>
+        )}
+        {provinceArmies.length > 0 && (
+          <div className="province-army-list">
+            {provinceArmies.map((item) => (
+              <button type="button" className={`province-army-row ${army?.id === item.id ? "selected" : ""}`} key={item.id}>
+                <span className="army-mini-badge">▣</span>
+                <span><b>{item.name}</b><small>{item.infantry.toLocaleString()} INF · {item.tanks} ARM</small></span>
+                <strong>{item.strength.toLocaleString()}</strong>
+              </button>
+            ))}
+          </div>
+        )}
         {army ? (
           <div className="selected-army-card">
             <div className="army-name-row">
@@ -180,7 +203,7 @@ export function SelectedProvincePanel({
             </div>
           </div>
         ) : (
-          <div className="empty-selection small">Bir birim seçerek saha komutanlığını açın</div>
+          <div className="empty-selection small">{canCreateArmy ? "Üretimi tamamlanan birlikleri burada saha ordusuna dönüştürün." : "Bu eyalette seçili bir ordu yok."}</div>
         )}
       </div>
     </aside>

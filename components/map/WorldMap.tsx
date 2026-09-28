@@ -6,12 +6,13 @@ import type {Army} from "@/game/movement/server/types";
 import {CountryWorldLayer} from "@/components/map/CountryWorldLayer";
 import {ProvinceLayer} from "@/components/map/ProvinceLayer";
 import {WorldWeatherLayer} from "@/components/map/WorldWeatherLayer";
+import {ArmyLayer} from "@/components/map/ArmyLayer";
 
 type Props={provinces:Province[];armies:Army[];selectedId:string|null;selectedArmyId:string|null;onSelect:(id:string)=>void;onSelectArmy:(id:string)=>void;onCountrySelect?:(iso2:string)=>void;selectedCountryId?:string|null;mapMode:MapMode;onMapModeChange:(mode:MapMode)=>void;playerCountryId?:string;showLabels?:boolean;showBorders?:boolean};
 export type MapMode="political"|"population"|"economy"|"resources"|"military"|"weather"|"terrain"|"frontline";
 const MIN_ZOOM=.82,MAX_ZOOM=3.25,DEFAULT_ZOOM=1;
 
-export function WorldMap({provinces,selectedId,playerCountryId,showLabels=true,showBorders=true,onSelect,onCountrySelect,mapMode="political",onMapModeChange}:Props){
+export function WorldMap({provinces,armies,selectedId,selectedArmyId,playerCountryId,showLabels=true,showBorders=true,onSelect,onSelectArmy,onCountrySelect,mapMode="political",onMapModeChange}:Props){
   const [zoom,setZoom]=useState(DEFAULT_ZOOM);
   const [pan,setPan]=useState({x:0,y:0});
   const drag=useRef<{x:number;y:number;panX:number;panY:number;distance:number;pinch:boolean}|null>(null);
@@ -44,6 +45,7 @@ export function WorldMap({provinces,selectedId,playerCountryId,showLabels=true,s
       <g className="world-map-zoom" transform={`translate(${pan.x} ${pan.y}) translate(50 50) scale(${zoom}) translate(-50 -50)`}>
         <CountryWorldLayer zoom={zoom} playerCountryId={playerCountryId} showLabels={showLabels} showBorders={showBorders} onCountrySelect={onCountrySelect}/>
         <ProvinceLayer provinces={provinces} selectedId={selectedId} hoveredId={null} playerCountryId={playerCountryId} zoom={zoom} mapMode={mapMode} maxPopulation={0} maxIndustry={0} onSelect={handleProvince} onHover={()=>{}} fillFor={p=>p.ownerId===playerCountryId?"#45c878":"#65756d"}/>
+        <ArmyLayer armies={armies} selectedArmyId={selectedArmyId} onSelectArmy={onSelectArmy}/>
         <WorldWeatherLayer mode={mapMode}/>
       </g>
     </svg>

@@ -101,6 +101,7 @@ export function GameScreen() {
   const startP = useGameStore((s) => s.startProduction);
   const moveArmy = useGameStore((s) => s.moveArmy);
   const declareWar = useGameStore((s) => s.declareWar);
+  const createArmy = useGameStore((s) => s.createArmy);
 
   const [selectedArmyId, setSelectedArmyId] = useState<string | null>(null);
   const [clockNow, setClockNow] = useState(() => Date.now());
@@ -181,6 +182,16 @@ export function GameScreen() {
     ? getTerrainModifiers(selected.terrain)
     : getTerrainModifiers("plains");
   const selectedArmy = armies.find((a) => a.id === selectedArmyId);
+  const provinceArmies = selected ? armies.filter((a) => a.provinceId === selected.id && a.status !== "destroyed") : [];
+  const createSelectedArmy = async () => {
+    if (!selected || selected.ownerId !== playerCountryId) return;
+    const ok = await createArmy(selected.id, `${selected.name} Field Army`);
+    if (ok) {
+      const fresh = useGameStore.getState().armies.filter((a) => a.provinceId === selected.id);
+      const newest = fresh[fresh.length - 1];
+      if (newest) setSelectedArmyId(newest.id);
+    }
+  };
   const country = selected
     ? nations.find((n) => n.id === selected.ownerId)
     : nations[0];
@@ -541,6 +552,9 @@ export function GameScreen() {
                 : selectedCountry ?? undefined
             }
             army={selectedArmy}
+            provinceArmies={provinceArmies}
+            canCreateArmy={!!selected && selected.ownerId === playerCountryId}
+            onCreateArmy={() => void createSelectedArmy()}
             incomePerHour={
               selected
                 ? Math.max(
