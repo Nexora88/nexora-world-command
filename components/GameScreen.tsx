@@ -40,10 +40,6 @@ import { nations } from "@/data/world/countries";
 import { FlagImage } from "@/components/ui/FlagImage";
 import { audioManager } from "@/lib/audio-manager";
 import {
-  EUROPEAN_COUNTRY_COUNT,
-  EUROPEAN_PROVINCE_COUNT,
-} from "@/data/world/real-world-provinces";
-import {
   getCommanderLevel,
   initialCommanderXp,
 } from "@/data/progression/commander-levels";
@@ -143,10 +139,19 @@ export function GameScreen() {
       setTimeout(() => setShowNewspaper(true), 0);
     }
 
-    const a = setInterval(() => {
+    const refreshWorldState = async () => {
       setClockNow(Date.now());
-      void sync();
-    }, 2500);
+      await sync();
+      try {
+        const r = await fetch("/api/game/clock", { cache: "no-store" });
+        if (r.ok) {
+          const p = await r.json();
+          if (p.clock) setGameClock(p.clock);
+        }
+      } catch {}
+    };
+    void refreshWorldState();
+    const a = setInterval(() => { void refreshWorldState(); }, 2500);
 
     const b = setInterval(
       () =>
@@ -371,8 +376,8 @@ export function GameScreen() {
         </div>
 
         <div className="server-clock">
-          <b>12:45</b>
-          <span>DAY 45</span>
+          <b>{String(gameClock.hour).padStart(2, "0")}:{String(gameClock.minute).padStart(2, "0")}</b>
+          <span>DAY {gameClock.day}</span>
           <i>
             <Activity /> LIVE
           </i>
@@ -510,8 +515,7 @@ export function GameScreen() {
             <small>WORLD STATUS</small>
             <b>{activeWar ? "WAR ACTIVE" : "STABLE THEATRE"}</b>
             <span>
-              {EUROPEAN_PROVINCE_COUNT} active provinces · {EUROPEAN_COUNTRY_COUNT}{" "}
-              playable nations · WORLD MAP
+              {provinces.length} active provinces · {nations.length} playable nations · WORLD MAP
             </span>
           </div>
         </aside>
