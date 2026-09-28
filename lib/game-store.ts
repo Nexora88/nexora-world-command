@@ -11,7 +11,7 @@ export type ProvinceBuildingLevels={industrialComplex:number;barracks:number;for
 export interface QueueItem{id:string;provinceId:string;type:BuildingType|UnitType;kind:"construction"|"production";startedAt:number;finishesAt:number;level?:number}
 interface GameState{
  selectedProvinceId:string|null;resources:Resources;income:Resources;provinceBuildings:Record<string,ProvinceBuildingLevels>;
- productionQueue:QueueItem[];constructionQueue:QueueItem[];provinces:Province[];armies:Army[];wars:War[];battles:BattleResult[];loading:boolean;error:string|null;
+ productionQueue:QueueItem[];constructionQueue:QueueItem[];unitStockpile:Record<string,{infantry:number;tanks:number}>;provinces:Province[];armies:Army[];wars:War[];battles:BattleResult[];loading:boolean;error:string|null;
  selectProvince:(id:string|null)=>void;loadServerState:()=>Promise<void>;syncAll:()=>Promise<void>;
  startConstruction:(province:Province,type:BuildingType)=>Promise<boolean>;startProduction:(province:Province,unit:UnitType)=>Promise<boolean>;
  createArmy:(provinceId:string,name?:string)=>Promise<boolean>;moveArmy:(armyId:string,provinceId:string)=>Promise<boolean>;
@@ -20,9 +20,9 @@ interface GameState{
 const EMPTY:Resources={money:0,manpower:0,oil:0,steel:0};
 async function economy(action?:Record<string,string>){const r=await fetch("/api/economy",{method:action?"POST":"GET",headers:action?{"content-type":"application/json"}:undefined,body:action?JSON.stringify(action):undefined,cache:"no-store"});const p=await r.json();if(!r.ok)throw new Error(p.error);return p as EconomySnapshot}
 export const useGameStore=create<GameState>((set,get)=>({
- selectedProvinceId:null,resources:EMPTY,income:EMPTY,provinceBuildings:{},productionQueue:[],constructionQueue:[],provinces:[],armies:[],wars:[],battles:[],loading:true,error:null,
+ selectedProvinceId:null,resources:EMPTY,income:EMPTY,provinceBuildings:{},productionQueue:[],constructionQueue:[],unitStockpile:{},provinces:[],armies:[],wars:[],battles:[],loading:true,error:null,
  selectProvince:id=>set({selectedProvinceId:id}),
- loadServerState:async()=>{try{const e=await economy();const [w,m,world]=await Promise.all([fetch("/api/war").then(x=>x.json()),fetch("/api/movement").then(x=>x.json()),fetch("/api/world").then(x=>x.json())]);set({resources:e.resources,income:e.income,provinceBuildings:e.provinceBuildings,constructionQueue:e.constructionQueue,productionQueue:e.productionQueue,wars:w.wars,battles:w.battles,armies:m.armies,provinces:world.provinces,loading:false,error:null})}catch(e){set({loading:false,error:e instanceof Error?e.message:"Server sync failed."})}},
+ loadServerState:async()=>{try{const e=await economy();const [w,m,world]=await Promise.all([fetch("/api/war").then(x=>x.json()),fetch("/api/movement").then(x=>x.json()),fetch("/api/world").then(x=>x.json())]);set({resources:e.resources,income:e.income,provinceBuildings:e.provinceBuildings,constructionQueue:e.constructionQueue,productionQueue:e.productionQueue,unitStockpile:e.unitStockpile??m.stockpile??{},wars:w.wars,battles:w.battles,armies:m.armies,provinces:world.provinces,loading:false,error:null})}catch(e){set({loading:false,error:e instanceof Error?e.message:"Server sync failed."})}},
  syncAll:async()=>{await get().loadServerState()},
  startConstruction:async(p,t)=>{try{await economy({type:"startConstruction",provinceId:p.id,buildingType:t});await get().syncAll();return true}catch(e){set({error:e instanceof Error?e.message:"Construction failed."});return false}},
  startProduction:async(p,u)=>{try{await economy({type:"startProduction",provinceId:p.id,unitType:u});await get().syncAll();return true}catch(e){set({error:e instanceof Error?e.message:"Production failed."});return false}},

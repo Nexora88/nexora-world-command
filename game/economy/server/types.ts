@@ -26,6 +26,7 @@ export interface EconomySnapshot {
   provinceBuildings: Record<string, ProvinceBuildingLevels>;
   constructionQueue: QueueItem[];
   productionQueue: QueueItem[];
+  unitStockpile: Record<string, { infantry: number; tanks: number }>;
   serverTime: number;
 }
 

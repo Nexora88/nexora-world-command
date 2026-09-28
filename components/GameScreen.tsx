@@ -192,6 +192,7 @@ export function GameScreen() {
     ? getTerrainModifiers(selected.terrain)
     : getTerrainModifiers("plains");
   const selectedArmy = armies.find((a) => a.id === selectedArmyId);
+  const unitStockpile = useGameStore((s) => s.unitStockpile);
   const provinceArmies = selected ? armies.filter((a) => a.provinceId === selected.id && a.status !== "destroyed") : [];
   const createSelectedArmy = async () => {
     if (!selected || selected.ownerId !== playerCountryId) return;
@@ -572,6 +573,7 @@ export function GameScreen() {
             }
             army={selectedArmy}
             provinceArmies={provinceArmies}
+            unitStockpile={unitStockpile[selected?.id ?? ""] ?? { infantry:0, tanks:0 }}
             canCreateArmy={!!selected && selected.ownerId === playerCountryId}
             onCreateArmy={() => void createSelectedArmy()}
             incomePerHour={

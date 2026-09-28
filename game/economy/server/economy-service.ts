@@ -7,7 +7,7 @@ import { applyResourceDelta } from "../resource-engine";
 import type { ProvinceBuildingLevels, QueueItem } from "@/lib/game-store";
 import type { EconomyAction, EconomySnapshot, EconomyState, ResourceTransaction } from "./types";
 import { DEMO_COUNTRY_ID, DEMO_PLAYER_ID, getEconomyState } from "./memory-store";
-import { addProducedUnits, getArmies, getArmy } from "@/game/movement/server/movement-service";
+import { addProducedUnits, getArmies, getArmy, getStockpile } from "@/game/movement/server/movement-service";
 
 export class EconomyValidationError extends Error {
   constructor(message: string) {
@@ -92,6 +92,7 @@ function snapshot(state: EconomyState, now: number): EconomySnapshot {
     ),
     constructionQueue: state.constructionQueue.map((item) => ({ ...item })),
     productionQueue: state.productionQueue.map((item) => ({ ...item })),
+    unitStockpile: getStockpile(),
     serverTime: now,
   };
 }

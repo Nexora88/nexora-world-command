@@ -22,6 +22,7 @@ type Props = {
   onClose?: () => void;
   gameClock?: { day:number; hour:number; minute:number };
   onSelectArmy?: (id:string) => void;
+  unitStockpile?: { infantry:number; tanks:number };
 };
 
 export function SelectedProvincePanel({
@@ -36,6 +37,7 @@ export function SelectedProvincePanel({
   onClose,
   gameClock,
   onSelectArmy,
+  unitStockpile = { infantry:0, tanks:0 },
 }: Props) {
   if (!province) {
     return (
@@ -170,10 +172,17 @@ export function SelectedProvincePanel({
       <div className="eyalet-section army-section">
         <div className="section-label">SAHA KOMUTANLIĞI</div>
         {canCreateArmy && onCreateArmy && (
-          <button type="button" className="eyalet-btn primary army-create-btn" onClick={onCreateArmy}>
+          <button type="button" className="eyalet-btn primary army-create-btn" disabled={unitStockpile.infantry <= 0 && unitStockpile.tanks <= 0} onClick={onCreateArmy}>
             <Crosshair size={14} />
             SEÇİLİ EYALETTE ORDU KUR
           </button>
+        )}
+        {canCreateArmy && (unitStockpile.infantry > 0 || unitStockpile.tanks > 0) && (
+          <div className="army-stockpile">
+            <span>HAZIR BİRLİKLER</span>
+            <b>{unitStockpile.infantry.toLocaleString()} PİYADE</b>
+            <b>{unitStockpile.tanks.toLocaleString()} TANK</b>
+          </div>
         )}
         {provinceArmies.length > 0 && (
           <div className="province-army-list">
@@ -203,7 +212,7 @@ export function SelectedProvincePanel({
               </div>
               <div>
                 <span>YAKIT</span>
-                <b>%{army.organization ?? 60}</b>
+                <b>%{army.fuel}</b>
               </div>
             </div>
             <div className="army-meta">
