@@ -26,6 +26,7 @@ import {
   Newspaper,
   Route,
   MessageSquare,
+  WifiOff,
 } from "lucide-react";
 import { WorldMap, type MapMode, type MapCommandMode } from "@/components/map/WorldMap";
 import { SelectedProvincePanel } from "@/components/panels/SelectedProvincePanel";
@@ -50,6 +51,7 @@ import {
   getResourcesMap,
 } from "@/game/world/server/world-store";
 import type { Province } from "@/lib/types";
+import { realWorldProvincesAsGameData } from "@/data/world/real-world-provinces";
 
 const blank: Province = {
   id: "",
@@ -125,8 +127,28 @@ export function GameScreen() {
   const [mapBorders, setMapBorders] = useState(true);
   const [uiEffects, setUiEffects] = useState(true);
   const [commandAudio, setCommandAudio] = useState(true);
+  const [guestExpired, setGuestExpired] = useState(false);
 
   useEffect(() => {
+    const sessionMode = localStorage.getItem("nwc-session-mode");
+    if (sessionMode === "guest") {
+      const raw = localStorage.getItem("nwc-guest-session");
+      const guest = raw ? JSON.parse(raw) as {startedAt:number;maxDay:number} : {startedAt:Date.now(),maxDay:3};
+      localStorage.setItem("nwc-guest-session", JSON.stringify(guest));
+      setCommander("GUEST COMMANDER");
+      setPlayerCountryId(localStorage.getItem("nwc-player-country") || "TR");
+      useGameStore.setState({provinces:realWorldProvincesAsGameData,loading:false,error:null,resources:{money:5000,manpower:50000,oil:5000,steel:5000},income:{money:0,manpower:0,oil:0,steel:0}});
+      const guestTick = () => {
+        const elapsed = Date.now() - guest.startedAt;
+        const day = Math.min(guest.maxDay + 1, 1 + Math.floor(elapsed / 60000));
+        setGuestExpired(day > guest.maxDay);
+        setClockNow(Date.now());
+        setGameClock({day,hour:8,minute:Math.floor((elapsed / 1000) % 60),speed:1,paused:false});
+      };
+      guestTick();
+      const g = setInterval(guestTick, 1000);
+      return () => clearInterval(g);
+    }
     void load();
     const saved = localStorage.getItem("nwc-commander-callsign");
     const nation = localStorage.getItem("nwc-player-country");
@@ -321,6 +343,17 @@ export function GameScreen() {
 
   return (
     <main className="aaa-command h-screen w-screen overflow-hidden relative">
+      {guestExpired && (
+        <div className="guest-expired-overlay">
+          <div className="guest-expired-card">
+            <WifiOff />
+            <small>OFFLINE GUEST CAMPAIGN</small>
+            <h1>3 OYUN GÜNÜ TAMAMLANDI</h1>
+            <p>Misafir modu yalnızca sınırlı çevrimdışı deneme içindir. Dünyayı kaydetmek, çevrimiçi oynamak ve oyun tarihçeni korumak için ücretsiz bir hesapla devam edebilirsin.</p>
+            <button type="button" onClick={() => { localStorage.removeItem("nwc-session-mode"); window.location.href="/"; }}>HESAP / GİRİŞE DÖN</button>
+          </div>
+        </div>
+      )}
       {alert && (
         <div className={`aaa-alert ${alert.level}`}>
           <span>◆ {alert.title}</span>

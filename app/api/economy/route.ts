@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import {requireAccount} from "@/game/auth/server/request-auth";
 import {
   EconomyValidationError,
   getEconomySnapshot,
@@ -38,11 +39,13 @@ function parseAction(body: unknown): EconomyAction {
   throw new EconomyValidationError("Unknown economy action.");
 }
 
-export async function GET() {
+export async function GET(request:Request) {
+  try{requireAccount(request);}catch{return NextResponse.json({error:"ONLINE_ACCOUNT_REQUIRED"},{status:401});}
   return NextResponse.json(getEconomySnapshot());
 }
 
 export async function POST(request: Request) {
+  try{requireAccount(request);}catch{return NextResponse.json({error:"ONLINE_ACCOUNT_REQUIRED"},{status:401});}
   try {
     const action = parseAction(await request.json());
     return NextResponse.json(performEconomyAction(action));
