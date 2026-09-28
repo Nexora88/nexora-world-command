@@ -1,341 +1,53 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import type { Province } from "@/lib/types";
-import type { Army } from "@/game/movement/server/types";
+import {useCallback,useRef,useState} from "react";
+import type {Province} from "@/lib/types";
+import type {Army} from "@/game/movement/server/types";
+import {CountryWorldLayer} from "@/components/map/CountryWorldLayer";
+import {ProvinceLayer} from "@/components/map/ProvinceLayer";
+import {WorldWeatherLayer} from "@/components/map/WorldWeatherLayer";
 
-export type MapMode =
-  | "political"
-  | "population"
-  | "economy"
-  | "resources"
-  | "military"
-  | "weather"
-  | "terrain"
-  | "frontline";
+type Props={provinces:Province[];armies:Army[];selectedId:string|null;selectedArmyId:string|null;onSelect:(id:string)=>void;onSelectArmy:(id:string)=>void;onCountrySelect?:(iso2:string)=>void;selectedCountryId?:string|null;mapMode:MapMode;onMapModeChange:(mode:MapMode)=>void;playerCountryId?:string;showLabels?:boolean;showBorders?:boolean};
+export type MapMode="political"|"population"|"economy"|"resources"|"military"|"weather"|"terrain"|"frontline";
+const MIN_ZOOM=.82,MAX_ZOOM=3.25,DEFAULT_ZOOM=1;
 
-type Props = {
-  provinces?: Province[];
-  armies?: Army[];
-  selectedId?: string | null;
-  selectedArmyId?: string | null;
-  onSelect?: (id: string) => void;
-  onSelectArmy?: (id: string) => void;
-  onCountrySelect?: (iso2: string) => void;
-  mapMode?: MapMode;
-  onMapModeChange?: (mode: MapMode) => void;
-  playerCountryId?: string;
-  selectedCountryId?: string | null;
-  showLabels?: boolean;
-  showBorders?: boolean;
-  className?: string;
-};
-
-const COUNTRY_NAMES: Record<string, string> = {
-  AF: "AFGANİSTAN", AL: "ARNAVUTLUK", DZ: "CEZAYİR", AD: "ANDORRA", AO: "ANGOLA",
-  AG: "ANTİGUA VE BARBUDA", AR: "ARJANTİN", AM: "ERMENİSTAN", AU: "AVUSTRALYA",
-  AT: "AVUSTURYA", AZ: "AZERBAYCAN", BS: "BAHAMALAR", BH: "BAHREYN", BD: "BANGLADEŞ",
-  BB: "BARBADOS", BY: "BELARUS", BE: "BELÇİKA", BZ: "BELİZE", BJ: "BENİN",
-  BT: "BUTAN", BO: "BOLİVYA", BA: "BOSNA HERSEK", BW: "BOTSVANA", BR: "BREZİLYA",
-  BN: "BRUNEİ", BG: "BULGARİSTAN", BF: "BURKİNA FASO", BI: "BURUNDİ", CV: "CAPE VERDE",
-  KH: "KAMBOÇYA", CM: "KAMERUN", CA: "KANADA", CF: "ORTA AFRİKA CUMHURİYETİ",
-  TD: "ÇAD", CL: "ŞİLİ", CN: "ÇİN", CO: "KOLOMBİYA", KM: "KOMORLAR",
-  CG: "KONGO", CD: "KONGO DC", CR: "KOSTA RİKA", CI: "FİLDİŞİ SAHİLİ", HR: "HIRVATİSTAN",
-  CU: "KUBA", CY: "KIBRIS", CZ: "ÇEKYA", DK: "DANİMARKA", DJ: "CİBUTİ",
-  DM: "DOMİNİKA", DO: "DOMİNİK CUMHURİYETİ", EC: "EKVADOR", EG: "MISIR", SV: "EL SALVADOR",
-  GQ: "EKVATOR GİNESİ", ER: "ERİTRE", EE: "ESTONYA", SZ: "ESVATİNİ", ET: "ETİYOPYA",
-  FJ: "FİJİ", FI: "FİNLANDİYA", FR: "FRANSA", GA: "GABON", GM: "GAMBİYA",
-  GE: "GÜRCİSTAN", DE: "ALMANYA", GH: "GANA", GR: "YUNANİSTAN", GD: "GRENADA",
-  GT: "GUATEMALA", GN: "GİNE", GW: "GİNE-BİSSAU", GY: "GUYANA", HT: "HAİTİ",
-  HN: "HONDURAS", HU: "MACARİSTAN", IS: "İZLANDA", IN: "HİNDİSTAN", ID: "ENDONEZYA",
-  IR: "İRAN", IQ: "IRAK", IE: "İRLANDA", IL: "İSRAİL", IT: "İTALYA",
-  JM: "JAMAİKA", JP: "JAPONYA", JO: "ÜRDÜN", KZ: "KAZAKİSTAN", KE: "KENYA",
-  KI: "KİRİBATİ", KP: "KUZEY KORE", KR: "GÜNEY KORE", KW: "KUVEYT", KG: "KIRGIZİSTAN",
-  LA: "LAOS", LV: "LETONYA", LB: "LÜBNAN", LS: "LESOTHO", LR: "LİBERYA",
-  LY: "LİBYA", LI: "LİHTENŞTAYN", LT: "LİTVANYA", LU: "LÜKSEMBURG", MG: "MADAGASKAR",
-  MW: "MALAVİ", MY: "MALEZYA", MV: "MALDİVLER", ML: "MALİ", MT: "MALTA",
-  MH: "MARSHALL ADALARI", MR: "MORİTANYA", MU: "MAURİTİUS", MX: "MEKSİKA",
-  FM: "MİKRONEZYA", MD: "MOLDOVA", MC: "MONAKO", MN: "MOĞOLİSTAN", ME: "KARADAĞ",
-  MA: "FAS", MZ: "MOZAMBİK", MM: "MYANMAR", NA: "NAMİBYA", NR: "NAURU",
-  NP: "NEPAL", NL: "HOLLANDA", NZ: "YENİ ZELANDA", NI: "NİKARAGUA", NE: "NİJER",
-  NG: "NİJERYA", MK: "KUZEY MAKEDONYA", NO: "NORVEÇ", OM: "UMMAN", PK: "PAKİSTAN",
-  PW: "PALAU", PA: "PANAMA", PG: "PAPUA YENİ GİNE", PY: "PARAGUAY", PE: "PERU",
-  PH: "FİLİPİNLER", PL: "POLONYA", PT: "PORTEKİZ", QA: "KATAR", RO: "ROMANYA",
-  RU: "RUSYA", RW: "RUANDA", KN: "SAINT KITTS VE NEVİS", LC: "SAINT LUCIA",
-  VC: "SAINT VINCENT", WS: "SAMOA", SM: "SAN MARİNO", ST: "SAO TOME VE PRİNCİPE",
-  SA: "SUUDİ ARABİSTAN", SN: "SENEGAL", RS: "SIRBİSTAN", SC: "SEYŞELLER",
-  SL: "SİERRA LEONE", SG: "SİNGAPUR", SK: "SLOVAKYA", SI: "SLOVENYA", SB: "SOLOMON ADALARI",
-  SO: "SOMALİ", ZA: "GÜNEY AFRİKA", SS: "GÜNEY SUDAN", ES: "İSPANYA", LK: "SRİ LANKA",
-  SD: "SUDAN", SR: "SURİNAM", SE: "İSVEÇ", CH: "İSVİÇRE", SY: "SURİYE",
-  TW: "TAYVAN", TJ: "TACİKİSTAN", TZ: "TANZANYA", TH: "TAYLAND", TL: "DOĞU TİMOR",
-  TG: "TOGO", TO: "TONGA", TT: "TRİNİDAD VE TOBAGO", TN: "TUNUS", TR: "TÜRKİYE",
-  TM: "TÜRKMENİSTAN", TV: "TUVALU", UG: "UGANDA", UA: "UKRAYNA", AE: "BİRLEŞİK ARAP EMİRLİKLERİ",
-  GB: "BİRLEŞİK KRALLIK", US: "ABD", UY: "URUGUAY", UZ: "ÖZBEKİSTAN", VU: "VANUATU",
-  VA: "VATİKAN", VE: "VENEZUELA", VN: "VİETNAM", YE: "YEMEN", ZM: "ZAMBİYA",
-  ZW: "ZİMBABVE", XK: "KOSOVA", PS: "FİLİSTİN",
-};
-
-const GAME_COLORS: Record<string, string> = {
-  TR: "#c43c3c", DE: "#d5a84b", FR: "#557fc5", GB: "#8e5a4a", RU: "#6a7a8a",
-  US: "#4a6a9a", CN: "#c05a4a", JP: "#e05a6a", IN: "#d4a04a", BR: "#5a9a5a",
-  IT: "#4f9a79", ES: "#c99a4a", PL: "#d4a84b", UA: "#9a8a5a", SA: "#8a9a4a",
-  IR: "#9a7a4a", EG: "#c9a04a", GR: "#4a7c9b", RO: "#b85c4a", HU: "#c99a4a",
-  AT: "#b85b68", NL: "#d27b4b", BE: "#8e73b8", SE: "#6a8a9a", NO: "#5a7a8a",
-  FI: "#7a9aaa", DK: "#c05a4a", PT: "#6b8f5e", IE: "#5a8a5e", CZ: "#8a7a6a",
-  SK: "#7a8a6a", RS: "#8a6b4a", HR: "#6a8a7a", BA: "#7a7a6a", AL: "#6a7a8a",
-  MK: "#7a6a8a", GE: "#8a6a5a", AM: "#9a6a5a", AZ: "#8a7a4a", KZ: "#8a8a5a",
-  IQ: "#8a6a4a", SY: "#7a6a5a", LB: "#6a7a5a", JO: "#7a7a5a", IL: "#6a8a9a",
-  AE: "#5a8a7a", KW: "#7a9a6a", QA: "#6a8a8a", BH: "#8a7a6a", OM: "#7a8a6a",
-  YE: "#8a6a5a", PK: "#6a8a5a", AF: "#8a7a5a", BD: "#5a8a6a", TH: "#6a9a7a",
-  VN: "#5a8a6a", ID: "#6a8a5a", MY: "#5a9a6a", PH: "#6a8a7a", KR: "#5a7a9a",
-  KP: "#8a5a5a", AU: "#6a8a5a", NZ: "#5a8a7a", ZA: "#7a8a5a", NG: "#6a9a5a",
-  ET: "#8a7a5a", KE: "#6a8a5a", MA: "#6a7a5a", DZ: "#7a8a5a", TN: "#8a7a5a",
-  LY: "#a08a5a", SD: "#8a7a5a", MX: "#6a8a5a", AR: "#6a8a9a", CL: "#7a8a9a",
-  CO: "#8a7a5a", PE: "#8a7a6a", VE: "#8a6a5a", CA: "#6a7a8a",
-};
-
-const DEFAULT_FILL = "#3a4a42";
-const OCEAN = "#08100f";
-
-function lighten(hex: string, amount: number): string {
-  const clean = hex.replace("#", "");
-  const num = parseInt(clean, 16);
-  if (Number.isNaN(num)) return hex;
-  const r = Math.min(255, (num >> 16) + amount);
-  const g = Math.min(255, ((num >> 8) & 0xff) + amount);
-  const b = Math.min(255, (num & 0xff) + amount);
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+export function WorldMap({provinces,selectedId,playerCountryId,showLabels=true,showBorders=true,onSelect,onCountrySelect,mapMode="political",onMapModeChange}:Props){
+  const [zoom,setZoom]=useState(DEFAULT_ZOOM);
+  const [pan,setPan]=useState({x:0,y:0});
+  const drag=useRef<{x:number;y:number;panX:number;panY:number;distance:number;pinch:boolean}|null>(null);
+  const [dragging,setDragging]=useState(false);
+  const clampPan=useCallback((x:number,y:number,z=zoom)=>{
+    const limit=Math.max(0,(z-1)*38+8);
+    return {x:Math.max(-limit,Math.min(limit,x)),y:Math.max(-limit*.62,Math.min(limit*.62,y))};
+  },[zoom]);
+  const setZoomAt=useCallback((next:number)=>{setZoom(z=>{const value=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,next));setPan(p=>clampPan(p.x,p.y,value));return value})},[clampPan]);
+  const reset=()=>{setZoom(DEFAULT_ZOOM);setPan({x:0,y:0})};
+  const onWheel=(e:React.WheelEvent<HTMLDivElement>)=>{e.preventDefault();setZoomAt(zoom+(e.deltaY<0?.12:-.12))};
+  const pointDistance=(a:React.Touch,b:React.Touch)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+  const touchStart=(e:React.TouchEvent<HTMLDivElement>)=>{
+    if(e.touches.length===2){drag.current={x:0,y:0,panX:pan.x,panY:pan.y,distance:pointDistance(e.touches[0],e.touches[1]),pinch:true};return}
+    const t=e.touches[0];drag.current={x:t.clientX,y:t.clientY,panX:pan.x,panY:pan.y,distance:0,pinch:false};setDragging(false);
+  };
+  const touchMove=(e:React.TouchEvent<HTMLDivElement>)=>{
+    const d=drag.current;if(!d)return;
+    if(e.touches.length===2){e.preventDefault();const distance=pointDistance(e.touches[0],e.touches[1]);setZoomAt(zoom+(distance-d.distance)/360);d.distance=distance;d.pinch=true;return}
+    if(d.pinch)return;e.preventDefault();const t=e.touches[0];const dx=t.clientX-d.x,dy=t.clientY-d.y;if(Math.hypot(dx,dy)>5)setDragging(true);setPan(clampPan(d.panX+dx/5,d.panY+dy/5));
+  };
+  const pointerDown=(e:React.PointerEvent<HTMLDivElement>)=>{if(e.pointerType==="touch")return;if(e.button!==0&&e.button!==1)return;drag.current={x:e.clientX,y:e.clientY,panX:pan.x,panY:pan.y,distance:0,pinch:false};e.currentTarget.setPointerCapture?.(e.pointerId);setDragging(false)};
+  const pointerMove=(e:React.PointerEvent<HTMLDivElement>)=>{const d=drag.current;if(!d||e.pointerType==="touch")return;const dx=e.clientX-d.x,dy=e.clientY-d.y;if(Math.hypot(dx,dy)>5)setDragging(true);if(e.buttons)setPan(clampPan(d.panX+dx/5,d.panY+dy/5))};
+  const pointerUp=()=>{drag.current=null;setDragging(false)};
+  const modes:Array<[MapMode,string]>= [["political","POLITICAL"],["terrain","TERRAIN"],["economy","ECONOMY"],["resources","RESOURCES"],["military","MILITARY"],["weather","WEATHER"]];
+  const handleProvince=(id:string)=>{if(!dragging)onSelect(id)};
+  return <div className={`world-map real-world-map world-map-clean mode-${mapMode} ${dragging?"is-dragging":""}`} onWheel={onWheel} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={pointerUp} onPointerLeave={pointerUp} onTouchStart={touchStart} onTouchMove={touchMove} onTouchEnd={pointerUp}>
+    <svg viewBox="0 0 100 100" className="world-map-svg" preserveAspectRatio="xMidYMid meet" aria-label="World strategic map">
+      <rect width="100" height="100" className="world-ocean"/>
+      <g className="world-map-zoom" transform={`translate(${pan.x} ${pan.y}) translate(50 50) scale(${zoom}) translate(-50 -50)`}>
+        <CountryWorldLayer zoom={zoom} playerCountryId={playerCountryId} showLabels={showLabels} showBorders={showBorders} onCountrySelect={onCountrySelect}/>
+        <ProvinceLayer provinces={provinces} selectedId={selectedId} hoveredId={null} playerCountryId={playerCountryId} zoom={zoom} mapMode={mapMode} maxPopulation={0} maxIndustry={0} onSelect={handleProvince} onHover={()=>{}} fillFor={p=>p.ownerId===playerCountryId?"#45c878":"#65756d"}/>
+        <WorldWeatherLayer mode={mapMode}/>
+      </g>
+    </svg>
+    <div className="strategic-map-toolbar"><span>STRATEGIC MAP</span>{modes.map(([id,label])=><button key={id} className={mapMode===id?"active":""} onClick={()=>onMapModeChange(id)}>{label}</button>)}<button className="zoom-button" onClick={()=>setZoomAt(zoom+.18)} aria-label="Zoom in">+</button><button className="zoom-button" onClick={()=>setZoomAt(zoom-.18)} aria-label="Zoom out">−</button><button className="zoom-button reset" onClick={reset}>RESET</button></div>
+    <div className="map-scale">EUROPE THEATRE · {Math.round(zoom*100)}%</div>
+  </div>;
 }
-
-export function WorldMap({
-  playerCountryId = "TR",
-  selectedCountryId = null,
-  onCountrySelect,
-  mapMode = "political",
-  onMapModeChange,
-  className = "",
-}: Props) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [ready, setReady] = useState(false);
-  const [hovered, setHovered] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    const container = containerRef.current;
-    if (!container) return;
-
-    fetch("/map/world-simple.svg")
-      .then((res) => {
-        if (!res.ok) throw new Error("SVG yüklenemedi");
-        return res.text();
-      })
-      .then((svgText) => {
-        if (cancelled || !containerRef.current) return;
-
-        containerRef.current.innerHTML = svgText;
-        const svg = containerRef.current.querySelector("svg");
-        if (!svg) return;
-
-        svg.removeAttribute("width");
-        svg.removeAttribute("height");
-        svg.setAttribute("width", "100%");
-        svg.setAttribute("height", "100%");
-        svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-        (svg as SVGElement).style.display = "block";
-        (svg as SVGElement).style.background = OCEAN;
-
-        const paths = svg.querySelectorAll("path[id]");
-        paths.forEach((rawPath) => {
-          const path = rawPath as SVGPathElement;
-          const rawId = (path.getAttribute("id") || "").toLowerCase();
-          const iso = rawId.toUpperCase();
-          const isPlayer = iso === (playerCountryId || "").toUpperCase();
-          const isSelected =
-            !!selectedCountryId && iso === selectedCountryId.toUpperCase();
-
-          let fill = GAME_COLORS[iso] || DEFAULT_FILL;
-          if (isPlayer) fill = "#c9a84c";
-          if (isSelected) fill = "#e8c96a";
-
-          path.setAttribute("fill", fill);
-          path.setAttribute(
-            "stroke",
-            isPlayer || isSelected ? "#f0e0a0" : "#1a2822"
-          );
-          path.setAttribute(
-            "stroke-width",
-            isPlayer || isSelected ? "1.4" : "0.35"
-          );
-          path.style.cursor = "pointer";
-          path.style.transition = "fill 0.12s ease, stroke 0.12s ease";
-
-          const onEnter = () => {
-            setHovered(iso);
-            if (!isPlayer && !isSelected) {
-              path.setAttribute("fill", lighten(fill, 28));
-            }
-          };
-          const onLeave = () => {
-            setHovered(null);
-            path.setAttribute("fill", fill);
-          };
-          const onClick = (e: Event) => {
-            e.stopPropagation();
-            onCountrySelect?.(iso);
-          };
-
-          path.addEventListener("mouseenter", onEnter);
-          path.addEventListener("mouseleave", onLeave);
-          path.addEventListener("click", onClick);
-
-          // title
-          const existingTitle = path.querySelector("title");
-          if (existingTitle) existingTitle.remove();
-          const title = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "title"
-          );
-          title.textContent = COUNTRY_NAMES[iso] || iso;
-          path.appendChild(title);
-        });
-
-        setReady(true);
-      })
-      .catch((err: unknown) => {
-        console.error("Harita yüklenemedi:", err);
-        setReady(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [playerCountryId, selectedCountryId, onCountrySelect]);
-
-  const modes: Array<[MapMode, string]> = [
-    ["political", "SİYASİ"],
-    ["terrain", "ARAZİ"],
-    ["economy", "EKONOMİ"],
-    ["resources", "KAYNAK"],
-    ["military", "ASKERİ"],
-    ["weather", "HAVA"],
-  ];
-
-  return (
-    <div
-      className={`world-map real-world-map ${className}`}
-      style={{
-        position: "relative",
-        width: "100%",
-        height: "100%",
-        background: OCEAN,
-        overflow: "hidden",
-      }}
-    >
-      <div
-        ref={containerRef}
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      />
-
-      {!ready && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "grid",
-            placeItems: "center",
-            color: "#5a6e66",
-            fontSize: 12,
-            letterSpacing: 1.5,
-          }}
-        >
-          DÜNYA HARİTASI YÜKLENİYOR...
-        </div>
-      )}
-
-      <div
-        style={{
-          position: "absolute",
-          top: 12,
-          left: 12,
-          display: "flex",
-          gap: 4,
-          zIndex: 20,
-          flexWrap: "wrap",
-          maxWidth: "70%",
-        }}
-      >
-        <span
-          style={{
-            fontSize: 9,
-            color: "#6a8a78",
-            letterSpacing: 1.2,
-            alignSelf: "center",
-            marginRight: 6,
-          }}
-        >
-          STRATEJİK HARİTA
-        </span>
-        {modes.map(([id, label]) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => onMapModeChange?.(id)}
-            style={{
-              height: 28,
-              padding: "0 10px",
-              fontSize: 9,
-              letterSpacing: 0.8,
-              border: "1px solid",
-              borderColor: mapMode === id ? "#6bc984" : "#2a3d34",
-              background: mapMode === id ? "#1a3a28" : "#0f1814",
-              color: mapMode === id ? "#b4e6c4" : "#7a9486",
-              cursor: "pointer",
-              borderRadius: 3,
-            }}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {hovered && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: 14,
-            left: 14,
-            background: "#0f1814ee",
-            border: "1px solid #2a3d34",
-            padding: "6px 12px",
-            borderRadius: 4,
-            fontSize: 12,
-            color: "#e8f0ea",
-            letterSpacing: 0.8,
-            zIndex: 20,
-          }}
-        >
-          {COUNTRY_NAMES[hovered] || hovered}
-        </div>
-      )}
-
-      <div
-        style={{
-          position: "absolute",
-          bottom: 14,
-          right: 14,
-          fontSize: 9,
-          color: "#5a6e66",
-          letterSpacing: 1.2,
-          zIndex: 20,
-        }}
-      >
-        DÜNYA TİYATROSU · {Object.keys(COUNTRY_NAMES).length}+ ÜLKE
-      </div>
-    </div>
-  );
-              }

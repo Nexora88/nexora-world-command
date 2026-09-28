@@ -555,3 +555,28 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden!important}
   color: #c8d1d4;
   border-left-color: #6cc884;
 }
+
+/* PHASE 11 — map interaction, hierarchy and responsive viewport hardening */
+.world-map-clean{touch-action:none;user-select:none;cursor:grab}
+.world-map-clean.is-dragging{cursor:grabbing}
+.world-map-clean .world-map-zoom{transition:transform .16s ease-out;transform-box:fill-box;transform-origin:center}
+.world-map-clean.is-dragging .world-map-zoom{transition:none}
+.world-map-clean .province-territories{pointer-events:auto}
+.world-map-clean .province-territory{stroke-width:.16;vector-effect:non-scaling-stroke;transition:fill-opacity .12s ease,stroke-width .12s ease;paint-order:stroke fill}
+.world-map-clean .province-territory.owned{stroke:#8ed49d;stroke-width:.18}
+.world-map-clean .province-territory.selected{stroke:#f0d78a;stroke-width:.55;filter:drop-shadow(0 0 2px rgba(240,215,138,.65))}
+.world-map-clean .province-territory:hover{fill-opacity:.38!important;stroke:#c8dfcf;stroke-width:.3}
+.world-map-clean .province-label{font-family:Arial,sans-serif;font-size:1.05px;font-weight:700;letter-spacing:.035em;fill:#c9d5cf;text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:#07100e;stroke-width:.34px;pointer-events:none;opacity:.84}
+.world-map-clean .province-label.owned{fill:#eff8e9;opacity:.95}
+.strategic-map-toolbar .zoom-button.reset{width:auto;padding:0 7px;font-size:7px}
+.map-scale{pointer-events:none}
+@media(max-width:760px){
+  .world-map-clean .province-label{font-size:1px}
+  .world-map-clean .world-country-label{font-size:1px!important}
+  .strategic-map-toolbar{bottom:auto;max-width:calc(100% - 86px);overflow-x:auto}
+  .strategic-map-toolbar .zoom-button{min-width:30px}
+}
+@media(min-width:761px){.aaa-bottom{display:flex;align-items:center;justify-content:center;min-width:0}.aaa-bottom button{flex:0 1 150px;min-width:88px;max-width:160px}}
+@media(min-width:1400px){.aaa-body{grid-template-columns:260px minmax(0,1fr) 350px}.command-drawer{left:260px;right:350px}}
+@media(min-width:2200px){.aaa-body{grid-template-columns:290px minmax(0,1fr) 390px}.command-drawer{left:290px;right:390px}}
+@media(max-width:390px){.aaa-bottom button{flex-basis:68px;min-width:68px}.aaa-bottom button span{font-size:6px}.strategic-map-toolbar button{padding:0 7px}.map-scale{font-size:6px}}

@@ -11,6 +11,7 @@ type Props={
   selectedId:string|null;
   hoveredId:string|null;
   playerCountryId?:string;
+  zoom?:number;
   mapMode:string;
   maxPopulation:number;
   maxIndustry:number;
@@ -34,7 +35,7 @@ function polygonPoints(id:string){
   return points.map(point=>`${point.x},${point.y}`).join(" ");
 }
 
-export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,mapMode,onSelect,onHover,fillFor}:Props){
+export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,zoom=1,mapMode,onSelect,onHover,fillFor}:Props){
   const shapes=useMemo(()=>provinces.map(p=>({p,world:REAL_WORLD_PROVINCES[p.id]})).filter(x=>x.world),[provinces]);
   return <g className="province-territories">
     {shapes.map(({p,world})=>{
@@ -52,7 +53,7 @@ export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,ma
           points={polygonPoints(p.id)}
           className={`province-territory ${selected?"selected":""} ${hovered?"hovered":""} ${owned?"owned":""}`}
           fill={fill}
-          fillOpacity={selected?.42:hovered?.31:.22}
+          fillOpacity={owned?(selected?.42:hovered?.31:.22):0}
           stroke={country?.color??"#52615d"}
           onMouseEnter={()=>onHover(p.id)}
           onMouseLeave={()=>onHover(null)}
@@ -68,6 +69,7 @@ export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,ma
           />
           <circle cx={world.coordinates.x} cy={world.coordinates.y} r="1.15" className="province-center-fallback"/>
         </>}
+        {(owned&&zoom>=1.05)||(zoom>=2.15&&selected)&&<text x={world.coordinates.x} y={world.coordinates.y-1.9} className={`province-label ${owned?"owned":""}`}>{p.name.toUpperCase()}</text>}
       </g>;
     })}
   </g>;

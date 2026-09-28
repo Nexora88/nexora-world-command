@@ -13,8 +13,9 @@ type Props={zoom:number;playerCountryId?:string;showLabels?:boolean;showBorders?
 const iso2ToGame:Record<string,string>={TR:"TR",DE:"DE",GB:"GB",RU:"RU",FR:"FR",ES:"ES",PT:"PT",IT:"IT",CH:"CH",AT:"AT",BE:"BE",NL:"NL",LU:"LU",PL:"PL",CZ:"CZ",SK:"SK",HU:"HU",RO:"RO",BG:"BG",GR:"GR",RS:"RS",HR:"HR",SI:"SI",BA:"BA",ME:"ME",MK:"MK",AL:"AL",DK:"DK",NO:"NO",SE:"SE",FI:"FI",EE:"EE",LV:"LV",LT:"LT",BY:"BY",UA:"UA",MD:"MD",IE:"IE",IS:"IS",MC:"MC",SM:"SM",VA:"VA"};
 
 function project([lon,lat]:number[]){
-  const x=((lon+180)/360)*100;
-  const y=((90-lat)/180)*100;
+  // Match the Europe-normalized province coordinate system in real-world-provinces.ts.
+  const x=((lon+22)/105)*100;
+  const y=((72-lat)/38)*100;
   return [Math.max(-2,Math.min(102,x)),Math.max(-2,Math.min(102,y))] as const;
 }
 function ringPath(ring:Ring){
@@ -57,7 +58,7 @@ export function CountryWorldLayer({zoom,playerCountryId,showLabels=true,showBord
         <path d={geometryPath(f.geometry)} fill={colorFor(f,i,playerCountryId)} className={`world-country-shape ${showBorders?"":"no-borders"}`} onClick={()=>onCountrySelect?.(iso)}>
           <title>{name}</title>
         </path>
-        {showLabels&&<text x={x} y={y} className="world-country-label" style={{fontSize:`${Math.max(1.05,Math.min(2.15,1.28/Math.sqrt(Math.max(1,zoom))))}px`}}>{name.toUpperCase()}</text>}
+        {showLabels&&(zoom<1.55||gameId===playerCountryId)&&<text x={x} y={y} className="world-country-label" style={{fontSize:`${gameId===playerCountryId?1.35:Math.max(.9,1.18/Math.sqrt(Math.max(1,zoom)))}px`}}>{name.toUpperCase()}</text>}
       </g>;
     })}
   </g>;

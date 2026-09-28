@@ -277,13 +277,13 @@ export function GameScreen() {
         <EconomyPanel resources={resources} income={income} />
         <ProductionPanel
           queue={production}
-          provinceId={selected?.id}
-          onProduce={(u) => selected && startP(selected, u)}
+          provinceId={selected?.ownerId === playerCountryId ? selected.id : undefined}
+          onProduce={(u) => selected?.ownerId === playerCountryId && startP(selected, u)}
         />
         <ConstructionPanel
           province={selected ?? provinces[0] ?? blank}
           queue={construction}
-          onUpgrade={(t) => selected && startC(selected, t)}
+          onUpgrade={(t) => selected?.ownerId === playerCountryId && startC(selected, t)}
         />
       </>
     );
