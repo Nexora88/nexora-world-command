@@ -63,7 +63,7 @@ export function WorldMap({provinces,armies,selectedId,selectedArmyId,gameClock,p
       <rect width="100" height="56.25" className="world-ocean"/>
       <g className="world-map-zoom" transform={`translate(${pan.x} ${pan.y}) translate(50 ${MAP_CENTER_Y}) scale(${zoom}) translate(-50 -${MAP_CENTER_Y})`}>
         <CountryWorldLayer zoom={zoom} playerCountryId={playerCountryId} showLabels={showLabels} showBorders={showBorders} onCountrySelect={onCountrySelect}/>
-        <ProvinceLayer provinces={provinces} selectedId={selectedId} hoveredId={null} playerCountryId={playerCountryId} selectedCountryId={selectedCountryId} zoom={zoom} mapMode={mapMode} maxPopulation={0} maxIndustry={0} onSelect={handleProvince} onHover={()=>{}} fillFor={p=>p.ownerId===playerCountryId?"#45c878":"#65756d"}/>
+        <ProvinceLayer provinces={provinces} selectedId={selectedId} hoveredId={null} playerCountryId={playerCountryId} selectedCountryId={selectedCountryId} selectedArmyId={selectedArmyId} armies={armies} zoom={zoom} mapMode={mapMode} maxPopulation={0} maxIndustry={0} onSelect={handleProvince} onHover={()=>{}} fillFor={p=>p.ownerId===playerCountryId?"#45c878":"#65756d"}/>
         <ArmyLayer armies={armies} selectedArmyId={selectedArmyId} onSelectArmy={onSelectArmy} zoom={zoom} gameClock={gameClock}/>
         <WorldWeatherLayer mode={mapMode}/>
       </g>

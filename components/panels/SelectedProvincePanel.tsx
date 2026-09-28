@@ -20,6 +20,8 @@ type Props = {
   incomePerHour?: number;
   onUpgrade?: (type: BuildingType) => void;
   onClose?: () => void;
+  gameClock?: { day:number; hour:number; minute:number };
+  onSelectArmy?: (id:string) => void;
 };
 
 export function SelectedProvincePanel({
@@ -32,6 +34,8 @@ export function SelectedProvincePanel({
   incomePerHour = 0,
   onUpgrade,
   onClose,
+  gameClock,
+  onSelectArmy,
 }: Props) {
   if (!province) {
     return (
@@ -56,6 +60,11 @@ export function SelectedProvincePanel({
   const morale = 70 + Math.min(25, Math.floor((province.population || 0) / 500000));
   const ownerName = country?.displayName ?? country?.name ?? province.ownerId ?? "—";
   const isCapital = country?.capitalProvinceId === province.id;
+  const targetId = army?.order?.targetProvinceId;
+  const routeLength = army?.order?.route?.length ?? 0;
+  const gameStamp = (c:{day:number;hour:number;minute:number}) => (c.day-1)*1440+c.hour*60+c.minute;
+  const etaMinutes = army?.order?.eta !== undefined && gameClock ? Math.max(0,army.order.eta-gameStamp(gameClock)) : undefined;
+  const etaLabel = etaMinutes === undefined ? "ETA --" : etaMinutes < 60 ? `ETA ${etaMinutes} dk` : `ETA ${Math.floor(etaMinutes/60)} sa ${etaMinutes%60} dk`;
 
   return (
     <aside className="selected-eyalet">
@@ -169,7 +178,7 @@ export function SelectedProvincePanel({
         {provinceArmies.length > 0 && (
           <div className="province-army-list">
             {provinceArmies.map((item) => (
-              <button type="button" className={`province-army-row ${army?.id === item.id ? "selected" : ""}`} key={item.id}>
+              <button type="button" className={`province-army-row ${army?.id === item.id ? "selected" : ""}`} key={item.id} onClick={() => onSelectArmy?.(item.id)}>
                 <span className="army-mini-badge">▣</span>
                 <span><b>{item.name}</b><small>{item.infantry.toLocaleString()} INF · {item.tanks} ARM</small></span>
                 <strong>{item.strength.toLocaleString()}</strong>
@@ -201,6 +210,13 @@ export function SelectedProvincePanel({
               <span>KONUM · {army.provinceId}</span>
               <span>{army.status === "moving" ? "HAREKET HALİNDE" : "HAZIR"}</span>
             </div>
+            {army.status === "moving" && (
+              <div className="army-order-summary">
+                <span>HEDEF · {targetId ?? "—"}</span>
+                <span>ROTA · {routeLength} EYALET</span>
+                <b>{etaLabel}</b>
+              </div>
+            )}
           </div>
         ) : (
           <div className="empty-selection small">{canCreateArmy ? "Üretimi tamamlanan birlikleri burada saha ordusuna dönüştürün." : "Bu eyalette seçili bir ordu yok."}</div>

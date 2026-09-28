@@ -568,6 +568,12 @@ export function GameScreen() {
                 : selectedCountryIncome || 0
             }
             onUpgrade={(t) => selected && startC(selected, t)}
+            gameClock={gameClock}
+            onSelectArmy={(id) => {
+              setSelectedArmyId(id);
+              const army = armies.find((item) => item.id === id);
+              if (army) select(army.provinceId);
+            }}
             onClose={() => {
               select(null);
               setSelectedCountryId(null);

@@ -35,7 +35,20 @@ export function ArmyLayer({ armies, selectedArmyId, onSelectArmy, zoom = 1, game
   const moving = active.filter(a=>a.status==="moving"&&a.order?.route && a.order.route.length>=2);
   return (<>
     <g className="army-routes" pointerEvents="none">
-      {moving.map(a=>{ const from=REAL_WORLD_PROVINCES[a.order!.route[0]]?.coordinates; const to=REAL_WORLD_PROVINCES[a.order!.route[a.order!.route.length-1]]?.coordinates; if(!from||!to)return null; const selected=a.id===selectedArmyId; return <g key={`route-${a.id}`} className={`army-route ${selected?"selected":""}`}><line x1={from.x} y1={from.y} x2={to.x} y2={to.y} className="army-route-line"/>{zoom>=1.45&&<text x={(from.x+to.x)/2} y={(from.y+to.y)/2-1} className="army-route-eta">{etaText(a.order!.eta,gameClock)}</text>}</g>; })}
+      {moving.map(a=>{
+        const points=a.order!.route.map(id=>REAL_WORLD_PROVINCES[id]?.coordinates).filter(Boolean) as Point[];
+        if(points.length<2)return null;
+        const selected=a.id===selectedArmyId;
+        const pointString=points.map(p=>`${p.x},${p.y}`).join(" ");
+        const mid=points[Math.floor(points.length/2)];
+        const target=points[points.length-1];
+        return <g key={`route-${a.id}`} className={`army-route ${selected?"selected":""}`}>
+          <polyline points={pointString} className="army-route-line"/>
+          {selected&&<circle cx={target.x} cy={target.y} r="1.15" className="army-route-target"/>
+          }
+          {zoom>=1.45&&<text x={mid.x} y={mid.y-1} className="army-route-eta">{etaText(a.order!.eta,gameClock)}</text>}
+        </g>;
+      })}
     </g>
     <g className="army-layer" aria-label="Field armies">
       {active.map((army) => {

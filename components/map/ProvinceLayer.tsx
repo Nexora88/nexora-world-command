@@ -2,6 +2,7 @@
 
 import {useMemo} from "react";
 import type {Province} from "@/lib/types";
+import type {Army} from "@/game/movement/server/types";
 import {REAL_WORLD_COUNTRIES,REAL_WORLD_PROVINCES} from "@/data/world/real-world-provinces";
 import {safeCountryCode} from "@/lib/safe-country";
 
@@ -12,6 +13,8 @@ type Props={
   hoveredId:string|null;
   playerCountryId?:string;
   selectedCountryId?:string|null;
+  selectedArmyId?:string|null;
+  armies?:Army[];
   zoom?:number;
   mapMode:string;
   maxPopulation:number;
@@ -36,17 +39,29 @@ function polygonPoints(id:string){
   return points.map(point=>`${point.x},${point.y}`).join(" ");
 }
 
-export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,selectedCountryId,zoom=1,mapMode,onSelect,onHover,fillFor}:Props){
+export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,selectedCountryId,selectedArmyId,armies=[],zoom=1,mapMode,onSelect,onHover,fillFor}:Props){
   const shapes=useMemo(()=>provinces.map(p=>({p,world:REAL_WORLD_PROVINCES[p.id]})).filter(x=>x.world),[provinces]);
   const focusCountry=selectedCountryId??playerCountryId;
   const focusedShapes=useMemo(()=>focusCountry?shapes.filter(({p,world})=>safeCountryCode(world?.countryCode??p.countryId)===safeCountryCode(focusCountry)):shapes,[focusCountry,shapes]);
+  const selectedArmy=selectedArmyId?armies.find(a=>a.id===selectedArmyId):undefined;
+  const route=selectedArmy?.order?.route??[];
+  const targetId=route.length?route[route.length-1]:undefined;
+  const commandProvinceId=selectedArmy?.provinceId??selectedId??undefined;
+  const commandProvince=commandProvinceId?REAL_WORLD_PROVINCES[commandProvinceId]:undefined;
+  const commandNeighbors=(commandProvince?.neighbors??[]).filter(id=>REAL_WORLD_PROVINCES[id]);
   // Province territories are the command layer: a selected country is revealed immediately, otherwise the layer appears after zoom.
   if(zoom<1.65 && !selectedCountryId)return <g className="province-territories"/>;
   return <g className="province-territories">
+    {selectedArmy && zoom>=1.35 && commandProvince && commandNeighbors.map(id=>{
+      const neighbor=REAL_WORLD_PROVINCES[id];
+      return <line key={`adj-${selectedArmy.id}-${id}`} x1={commandProvince.coordinates.x} y1={commandProvince.coordinates.y} x2={neighbor.coordinates.x} y2={neighbor.coordinates.y} className="province-command-link" pointerEvents="none"/>;
+    })}
     {(selectedCountryId ? focusedShapes : (zoom>=1.65 ? shapes : focusedShapes)).map(({p,world})=>{
       const code=safeCountryCode(world?.countryCode??p.countryId);
       const country=REAL_WORLD_COUNTRIES.find(c=>safeCountryCode(c.id)===code);
       const selected=p.id===selectedId;
+      const target=p.id===targetId;
+      const commandNeighbor=commandNeighbors.includes(p.id);
       const hovered=p.id===hoveredId;
       const owned=!!playerCountryId&&code===safeCountryCode(playerCountryId);
       const terrain=world?.terrain??p.terrain;
@@ -56,7 +71,7 @@ export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,se
       return <g key={p.id} className="province-hit-region">
         {hasGeometry ? <polygon
           points={polygonPoints(p.id)}
-          className={`province-territory ${selected?"selected":""} ${hovered?"hovered":""} ${owned?"owned":""}`}
+          className={`province-territory ${selected?"selected":""} ${target?"target":""} ${commandNeighbor?"command-neighbor":""} ${hovered?"hovered":""} ${owned?"owned":""}`}
           fill={fill}
           fillOpacity={owned?(selected?.42:hovered?.31:.22):0}
           stroke={country?.color??"#52615d"}
@@ -74,6 +89,8 @@ export function ProvinceLayer({provinces,selectedId,hoveredId,playerCountryId,se
           />
           <circle cx={world.coordinates.x} cy={world.coordinates.y} r="1.15" className="province-center-fallback"/>
         </>}
+        {target&&<circle cx={world.coordinates.x} cy={world.coordinates.y} r="2.2" className="province-target-ring" pointerEvents="none"/>}
+        {target&&zoom>=1.65&&<text x={world.coordinates.x} y={world.coordinates.y+3.8} className="province-target-label" pointerEvents="none">DESTINATION</text>}
         {((owned&&zoom>=1.05)||(selectedCountryId&&zoom>=1.65)||(zoom>=2.15&&selected))&&<text x={world.coordinates.x} y={world.coordinates.y-1.9} className={`province-label ${owned?"owned":""}`}>{p.name.toUpperCase()}</text>}
       </g>;
     })}
