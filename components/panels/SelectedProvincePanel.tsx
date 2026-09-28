@@ -22,6 +22,8 @@ type Props = {
   onClose?: () => void;
   gameClock?: { day:number; hour:number; minute:number };
   onSelectArmy?: (id:string) => void;
+  onMergeArmies?: (sourceId:string,targetId:string) => void;
+  onSplitArmy?: (armyId:string,infantry:number,tanks:number) => void;
   unitStockpile?: { infantry:number; tanks:number };
 };
 
@@ -37,6 +39,8 @@ export function SelectedProvincePanel({
   onClose,
   gameClock,
   onSelectArmy,
+  onMergeArmies,
+  onSplitArmy,
   unitStockpile = { infantry:0, tanks:0 },
 }: Props) {
   if (!province) {
@@ -215,10 +219,22 @@ export function SelectedProvincePanel({
                 <b>%{army.fuel}</b>
               </div>
             </div>
+            <div className="army-composition">
+              <span><b>{army.infantry.toLocaleString()}</b> PİYADE</span>
+              <span><b>{army.tanks.toLocaleString()}</b> TANK</span>
+              <span><b>%{army.organization}</b> ORG</span>
+              <span><b>%{army.supply}</b> İKMAL</span>
+            </div>
             <div className="army-meta">
               <span>KONUM · {army.provinceId}</span>
               <span>{army.status === "moving" ? "HAREKET HALİNDE" : "HAZIR"}</span>
             </div>
+            {army.status === "ready" && (
+              <div className="army-management-actions">
+                {provinceArmies.filter((x)=>x.id!==army.id && x.status==="ready").map((x)=><button type="button" key={x.id} onClick={()=>onMergeArmies?.(x.id,army.id)}>+ BİRLEŞTİR {x.name}</button>)}
+                <button type="button" onClick={()=>{const maxInf=Math.max(0,army.infantry-1);const maxTank=Math.max(0,army.tanks);const inf=Number(window.prompt(`Kaç piyade ayır? (0-${maxInf})`,`0`)??0);const tank=Number(window.prompt(`Kaç tank ayır? (0-${maxTank})`,`0`)??0);if(Number.isFinite(inf)&&Number.isFinite(tank))onSplitArmy?.(army.id,inf,tank)}}>BÖL ORDU</button>
+              </div>
+            )}
             {army.status === "moving" && (
               <div className="army-order-summary">
                 <span>HEDEF · {targetId ?? "—"}</span>

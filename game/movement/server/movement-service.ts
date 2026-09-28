@@ -67,7 +67,8 @@ export function performMovementAction(action: MovementAction): Army {
 
   if (action.type === "splitArmy") {
     if (!action.armyId) throw new Error("Army is required.");
-    const source = assertArmyOwner(armies.get(action.armyId)!); if (!source || source.status !== "ready") throw new Error("Army is not available for splitting.");
+    const sourceRaw = action.armyId ? armies.get(action.armyId) : undefined; if (!sourceRaw) throw new Error("Army does not exist.");
+    const source = assertArmyOwner(sourceRaw); if (source.status !== "ready") throw new Error("Army is not available for splitting.");
     const infantry = Math.max(0, Math.floor(action.infantry ?? 0)); const tanks = Math.max(0, Math.floor(action.tanks ?? 0));
     if (infantry + tanks <= 0 || infantry > source.infantry || tanks > source.tanks || infantry + tanks >= source.infantry + source.tanks) throw new Error("Invalid split composition.");
     source.infantry -= infantry; source.tanks -= tanks; recalc(source);

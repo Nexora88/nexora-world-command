@@ -98,6 +98,8 @@ export function GameScreen() {
   const moveArmy = useGameStore((s) => s.moveArmy);
   const declareWar = useGameStore((s) => s.declareWar);
   const createArmy = useGameStore((s) => s.createArmy);
+  const mergeArmies = useGameStore((s) => s.mergeArmies);
+  const splitArmy = useGameStore((s) => s.splitArmy);
 
   const [selectedArmyId, setSelectedArmyId] = useState<string | null>(null);
   const [clockNow, setClockNow] = useState(() => Date.now());
@@ -588,6 +590,8 @@ export function GameScreen() {
             }
             onUpgrade={(t) => selected && startC(selected, t)}
             gameClock={gameClock}
+            onMergeArmies={(sourceId,targetId) => void mergeArmies(sourceId,targetId)}
+            onSplitArmy={(armyId,infantry,tanks) => void splitArmy(armyId,infantry,tanks)}
             onSelectArmy={(id) => {
               setSelectedArmyId(id);
               const army = armies.find((item) => item.id === id);
