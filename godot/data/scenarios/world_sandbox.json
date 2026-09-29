@@ -1,0 +1,1437 @@
+﻿{
+    "schema_version":  1,
+    "scenario_id":  "world_sandbox",
+    "display_name":  "Modern World — Global Sandbox",
+    "map":  {
+                "width":  1800,
+                "height":  900,
+                "projection":  "equirectangular"
+            },
+    "countries":  [
+                      {
+                          "id":  "ID",
+                          "name":  "Indonesia",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MY",
+                          "name":  "Malaysia",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CL",
+                          "name":  "Chile",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BO",
+                          "name":  "Bolivia",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PE",
+                          "name":  "Peru",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AR",
+                          "name":  "Argentina",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CY",
+                          "name":  "Cyprus",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "IN",
+                          "name":  "India",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CN",
+                          "name":  "China",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "IL",
+                          "name":  "Israel",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PS",
+                          "name":  "Palestine",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "LB",
+                          "name":  "Lebanon",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "ET",
+                          "name":  "Ethiopia",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SS",
+                          "name":  "South Sudan",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SO",
+                          "name":  "Somalia",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "KE",
+                          "name":  "Kenya",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MW",
+                          "name":  "Malawi",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TZ",
+                          "name":  "United Republic of Tanzania",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SY",
+                          "name":  "Syria",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SR",
+                          "name":  "Suriname",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GY",
+                          "name":  "Guyana",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "KR",
+                          "name":  "South Korea",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "KP",
+                          "name":  "North Korea",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MA",
+                          "name":  "Morocco",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "EH",
+                          "name":  "Western Sahara",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CR",
+                          "name":  "Costa Rica",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "NI",
+                          "name":  "Nicaragua",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CG",
+                          "name":  "Republic of the Congo",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CD",
+                          "name":  "Democratic Republic of the Congo",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BT",
+                          "name":  "Bhutan",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "UA",
+                          "name":  "Ukraine",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BY",
+                          "name":  "Belarus",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "NA",
+                          "name":  "Namibia",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "ZA",
+                          "name":  "South Africa",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MF",
+                          "name":  "Saint Martin",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SX",
+                          "name":  "Sint Maarten",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "OM",
+                          "name":  "Oman",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "UZ",
+                          "name":  "Uzbekistan",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "KZ",
+                          "name":  "Kazakhstan",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TJ",
+                          "name":  "Tajikistan",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "LT",
+                          "name":  "Lithuania",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BR",
+                          "name":  "Brazil",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "UY",
+                          "name":  "Uruguay",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MN",
+                          "name":  "Mongolia",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "RU",
+                          "name":  "Russia",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CZ",
+                          "name":  "Czechia",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "DE",
+                          "name":  "Germany",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "EE",
+                          "name":  "Estonia",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "LV",
+                          "name":  "Latvia",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SE",
+                          "name":  "Sweden",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "FI",
+                          "name":  "Finland",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "VN",
+                          "name":  "Vietnam",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "KH",
+                          "name":  "Cambodia",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "LU",
+                          "name":  "Luxembourg",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AE",
+                          "name":  "United Arab Emirates",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BE",
+                          "name":  "Belgium",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GE",
+                          "name":  "Georgia",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MK",
+                          "name":  "North Macedonia",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AL",
+                          "name":  "Albania",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AZ",
+                          "name":  "Azerbaijan",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TR",
+                          "name":  "Turkey",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "ES",
+                          "name":  "Spain",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "LA",
+                          "name":  "Laos",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "KG",
+                          "name":  "Kyrgyzstan",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AM",
+                          "name":  "Armenia",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "DK",
+                          "name":  "Denmark",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "LY",
+                          "name":  "Libya",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TN",
+                          "name":  "Tunisia",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "RO",
+                          "name":  "Romania",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "HU",
+                          "name":  "Hungary",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SK",
+                          "name":  "Slovakia",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PL",
+                          "name":  "Poland",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "IE",
+                          "name":  "Ireland",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GB",
+                          "name":  "United Kingdom",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GR",
+                          "name":  "Greece",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "ZM",
+                          "name":  "Zambia",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SL",
+                          "name":  "Sierra Leone",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GN",
+                          "name":  "Guinea",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "LR",
+                          "name":  "Liberia",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CF",
+                          "name":  "Central African Republic",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SD",
+                          "name":  "Sudan",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "DJ",
+                          "name":  "Djibouti",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "ER",
+                          "name":  "Eritrea",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AT",
+                          "name":  "Austria",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "IQ",
+                          "name":  "Iraq",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "IT",
+                          "name":  "Italy",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CH",
+                          "name":  "Switzerland",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "IR",
+                          "name":  "Iran",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "NL",
+                          "name":  "Netherlands",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "LI",
+                          "name":  "Liechtenstein",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CI",
+                          "name":  "Ivory Coast",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "RS",
+                          "name":  "Republic of Serbia",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "ML",
+                          "name":  "Mali",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SN",
+                          "name":  "Senegal",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "NG",
+                          "name":  "Nigeria",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BJ",
+                          "name":  "Benin",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AO",
+                          "name":  "Angola",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "HR",
+                          "name":  "Croatia",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SI",
+                          "name":  "Slovenia",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "QA",
+                          "name":  "Qatar",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SA",
+                          "name":  "Saudi Arabia",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BW",
+                          "name":  "Botswana",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "ZW",
+                          "name":  "Zimbabwe",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PK",
+                          "name":  "Pakistan",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BG",
+                          "name":  "Bulgaria",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TH",
+                          "name":  "Thailand",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SM",
+                          "name":  "San Marino",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "HT",
+                          "name":  "Haiti",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "DO",
+                          "name":  "Dominican Republic",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TD",
+                          "name":  "Chad",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "KW",
+                          "name":  "Kuwait",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SV",
+                          "name":  "El Salvador",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GT",
+                          "name":  "Guatemala",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TL",
+                          "name":  "East Timor",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BN",
+                          "name":  "Brunei",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MC",
+                          "name":  "Monaco",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "DZ",
+                          "name":  "Algeria",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MZ",
+                          "name":  "Mozambique",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SZ",
+                          "name":  "eSwatini",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BI",
+                          "name":  "Burundi",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "RW",
+                          "name":  "Rwanda",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MM",
+                          "name":  "Myanmar",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BD",
+                          "name":  "Bangladesh",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AD",
+                          "name":  "Andorra",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AF",
+                          "name":  "Afghanistan",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "ME",
+                          "name":  "Montenegro",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BA",
+                          "name":  "Bosnia and Herzegovina",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "UG",
+                          "name":  "Uganda",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CU",
+                          "name":  "Cuba",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "HN",
+                          "name":  "Honduras",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "EC",
+                          "name":  "Ecuador",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CO",
+                          "name":  "Colombia",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PY",
+                          "name":  "Paraguay",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PT",
+                          "name":  "Portugal",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MD",
+                          "name":  "Moldova",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TM",
+                          "name":  "Turkmenistan",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "JO",
+                          "name":  "Jordan",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "NP",
+                          "name":  "Nepal",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "LS",
+                          "name":  "Lesotho",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CM",
+                          "name":  "Cameroon",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GA",
+                          "name":  "Gabon",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "NE",
+                          "name":  "Niger",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BF",
+                          "name":  "Burkina Faso",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TG",
+                          "name":  "Togo",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GH",
+                          "name":  "Ghana",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GW",
+                          "name":  "Guinea-Bissau",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GI",
+                          "name":  "Gibraltar",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "US",
+                          "name":  "United States of America",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CA",
+                          "name":  "Canada",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MX",
+                          "name":  "Mexico",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BZ",
+                          "name":  "Belize",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PA",
+                          "name":  "Panama",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "VE",
+                          "name":  "Venezuela",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PG",
+                          "name":  "Papua New Guinea",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "EG",
+                          "name":  "Egypt",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "YE",
+                          "name":  "Yemen",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MR",
+                          "name":  "Mauritania",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GQ",
+                          "name":  "Equatorial Guinea",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GM",
+                          "name":  "Gambia",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "HK",
+                          "name":  "Hong Kong S.A.R.",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "VA",
+                          "name":  "Vatican",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AQ",
+                          "name":  "Antarctica",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AU",
+                          "name":  "Australia",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GL",
+                          "name":  "Greenland",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "FJ",
+                          "name":  "Fiji",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "NZ",
+                          "name":  "New Zealand",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "NC",
+                          "name":  "New Caledonia",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MG",
+                          "name":  "Madagascar",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PH",
+                          "name":  "Philippines",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "LK",
+                          "name":  "Sri Lanka",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CW",
+                          "name":  "CuraÃ§ao",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AW",
+                          "name":  "Aruba",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BS",
+                          "name":  "The Bahamas",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TC",
+                          "name":  "Turks and Caicos Islands",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CN-TW",
+                          "name":  "Taiwan",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "JP",
+                          "name":  "Japan",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PM",
+                          "name":  "Saint Pierre and Miquelon",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "IS",
+                          "name":  "Iceland",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PN",
+                          "name":  "Pitcairn Islands",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PF",
+                          "name":  "French Polynesia",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TF",
+                          "name":  "French Southern and Antarctic Lands",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SC",
+                          "name":  "Seychelles",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "KI",
+                          "name":  "Kiribati",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MH",
+                          "name":  "Marshall Islands",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TT",
+                          "name":  "Trinidad and Tobago",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GD",
+                          "name":  "Grenada",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "VC",
+                          "name":  "Saint Vincent and the Grenadines",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BB",
+                          "name":  "Barbados",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "LC",
+                          "name":  "Saint Lucia",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "DM",
+                          "name":  "Dominica",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "UM",
+                          "name":  "United States Minor Outlying Islands",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MS",
+                          "name":  "Montserrat",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AG",
+                          "name":  "Antigua and Barbuda",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "KN",
+                          "name":  "Saint Kitts and Nevis",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "VI",
+                          "name":  "United States Virgin Islands",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BL",
+                          "name":  "Saint Barthelemy",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PR",
+                          "name":  "Puerto Rico",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AI",
+                          "name":  "Anguilla",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "VG",
+                          "name":  "British Virgin Islands",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "JM",
+                          "name":  "Jamaica",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "KY",
+                          "name":  "Cayman Islands",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BM",
+                          "name":  "Bermuda",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "HM",
+                          "name":  "Heard Island and McDonald Islands",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SH",
+                          "name":  "Saint Helena",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MU",
+                          "name":  "Mauritius",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "KM",
+                          "name":  "Comoros",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "ST",
+                          "name":  "SÃ£o TomÃ© and Principe",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CV",
+                          "name":  "Cabo Verde",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MT",
+                          "name":  "Malta",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "JE",
+                          "name":  "Jersey",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GG",
+                          "name":  "Guernsey",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "IM",
+                          "name":  "Isle of Man",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AX",
+                          "name":  "Aland",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "FO",
+                          "name":  "Faroe Islands",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "IO",
+                          "name":  "British Indian Ocean Territory",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SG",
+                          "name":  "Singapore",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "NF",
+                          "name":  "Norfolk Island",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "CK",
+                          "name":  "Cook Islands",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TO",
+                          "name":  "Tonga",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "WF",
+                          "name":  "Wallis and Futuna",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "WS",
+                          "name":  "Samoa",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "SB",
+                          "name":  "Solomon Islands",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "TV",
+                          "name":  "Tuvalu",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MV",
+                          "name":  "Maldives",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "NR",
+                          "name":  "Nauru",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "FM",
+                          "name":  "Federated States of Micronesia",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GS",
+                          "name":  "South Georgia and the Islands",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "FK",
+                          "name":  "Falkland Islands",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "VU",
+                          "name":  "Vanuatu",
+                          "color":  "#8c5e58",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "NU",
+                          "name":  "Niue",
+                          "color":  "#5d7a6f",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "AS",
+                          "name":  "American Samoa",
+                          "color":  "#7b6070",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "PW",
+                          "name":  "Palau",
+                          "color":  "#65737e",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "GU",
+                          "name":  "Guam",
+                          "color":  "#4f6d7a",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MP",
+                          "name":  "Northern Mariana Islands",
+                          "color":  "#6b705c",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "BH",
+                          "name":  "Bahrain",
+                          "color":  "#8d6e63",
+                          "capital_province_id":  ""
+                      },
+                      {
+                          "id":  "MO",
+                          "name":  "Macao S.A.R",
+                          "color":  "#536dfe",
+                          "capital_province_id":  ""
+                      }
+                  ],
+    "provinces":  [
+
+                  ],
+    "cities":  [
+
+               ],
+    "armies":  [
+
+               ]
+}

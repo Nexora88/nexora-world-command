@@ -1,0 +1,51 @@
+{
+ "schema_version":1,
+ "scenario_id":"europe_1914",
+ "display_name":"Europe 1914 — Historical Sandbox",
+ "map":{"width":1800,"height":900,"projection":"equirectangular"},
+ "countries":[
+  {"id":"DE","name":"German Empire","color":"#59636b","capital_province_id":"DE_BER"},
+  {"id":"FR","name":"France","color":"#3d72a4","capital_province_id":"FR_PAR"},
+  {"id":"GB","name":"United Kingdom","color":"#6f83a6","capital_province_id":"GB_LON"},
+  {"id":"RU","name":"Russian Empire","color":"#6c7a4f","capital_province_id":"RU_MOS"},
+  {"id":"AT","name":"Austria-Hungary","color":"#8b5e4b","capital_province_id":"AT_VIE"},
+  {"id":"IT","name":"Kingdom of Italy","color":"#4d8068","capital_province_id":"IT_ROM"},
+  {"id":"OS","name":"Ottoman Empire","color":"#7c5c4d","capital_province_id":"OS_CON"},
+  {"id":"BE","name":"Belgium","color":"#8a7750","capital_province_id":"BE_BRU"},
+  {"id":"RS","name":"Kingdom of Serbia","color":"#6b6f8c","capital_province_id":"RS_BEL"}
+ ],
+ "provinces":[
+  {"id":"DE_BER","name":"Berlin","owner_country":"DE","type":"city","coordinates":[[1040,250],[1130,230],[1160,300],[1110,360],[1020,335]],"population":3800000,"terrain":"plains","resources":{"coal":40,"iron":25,"food":30},"neighbors":["DE_MUN","BE_BRU","DE_HAM"]},
+  {"id":"DE_MUN","name":"Munich","owner_country":"DE","type":"city","coordinates":[[980,410],[1070,390],[1110,470],[1050,530],[970,500]],"population":600000,"terrain":"hills","resources":{"coal":15,"iron":10,"food":25},"neighbors":["DE_BER","AT_VIE"]},
+  {"id":"DE_HAM","name":"Hamburg","owner_country":"DE","type":"city","coordinates":[[900,170],[980,160],[1010,230],[950,275],[885,235]],"population":1000000,"terrain":"plains","resources":{"coal":25,"iron":8,"food":18},"neighbors":["DE_BER","BE_BRU"]},
+  {"id":"FR_PAR","name":"Paris","owner_country":"FR","type":"city","coordinates":[[720,300],[805,285],[835,350],[790,410],[700,375]],"population":2800000,"terrain":"plains","resources":{"coal":10,"iron":12,"food":35},"neighbors":["FR_LYO","BE_BRU","DE_BER"]},
+  {"id":"FR_LYO","name":"Lyon","owner_country":"FR","type":"city","coordinates":[[770,450],[850,425],[890,495],[830,550],[750,520]],"population":520000,"terrain":"hills","resources":{"coal":5,"iron":8,"food":30},"neighbors":["FR_PAR","IT_ROM"]},
+  {"id":"GB_LON","name":"London","owner_country":"GB","type":"city","coordinates":[[600,210],[680,195],[700,255],[650,295],[585,270]],"population":4500000,"terrain":"plains","resources":{"coal":45,"iron":8,"food":18},"neighbors":["FR_PAR"]},
+  {"id":"RU_MOS","name":"Moscow","owner_country":"RU","type":"city","coordinates":[[1370,260],[1450,245],[1490,315],[1430,365],[1350,340]],"population":1600000,"terrain":"plains","resources":{"coal":20,"iron":20,"food":45},"neighbors":["RU_WAR"]},
+  {"id":"RU_WAR","name":"Warsaw","owner_country":"RU","type":"city","coordinates":[[1200,320],[1280,305],[1320,370],[1260,425],[1180,395]],"population":750000,"terrain":"plains","resources":{"coal":12,"iron":15,"food":28},"neighbors":["RU_MOS","DE_BER","AT_VIE"]},
+  {"id":"AT_VIE","name":"Vienna","owner_country":"AT","type":"city","coordinates":[[1080,500],[1160,480],[1200,545],[1140,600],[1060,570]],"population":2000000,"terrain":"plains","resources":{"coal":20,"iron":18,"food":25},"neighbors":["DE_MUN","RU_WAR","IT_ROM","RS_BEL"]},
+  {"id":"IT_ROM","name":"Rome","owner_country":"IT","type":"city","coordinates":[[920,610],[1000,590],[1030,660],[980,725],[900,690]],"population":550000,"terrain":"hills","resources":{"coal":3,"iron":12,"food":32},"neighbors":["FR_LYO","AT_VIE"]},
+  {"id":"OS_CON","name":"Constantinople","owner_country":"OS","type":"city","coordinates":[[1320,650],[1400,625],[1440,690],[1380,745],[1300,710]],"population":1000000,"terrain":"coastal","resources":{"coal":8,"iron":12,"food":22},"neighbors":["AT_VIE","RS_BEL"]},
+  {"id":"BE_BRU","name":"Brussels","owner_country":"BE","type":"city","coordinates":[[780,210],[850,195],[875,255],[825,290],[765,260]],"population":700000,"terrain":"plains","resources":{"coal":28,"iron":6,"food":16},"neighbors":["FR_PAR","DE_BER","DE_HAM"]},
+  {"id":"RS_BEL","name":"Belgrade","owner_country":"RS","type":"city","coordinates":[[1170,570],[1240,555],[1280,620],[1220,665],[1150,635]],"population":90000,"terrain":"hills","resources":{"coal":4,"iron":5,"food":18},"neighbors":["AT_VIE","OS_CON"]}
+ ],
+ "cities":[
+  {"id":"C_DE_BER","name":"Berlin","province_id":"DE_BER","coordinates":[1090,295],"is_capital":true,"population":3800000},
+  {"id":"C_FR_PAR","name":"Paris","province_id":"FR_PAR","coordinates":[770,345],"is_capital":true,"population":2800000},
+  {"id":"C_GB_LON","name":"London","province_id":"GB_LON","coordinates":[640,245],"is_capital":true,"population":4500000},
+  {"id":"C_RU_MOS","name":"Moscow","province_id":"RU_MOS","coordinates":[1420,305],"is_capital":true,"population":1600000},
+  {"id":"C_AT_VIE","name":"Vienna","province_id":"AT_VIE","coordinates":[1130,540],"is_capital":true,"population":2000000},
+  {"id":"C_IT_ROM","name":"Rome","province_id":"IT_ROM","coordinates":[965,655],"is_capital":true,"population":550000},
+  {"id":"C_OS_CON","name":"Constantinople","province_id":"OS_CON","coordinates":[1365,685],"is_capital":true,"population":1000000},
+  {"id":"C_BE_BRU","name":"Brussels","province_id":"BE_BRU","coordinates":[820,235],"is_capital":true,"population":700000},
+  {"id":"C_RS_BEL","name":"Belgrade","province_id":"RS_BEL","coordinates":[1215,610],"is_capital":true,"population":90000}
+ ],
+ "armies":[
+  {"id":"A_DE_WEST","name":"German Field Army","country_id":"DE","province_id":"DE_HAM","strength":180,"route":[[930,220],[850,230],[820,260],[790,300]]},
+  {"id":"A_DE_EAST","name":"Eastern Army","country_id":"DE","province_id":"DE_BER","strength":140,"route":[[1090,295],[1140,320],[1200,350],[1240,370]]},
+  {"id":"A_FR_NORTH","name":"French Northern Army","country_id":"FR","province_id":"FR_PAR","strength":120,"route":[[770,345],[800,300],[825,260]]},
+  {"id":"A_RU_WEST","name":"Russian Western Army","country_id":"RU","province_id":"RU_WAR","strength":150,"route":[[1220,360],[1160,400],[1120,470]]},
+  {"id":"A_AT_BALKAN","name":"Austro-Hungarian Army","country_id":"AT","province_id":"AT_VIE","strength":110,"route":[[1130,540],[1170,570],[1210,610]]},
+  {"id":"A_OS_THRACE","name":"Ottoman Army","country_id":"OS","province_id":"OS_CON","strength":90,"route":[[1365,685],[1320,650],[1260,620]]}
+ ]
+}
